@@ -1,8 +1,71 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import { HiMenu } from 'react-icons/hi'
+import { AiFillCloseCircle } from 'react-icons/ai'
+import { Routes, Route, Link } from 'react-router-dom'
+import { Sidebar, UserProfile } from '../components'
+import { client } from '../client'
+import logo from '../assets/we.png'
+import Pins from './Pins'
+import { userQuery } from '../utils/data'
 
 const Home = () => {
+  const [user, setUser] = useState(null)
+  const [toggleSidebar, setToggleSidebar] = useState(false)
+  const scrollRef = useRef(null);
+
+  const userInfo = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear();
+
+  useEffect(() => {
+    const query = userQuery(userInfo?.sub);
+
+    client.fetch(query).then((data) => {
+      setUser(data[0]);
+    })
+    //eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    scrollRef.current.scrollTo(0, 0);
+  });
+  const [theme, setTheme] = useState('')
+  const switchtheme = () => {
+    if (theme=='dark') {
+      setTheme('')
+    } else {
+      setTheme('dark')
+    }
+  }
   return (
-    <div>Home</div>
+    <div className={`flex ${theme == 'dark' ? 'bg-[#121212]' :'bg-gray-50'}  ${theme == 'dark' ? 'text-white' :'text-black'}  md:flex-row flex-col h-screen transition-height duration-75 ease-out`}>
+      <div className="hidden md:flex h-screen flex-initial">
+        <Sidebar user={user && user} theme={theme} />
+      </div>
+      <div className="flex md:hidden flex-row">
+        <div className="p-2 w-full flex flex-row justify-between items-center shadow-md">
+          <HiMenu fontSize={40} className="cursor-pointer" onClick={() => setToggleSidebar(true)} />
+          <Link to="/">
+          <p className={`${theme == 'dark' ? 'logo' : 'logo-dark'}`}>WeSocial</p>
+          </Link>
+          <Link to={`user-profile/${user?._id}`}>
+            <img src={user?.image} referrerPolicy="no-referrer" alt={user?.name} className="w-9 h-9 rounded-full " />
+          </Link>
+        </div>
+        {toggleSidebar && (
+          <div className={`${theme == 'dark' ? 'bg-[#000]' :''} fixed w-3/5  h-screen overflow-y-auto shadow-md z-10  animate-slide-in`}>
+            <div className="absolute w-full flex justify-end items-center p-2">
+              <AiFillCloseCircle fontSize={30} className="cursor-pointer" onClick={() => setToggleSidebar(false)} />
+            </div>
+            <Sidebar closeToggle={setToggleSidebar} theme={theme} user={user && user} />
+          </div>
+        )}
+      </div>
+      <div className="pb-2 flex-1 h-screen overflow-y-scroll" ref={scrollRef}>
+        <Routes>
+          <Route path="/user-profile/:userId" element={<UserProfile theme={theme}/>} />
+          <Route path="/*" element={<Pins switchtheme={switchtheme} theme={theme} user={user && user} />} />
+        </Routes>
+      </div>
+    </div>
   )
 }
 
