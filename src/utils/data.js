@@ -56,12 +56,16 @@ export const categories = [
         url
       }
     },
+    
         _id,
+        _createdAt,
+        title,
         destination,
         postedBy->{
           _id,
           userName,
-          image
+          image,
+          mark
         },
         save[]{
           _key,
@@ -70,8 +74,9 @@ export const categories = [
             userName,
             image
           },
+        
         },
-      } `;
+      }`;
   
   export const pinDetailQuery = (pinId) => {
     const query = `*[_type == "pin" && _id == '${pinId}']{
@@ -129,7 +134,8 @@ export const categories = [
         postedBy->{
           _id,
           userName,
-          image
+          image,
+          cover
         },
       },
     }`;

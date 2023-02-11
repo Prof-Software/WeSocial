@@ -6,6 +6,7 @@ import { MdDelete } from 'react-icons/md';
 import { categories } from '../utils/data';
 import { client } from '../client';
 import Spinner from './Spinner';
+import TextField from '@mui/material/TextField';
 
 const CreatePin = ({ user,theme }) => {
   const [title, setTitle] = useState('');
@@ -16,7 +17,6 @@ const CreatePin = ({ user,theme }) => {
   const [category, setCategory] = useState();
   const [imageAsset, setImageAsset] = useState();
   const [wrongImageType, setWrongImageType] = useState(false);
-
   const navigate = useNavigate();
 
   const uploadImage = (e) => {
@@ -122,7 +122,7 @@ const CreatePin = ({ user,theme }) => {
                 />
                 <button
                   type="button"
-                  className="absolute bottom-3 right-3 p-3 rounded-full bg-white text-xl cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out"
+                  className="absolute bottom-3 right-3 p-3 rounded-full bg-black text-xl cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out"
                   onClick={() => setImageAsset(null)}
                 >
                   <MdDelete />
@@ -139,7 +139,7 @@ const CreatePin = ({ user,theme }) => {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Add your title"
             className={`outline-none  text-2xl sm:text-3xl ${theme == 'dark' ? 'bg-[#181818]' :''} font-bold border-b-2 rounded-t-2xl border-gray-200 p-2`}
-          />
+            />
           {user && (
             <div className={`flex ${theme == 'dark' ? 'bg-[#181818]' :'bg-secondaryColor'} gap-2 mt-2 mb-2 items-center  rounded-xl`}>
               <img
@@ -174,13 +174,11 @@ const CreatePin = ({ user,theme }) => {
                 }}
                 className={`outline-none w-4/5 ${theme == 'dark' ? 'bg-[#161616]' :''} text-base border-b-2 border-gray-200 p-2 rounded-md cursor-pointer`}
               >
-                <option value="others" className="sm:text-bg bg-white">Select Category</option>
-                {categories.map((item) => (
-                  <option className={`text-base border-0 outline-none capitalize ${theme == 'dark' ? 'bg-[#181818]' :''}  bg-white `} value={item.name}>
-                    <p className={`${theme == 'dark' ? 'text-white' :'text-black '}`}>
+                <option value="others" className="sm:text-bg">Select Category</option>
+                {categories.map((item,index) => (
+                  <option key={index} className={`text-base border-0 outline-none capitalize ${theme == 'dark' ? 'bg-[#181818] ' :''} `} value={item.name}>
 
                     {item.name}
-                    </p>
                   </option>
                 ))}
               </select>

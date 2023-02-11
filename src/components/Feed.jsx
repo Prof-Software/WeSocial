@@ -4,11 +4,14 @@ import { useParams } from 'react-router-dom';
 import { client } from '../client';
 import { feedQuery, searchQuery } from '../utils/data';
 import MasonryLayout from './MasonryLayout';
+import RightBar from './RightBar';
 import Spinner from './Spinner';
 
-const Feed = () => {
+const Feed = ({theme,switchtheme,user}) => {
   const [pins, setPins] = useState();
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
   const { categoryId } = useParams();
 
   useEffect(() => {
@@ -34,11 +37,17 @@ const Feed = () => {
       <Spinner message={`We are adding ${ideaName} ideas to your feed!`} />
     );
   }
+  console.log(user)
   if(!pins?.length) return <h2>No Pins Available</h2>
   return (
-    <div>
+    <div className=''>
+      
       {pins && (
-        <MasonryLayout pins={pins} />
+        <div className='flex'>
+        <MasonryLayout  user={user && user}  switchtheme={switchtheme} theme={theme} pins={pins} />
+        <RightBar switchtheme={switchtheme} theme={theme} searchTerm={searchTerm} setSearchTerm={setSearchTerm} user={user && user} />
+
+        </div>
       )}
     </div>
   );

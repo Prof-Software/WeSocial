@@ -15,6 +15,45 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+.tweet {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.user-profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  margin-right: 20px;
+}
+
+.tweet-content {
+  display: flex;
+  flex-direction: column;
+}
+textarea {
+  resize: none;
+}
+.user-name {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.user-username {
+  font-size: 18px;
+  color: gray;
+}
+
+.tweet-text {
+  font-size: 20px;
+}
+
+.tweet-date {
+  font-size: 14px;
+  color: gray;
+  margin-top: 10px;
+}
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .hide-scrollbar {

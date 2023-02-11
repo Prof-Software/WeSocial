@@ -1,25 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { AiOutlineLogout } from 'react-icons/ai';
-import { useParams, useNavigate } from 'react-router-dom';
-import { GoogleLogout } from 'react-google-login';
+import React, { useEffect, useState } from "react";
+import { AiOutlineLogout } from "react-icons/ai";
+import { useParams, useNavigate } from "react-router-dom";
+import { GoogleLogout } from "react-google-login";
+import { BiCloudUpload } from "react-icons/bi";
+import {
+  userCreatedPinsQuery,
+  userQuery,
+  userSavedPinsQuery,
+} from "../utils/data";
+import { client, urlFor } from "../client";
+import MasonryLayout from "./MasonryLayout";
+import Spinner from "./Spinner";
+import { AiOutlinePlus } from "react-icons/ai";
+const activeBtnStyles =
+  "bg-red-500 text-white font-bold p-2 rounded-full w-20 outline-none";
+const notActiveBtnStyles =
+  "bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none";
 
-import { userCreatedPinsQuery, userQuery, userSavedPinsQuery } from '../utils/data';
-import { client } from '../client';
-import MasonryLayout from './MasonryLayout';
-import Spinner from './Spinner';
-
-const activeBtnStyles = 'bg-red-500 text-white font-bold p-2 rounded-full w-20 outline-none';
-const notActiveBtnStyles = 'bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none';
-
-const UserProfile = () => {
+const UserProfile = ({theme}) => {
   const [user, setUser] = useState();
   const [pins, setPins] = useState();
-  const [text, setText] = useState('Created');
-  const [activeBtn, setActiveBtn] = useState('created');
+  const [text, setText] = useState("Created");
+  const [activeBtn, setActiveBtn] = useState("created");
   const navigate = useNavigate();
   const { userId } = useParams();
-
-  const User = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear();
+  const [file, setFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+  const [title, setTitle] = useState("");
+  const [about, setAbout] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [destination, setDestination] = useState();
+  const [fields, setFields] = useState();
+  const [category, setCategory] = useState();
+  const [imageAsset, setImageAsset] = useState();
+  const User =
+    localStorage.getItem("user") !== "undefined"
+      ? JSON.parse(localStorage.getItem("user"))
+      : localStorage.clear();
 
   useEffect(() => {
     const query = userQuery(userId);
@@ -27,9 +44,26 @@ const UserProfile = () => {
       setUser(data[0]);
     });
   }, [userId]);
-
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0]
+    const reader = new FileReader()
+  
+    reader.onloadend = async () => {
+      const imageData = reader.result
+      const mutation = `
+          mutation {
+            updateUser(id: "${userId}", cover: ${imageData}) {
+              _id
+            }
+          }
+      `
+      const result = await client.patch(mutation)
+    }
+  
+    reader.readAsDataURL(file)
+  }
   useEffect(() => {
-    if (text === 'Created') {
+    if (text === "Created") {
       const createdPinsQuery = userCreatedPinsQuery(userId);
 
       client.fetch(createdPinsQuery).then((data) => {
@@ -42,13 +76,10 @@ const UserProfile = () => {
         setPins(data);
       });
     }
+
+
+    
   }, [text, userId]);
-
-  const logout = () => {
-    localStorage.clear();
-
-    navigate('/login');
-  };
 
   if (!user) return <Spinner message="Loading profile" />;
 
@@ -59,7 +90,11 @@ const UserProfile = () => {
           <div className="flex flex-col justify-center items-center">
             <img
               className=" w-full h-370 2xl:h-510 shadow-lg object-cover"
-              src="https://source.unsplash.com/1600x900/?nature,photography,technology"
+              src={
+                user.cover
+                  ? urlFor(user.cover).url()
+                  : "https://source.unsplash.com/1600x900/?nature,photography,technology"
+              }
               alt="user-pic"
             />
             <img
@@ -73,12 +108,38 @@ const UserProfile = () => {
           </h1>
           <div className="absolute top-0 z-1 right-0 p-2">
             {userId === User.sub && (
+              <div className=" bg-white p-2 h-10 rounded-full cursor-pointer outline-none shadow-md">
+                <label>
+                  <div className="flex flex-col items-center justify-center h-full">
+                    <AiOutlinePlus
+                      className="cursor-pointer"
+                      color="red"
+                      fontSize={21}
+                    />
+                  </div>
+                  <input
+                    type="file"
+                    name="upload-image"
+                    onChange={handleFileChange}
+                    className="w-0 h-0"
+                  />
+                </label>
+                {imageAsset ? (
                   <button
                     type="button"
-                    className=" bg-white p-2 rounded-full cursor-pointer outline-none shadow-md"
+                    className=" bg-white p-2 h-10 rounded-full cursor-pointer outline-none shadow-md"
                   >
-                    <AiOutlineLogout color="red" fontSize={21} />
+                    <BiCloudUpload
+                      // onClick={handleSave}
+                      className="cursor-pointer"
+                      color="red"
+                      fontSize={21}
+                    />
                   </button>
+                ) : (
+                  ""
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -87,9 +148,11 @@ const UserProfile = () => {
             type="button"
             onClick={(e) => {
               setText(e.target.textContent);
-              setActiveBtn('created');
+              setActiveBtn("created");
             }}
-            className={`${activeBtn === 'created' ? activeBtnStyles : notActiveBtnStyles}`}
+            className={`${
+              activeBtn === "created" ? activeBtnStyles : notActiveBtnStyles
+            }`}
           >
             Created
           </button>
@@ -97,25 +160,26 @@ const UserProfile = () => {
             type="button"
             onClick={(e) => {
               setText(e.target.textContent);
-              setActiveBtn('saved');
+              setActiveBtn("saved");
             }}
-            className={`${activeBtn === 'saved' ? activeBtnStyles : notActiveBtnStyles}`}
+            className={`${
+              activeBtn === "saved" ? activeBtnStyles : notActiveBtnStyles
+            }`}
           >
             Saved
           </button>
         </div>
 
         <div className="px-2">
-          <MasonryLayout pins={pins} />
+          <MasonryLayout pins={pins} theme={theme} />
         </div>
 
         {pins?.length === 0 && (
-        <div className="flex justify-center font-bold items-center w-full text-1xl mt-2">
-          No Pins Found!
-        </div>
+          <div className="flex justify-center font-bold items-center w-full text-1xl mt-2">
+            No Pins Found!
+          </div>
         )}
       </div>
-
     </div>
   );
 };
