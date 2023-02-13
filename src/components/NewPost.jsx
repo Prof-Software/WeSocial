@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 
 import { categories } from "../utils/data";
-import { client } from "../client";
+import { client, urlFor } from "../client";
 import Spinner from "./Spinner";
 import TextField from "@mui/material/TextField";
 
@@ -24,8 +24,34 @@ const NewPost = ({ user, theme }) => {
   const [fields, setFields] = useState();
   const [category, setCategory] = useState();
   const [imageAsset, setImageAsset] = useState();
+  const [videoAsset, setVideoAsset] = useState();
   const [wrongImageType, setWrongImageType] = useState(false);
+  const [wrongFileType, setWrongFileType] = useState(false);
   const navigate = useNavigate();
+
+  const uploadVideo = async (e) => {
+    const selectedFile = e.target.files[0];
+    const fileTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+
+    // uploading asset to sanity
+    if (fileTypes.includes(selectedFile.type)) {
+      setWrongFileType(false);
+      setLoading(true);
+
+      client.assets
+        .upload('file', selectedFile, {
+          contentType: selectedFile.type,
+          filename: selectedFile.name,
+        })
+        .then((data) => {
+          setVideoAsset(data);
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+      setWrongFileType(true);
+    }
+  };
 
   const uploadImage = (e) => {
     const selectedFile = e.target.files[0];
@@ -71,6 +97,13 @@ const NewPost = ({ user, theme }) => {
             _ref: imageAsset?._id,
           },
         },
+        video: {
+          _type: 'file',
+          asset: {
+            _type: 'reference',
+            _ref: videoAsset?._id,
+          },
+        },
         userId: user._id,
         postedBy: {
           _type: "postedBy",
@@ -114,7 +147,7 @@ const NewPost = ({ user, theme }) => {
   return (
     <div
       className="user-name"
-      style={{ border: "1px solid #181818", borderBottom: "3px solid #181818" }}
+      style={{ border: theme==='dark'?"1px solid #181818":'1px solid #D3D3D3', borderBottom: theme==='dark'?"3px solid #181818":'3px solid #D3D3D3' }}
     >
       <div
         className="flex items-center pr-5 pl-5"
@@ -137,8 +170,12 @@ const NewPost = ({ user, theme }) => {
           <div className={`flex gap-2 mt-2 mb-2 rounded-xl pl-5 flex-col`}>
             <div className="flex">
               <img
-                src={user.image}
-                className="w-8 h-8 rounded-full bg-white ml"
+                src={
+                  user.update === "true"
+                    ? urlFor(user.image).height(80).width(80)
+                    : user.image
+                }
+                className="w-8 h-8 rounded-full bg-white ml object-cover"
                 alt="user-profile"
               />
               <textarea
@@ -146,7 +183,7 @@ const NewPost = ({ user, theme }) => {
                 onChange={(e) => setTitle(e.target.value)}
                 className={`${
                   theme === "dark" ? "bg-black" : "bg-white"
-                } text-[16px] font-light ml-2 w-[100%] mr-3`}
+                } text-[16px] font-light ml-2 w-[100%] mr-3 outline-none`}
                 placeholder="What's Happening?"
                 rows={3}
               />
@@ -171,25 +208,62 @@ const NewPost = ({ user, theme }) => {
             ) : (
               ""
             )}
+            {videoAsset ? (
+              <div className="ml-10 relative h-[300px] w-[300px]">
+                <video
+                  src={videoAsset?.url}
+                  alt="uploaded-vid"
+                  controls='true'
+                  className="h-[300px] w-[300px] object-cover"
+                />
+                <button
+                  type="button"
+                  className="absolute bottom-3 right-3 p-3 rounded-full bg-black text-xl cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out"
+                  onClick={() => setVideoAsset(null)}
+                >
+                  <MdDelete />
+                </button>
+              </div>
+              
+            ) : (
+              ""
+            )}
 
             <div className="flex items-center">
               <div className="mt-3 ml-10 flex gap-5 w-1/2">
+                {!videoAsset &&
+                <div className="flex items-center">
+
                 <input
                   type="file"
                   name="upload-image"
                   onChange={uploadImage}
                   className="w-0 h-0"
                   id="file-input"
-                />
+                  />
                 <label htmlFor="file-input">
                   <img src={img} alt="" className="w-6 h-6 cursor-pointer" />
                 </label>
+                  </div>
+                }
+                  {!imageAsset && 
+                
                 <div
-                  className="w-6 h-6 flex items-center justify-center rounded  cursor-pointer"
+                  className="w-6 h-6 flex items-center  rounded justify-center  cursor-pointer"
                   style={{ border: "2px solid #1da1f2" }}
                 >
-                  <img src={gif} alt="" className="w-4 h-2" />
+                  <input
+                  type="file"
+                  name="upload-vid"
+                  onChange={uploadVideo}
+                  className="w-0 h-0"
+                  id="vid-input"
+                  />
+                 <label htmlFor="vid-input">
+                  <p id='vid' alt="" className=" text-[10px] text-blue-500 cursor-pointer" >VID</p>
+                 </label>
                 </div>
+                  }
 
                 <button onClick={() => setShowPicker(!showPicker)}>
                   {showPicker ? (

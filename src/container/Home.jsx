@@ -9,6 +9,7 @@ import Pins from "./Pins";
 import { userQuery } from "../utils/data";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import Settings from "../components/Settings";
 
 const Home = ({themeset}) => {
   const [user, setUser] = useState(null);
@@ -50,10 +51,10 @@ const Home = ({themeset}) => {
   };
 
   return (
-    <div className={`flex items-center justify-center ${theme == "dark" ? "bg-[#000]" : "bg-gray-50"}`}>
+    <div className={`flex items-center justify-center ${theme == "dark" ? "bg-[#000]" : "bg-white"}`}>
 
     <div
-      className={`flex ${theme == "dark" ? "bg-[#000]" : "bg-gray-50"}  ${
+      className={`flex ${theme == "dark" ? "bg-[#000]" : "bg-white"}  ${
         theme == "dark" ? "text-white" : "text-black"
       }  md:flex-row flex-col h-screen md:w-[84%] w-full transition-height duration-75 ease-out`}
     >
@@ -107,6 +108,10 @@ const Home = ({themeset}) => {
           <Route
             path="/user-profile/:userId"
             element={<UserProfile theme={theme} />}
+          />
+          <Route
+            path="/settings"
+            element={<Settings theme={theme} switchtheme={switchtheme} />}
           />
           <Route
             path="/*"

@@ -56,6 +56,11 @@ export const categories = [
         url
       }
     },
+    video{
+      asset->{
+        url
+      }
+    },
     
         _id,
         _createdAt,
@@ -65,7 +70,8 @@ export const categories = [
           _id,
           userName,
           image,
-          mark
+          mark,
+          update
         },
         save[]{
           _key,
@@ -180,6 +186,13 @@ export const categories = [
           url
         }
       },
+      title,
+      _createdAt,
+      video{
+        asset->{
+          url
+        }
+      },
       _id,
       destination,
       postedBy->{
@@ -201,6 +214,13 @@ export const categories = [
   export const userSavedPinsQuery = (userId) => {
     const query = `*[_type == 'pin' && '${userId}' in save[].userId ] | order(_createdAt desc) {
       image{
+        asset->{
+          url
+        }
+      },
+      title,
+      _createdAt,
+      video{
         asset->{
           url
         }

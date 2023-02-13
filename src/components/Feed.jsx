@@ -37,7 +37,6 @@ const Feed = ({theme,switchtheme,user}) => {
       <Spinner message={`We are adding ${ideaName} ideas to your feed!`} />
     );
   }
-  console.log(user)
   if(!pins?.length) return <h2>No Pins Available</h2>
   return (
     <div className=''>

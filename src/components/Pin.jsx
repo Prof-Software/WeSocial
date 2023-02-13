@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { MdDownloadForOffline } from "react-icons/md";
@@ -23,6 +23,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import ReactPlayer from 'react-player'
 
 const Pin = ({ pin, theme }) => {
   const [postHovered, setPostHovered] = useState(false);
@@ -31,6 +32,8 @@ const Pin = ({ pin, theme }) => {
   const [hasLiked, setHasLiked] = useState(false);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef(null);
 
   const openReport = Boolean(anchorEl);
   const handleRep = (event) => {
@@ -48,7 +51,7 @@ const Pin = ({ pin, theme }) => {
   };
   const navigate = useNavigate();
 
-  const { postedBy, _createdAt, image, _id, destination, title } = pin;
+  const { update,postedBy, _createdAt, image, _id, destination, title,video } = pin;
   const user =
     localStorage.getItem("user") !== "undefined"
       ? JSON.parse(localStorage.getItem("user"))
@@ -59,6 +62,7 @@ const Pin = ({ pin, theme }) => {
       window.location.reload();
     });
   };
+
 
   const handleClick = async () => {
     const transaction = client.transaction();
@@ -115,108 +119,27 @@ const Pin = ({ pin, theme }) => {
     }
   };
 
+  // console.log(pin)
   return (
     <div className="">
       <div
         onMouseEnter={() => setPostHovered(true)}
         onMouseLeave={() => setPostHovered(false)}
-        className="relative hover:shadow-lg overflow-hidden transition-all duration-500 ease-in-out"
-        style={{ border: "1px solid #181818", padding: "10px" }}
+        className="relative overflow-hidden transition-all duration-500 ease-in-out"
+        style={{ border: theme==='dark'? "1px solid #181818" : '1px solid #D3D3D3', padding: "10px" }}
       >
-        {/* <div id="user-tab" className="flex">
-          <Link
-            to={`/user-profile/${postedBy?._id}`}
-            className="flex gap-2 mt-2 items-center"
-          >
-            <div className="flex">
-
-            <img
-              className="w-14 h-14 bg-white rounded-full cursor-pointer object-cover bottom-0"
-              src={postedBy?.image}
-              alt="user-profile"
-              referrerPolicy="no-referrer"
-            />
-            <div className="flex items-center top-0">
-              <div className="font-semibold flex items-center  justify-around capitalize">
-                {" "}
-                <p className="mr-2">{postedBy?.userName}</p>{" "}
-                {postedBy?.mark == "true" ? (
-                  <GoVerified className="text-blue-400 text-md" />
-                ) : (
-                  ""
-                )}
-              </div>
-              <p
-                className={`  ${
-                  theme == "dark" ? "text-gray-400" : "text-gray-500"
-                } lowercase`}
-              >
-                @{postedBy?.userName}
-              </p>
-            </div>
-            </div>
-            <div>
-            <img
-              className="w-12 h-12 bg-white rounded-full cursor-pointer object-cover bottom-0"
-              src={postedBy?.image}
-              alt="user-profile"
-              referrerPolicy="no-referrer"
-            />
-            </div>
-            <div className="">
-            <div className="flex items-center top-0 flex-col">
-              <div className="font-semibold flex items-center  justify-around capitalize">
-                {" "}
-                <p className="mr-2">{postedBy?.userName}</p>{" "}
-                {postedBy?.mark == "true" ? (
-                  <GoVerified className="text-blue-400 text-md" />
-                ) : (
-                  ""
-                )}
-                <div className="text-gray-400">
-
-                {moment(_createdAt).fromNow()}
-                </div>
-              </div>
-            </div>
-            </div>
-          </Link>
-        </div> */}
-        {/* <div>
-          <Link
-            to={`/user-profile/${postedBy?._id}`}
-            className="flex gap-2 mt-2 items-center"
-          >
-            <img
-              className="w-14 h-14 bg-white rounded-full cursor-pointer object-cover bottom-0"
-              src={postedBy?.image}
-              alt="user-profile"
-              referrerPolicy="no-referrer"
-            />
-             <div className="font-semibold flex items-center  justify-around capitalize">
-                {" "}
-                <p className="mr-1">{postedBy?.userName}</p>{" "}
-                {postedBy?.mark == "true" ? (
-                  <GoVerified className="text-blue-400 text-md" />
-                ) : (
-                  ""
-                )}
-                <div className="text-gray-400">
-
-                ·{moment(_createdAt).fromNow()}
-                </div>
-              </div>
-          </Link>
-        </div>
-        <p className="">{title}</p> */}
 
         <div className="tweet mb-5">
+          <Link to={`/user-profile/${postedBy._id}`}>
           <img
-            className="user-profile-image bg-white"
-            src={postedBy?.image}
+            className="user-profile-image bg-white object-cover"
+            src={postedBy.update==='true'?urlFor(postedBy.image).height(80).width(80):postedBy.image}
+            // src={postedBy.image}
             alt="user-profile"
             referrerPolicy="no-referrer"
           />
+          </Link>
+
           <div className="tweet-content">
             
             <h2 className="user-name flex  items-center gap-1">{postedBy?.userName} {postedBy?.mark == "true" ? (
@@ -231,12 +154,26 @@ const Pin = ({ pin, theme }) => {
         {image && (
           <div
             onClick={() => navigate(`/pin-detail/${_id}`)}
-            className="cursor-pointer border rounded-lg"
+            className="cursor-pointer rounded-lg"
+            style={{border:theme==='dark'?'1px solid #181818':'1px solid #D3D3D3'}}
           >
             <img
               className="rounded-lg  h-[500px] w-[600px] object-cover"
               src={urlFor(image).url()}
               alt="user-post"
+            />
+          </div>
+        )}
+        {video && (
+          <div
+            onClick={() => navigate(`/pin-detail/${_id}`)}
+            className="cursor-pointer rounded-lg"
+            style={{border:theme==='dark'?'1px solid #181818':'1px solid #D3D3D3'}}
+          >
+            <video
+            controls
+            src={video.asset.url}
+            className='w-[600px] h-[500px] object-cover outline-none bg-black'
             />
           </div>
         )}

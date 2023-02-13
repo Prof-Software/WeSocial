@@ -5,7 +5,7 @@ import { client } from '../client';
 import { feedQuery, searchQuery } from '../utils/data';
 import Spinner from './Spinner';
 
-const Search = ({ searchTerm }) => {
+const Search = ({ searchTerm,switchtheme,theme,user }) => {
   const [pins, setPins] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -26,10 +26,10 @@ const Search = ({ searchTerm }) => {
   }, [searchTerm]);
 
   return (
-    <div>
+    <div className='absolute'>
 
       {loading && <Spinner message="Searching pins" />}
-      {pins?.length !== 0 && <MasonryLayout pins={pins} />}
+      {pins?.length !== 0 && <MasonryLayout pins={pins} switchtheme={switchtheme} theme={theme} user={user && user} />}
       {pins?.length === 0 && searchTerm !== '' && !loading && (
         <div className="mt-10 text-center text-xl ">No Pins Found!</div>
       )}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlineLogout } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineLogout, AiOutlineSave } from "react-icons/ai";
 import { useParams, useNavigate } from "react-router-dom";
 import { GoogleLogout } from "react-google-login";
 import { BiCloudUpload } from "react-icons/bi";
@@ -13,11 +13,11 @@ import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
 import { AiOutlinePlus } from "react-icons/ai";
 const activeBtnStyles =
-  "bg-red-500 text-white font-bold p-2 rounded-full w-20 outline-none";
+  "bg-blue-700 text-white font-bold p-2 rounded-full w-20 outline-none";
 const notActiveBtnStyles =
-  "bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none";
+  "bg-primary mr-4 bg-blue-500 text-white font-bold p-2 rounded-full w-20 outline-none";
 
-const UserProfile = ({theme}) => {
+const UserProfile = ({ theme }) => {
   const [user, setUser] = useState();
   const [pins, setPins] = useState();
   const [text, setText] = useState("Created");
@@ -33,6 +33,41 @@ const UserProfile = ({theme}) => {
   const [fields, setFields] = useState();
   const [category, setCategory] = useState();
   const [imageAsset, setImageAsset] = useState();
+  const [input, setInput] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
+  const [profileImageUrl, setProfileImageUrl] = useState('');
+  const [coverImage, setCoverImage] = useState(null)
+  const handleNameChange = (event) => {
+    setNewName(event.target.value);
+  };
+
+  const uploadImage = (e) => {
+    const selectedFile = e.target.files[0];
+    // uploading asset to sanity
+    if (
+      selectedFile.type === "image/png" ||
+      selectedFile.type === "image/svg" ||
+      selectedFile.type === "image/jpeg" ||
+      selectedFile.type === "image/gif" ||
+      selectedFile.type === "image/tiff"
+    ) {
+      client.assets
+        .upload("image", selectedFile, {
+          contentType: selectedFile.type,
+          filename: selectedFile.name,
+        })
+        .then((document) => {
+          setProfileImage(document);
+        })
+        .catch((error) => {
+          console.log("Upload failed:", error.message);
+        });
+    } else {
+      console.log('first')
+    }
+  };
+
   const User =
     localStorage.getItem("user") !== "undefined"
       ? JSON.parse(localStorage.getItem("user"))
@@ -44,24 +79,66 @@ const UserProfile = ({theme}) => {
       setUser(data[0]);
     });
   }, [userId]);
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0]
-    const reader = new FileReader()
-  
-    reader.onloadend = async () => {
-      const imageData = reader.result
-      const mutation = `
-          mutation {
-            updateUser(id: "${userId}", cover: ${imageData}) {
-              _id
-            }
-          }
-      `
-      const result = await client.patch(mutation)
+  const handleFileChange = async (e) => {
+    const selectedFile = e.target.files[0];
+    // uploading asset to sanity
+    if (
+      selectedFile.type === "image/png" ||
+      selectedFile.type === "image/svg" ||
+      selectedFile.type === "image/jpeg" ||
+      selectedFile.type === "image/gif" ||
+      selectedFile.type === "image/tiff"
+    ) {
+      client.assets
+        .upload("image", selectedFile, {
+          contentType: selectedFile.type,
+          filename: selectedFile.name,
+        })
+        .then((document) => {
+          setCoverImage(document);
+        })
+        .catch((error) => {
+          console.log("Upload failed:", error.message);
+        });
+    } else {
+      console.log('first')
     }
-  
-    reader.readAsDataURL(file)
-  }
+  };
+  const saveName = async (id) => {
+    client
+      .patch(id)
+      .set({ userName: newName })
+      .commit()
+      .then(() => {
+        window.location.reload();
+      });
+  };
+  const showinput = () => {
+    if (input === true) {
+      setInput(false);
+    } else {
+      setInput(true);
+    }
+  };
+  const saveImage = async (id) => {
+    await client.patch(id)
+      .set({image: profileImage?.url})
+      .commit()
+      .then(() => {
+        window.location.reload();
+      });
+  };
+  const saveCover = async (id) => {
+    await client.patch(id)
+      .set({ cover: {
+        _type: 'reference',
+        _ref: coverImage._id,
+      }})
+      .commit()
+      .then(() => {
+        window.location.reload();
+      });
+  };
   useEffect(() => {
     if (text === "Created") {
       const createdPinsQuery = userCreatedPinsQuery(userId);
@@ -76,11 +153,7 @@ const UserProfile = ({theme}) => {
         setPins(data);
       });
     }
-
-
-    
   }, [text, userId]);
-
   if (!user) return <Spinner message="Loading profile" />;
 
   return (
@@ -88,28 +161,104 @@ const UserProfile = ({theme}) => {
       <div className="flex flex-col pb-5">
         <div className="relative flex flex-col mb-7">
           <div className="flex flex-col justify-center items-center">
-            <img
+            {!coverImage ? <img
               className=" w-full h-370 2xl:h-510 shadow-lg object-cover"
               src={
                 user.cover
-                  ? urlFor(user.cover).url()
+                  ? urlFor(user.cover).width(1600).height(900).url()
                   : "https://source.unsplash.com/1600x900/?nature,photography,technology"
               }
               alt="user-pic"
-            />
-            <img
-              className="rounded-full w-20 h-20 -mt-10 shadow-xl object-cover"
-              src={user.image}
-              alt="user-pic"
-            />
+            /> : <img
+            className=" w-full h-370 2xl:h-510 shadow-lg object-cover"
+            src={coverImage?.url}
+            alt="user-pic"
+          />}
+            
+            <div className="relative">
+              {!profileImage && (
+                <img
+                  className="rounded-full w-20 h-20 -mt-10 shadow-xl object-cover"
+                  src={urlFor(user.image).height(80).width(80)}
+                  alt="user-pic"
+                />
+              )}
+              {profileImage && (
+                <img
+                  className="rounded-full w-20 h-20 -mt-10 shadow-xl object-cover"
+                  src={profileImage?.url}
+                  alt="user-pic"
+                />
+              )}
+              {userId === User.sub && (
+                <div>
+                  <input
+                    type="file"
+                    onChange={uploadImage}
+                    className="w-0 h-0"
+                    id="file-input"
+                  />
+                  {!profileImage ? (
+                    <label htmlFor="file-input">
+                      <AiOutlineEdit
+                        className={`absolute top-[-44px] right-[-25px] bg-black text-white rounded-full border-2 border-white p-1`}
+                        fontSize={32}
+                      />
+                    </label>
+                  ) : (
+                    <AiOutlineSave
+                      className={`absolute cursor-pointer top-[-44px] right-[-25px] bg-black text-white rounded-full border-2 border-white p-1`}
+                      onClick={()=>{saveImage(userId)}}
+                      fontSize={32}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-          <h1 className="font-bold text-3xl text-center mt-3">
-            {user.userName}
-          </h1>
+          <div className="font-bold text-3xl text-center flex items-center justify-center gap-2  mt-3">
+            {input === false && user.userName}{" "}
+            {userId === User.sub && (
+              <div className="flex items-center justify-center">
+                <AiOutlineEdit onClick={showinput} className="cursor-pointer" />
+                {input === true && (
+                  <div className="flex">
+                    <div>
+                      <input
+                        type="text"
+                        value={newName}
+                        onChange={handleNameChange}
+                        placeholder="Enter New Name"
+                        className={`${
+                          theme === "dark"
+                            ? "border-b-2 bg-[#181818] border-b-blue-600"
+                            : "border-2 border-b-blue-600"
+                        } outline-none`}
+                      />{" "}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            {input === true && (
+              <button
+                className={`${
+                  theme === "dark"
+                    ? " rounded bg-pink-400"
+                    : "rounded bg-pink-400 text-white"
+                }`}
+                onClick={() => {
+                  saveName(userId);
+                }}
+              >
+                Save
+              </button>
+            )}
+          </div>
           <div className="absolute top-0 z-1 right-0 p-2">
             {userId === User.sub && (
               <div className=" bg-white p-2 h-10 rounded-full cursor-pointer outline-none shadow-md">
-                <label>
+                {!coverImage && <label>
                   <div className="flex flex-col items-center justify-center h-full">
                     <AiOutlinePlus
                       className="cursor-pointer"
@@ -123,11 +272,13 @@ const UserProfile = ({theme}) => {
                     onChange={handleFileChange}
                     className="w-0 h-0"
                   />
-                </label>
-                {imageAsset ? (
+                </label>}
+                
+                {coverImage ? (
                   <button
                     type="button"
-                    className=" bg-white p-2 h-10 rounded-full cursor-pointer outline-none shadow-md"
+                    className=" rounded-full cursor-pointer outline-none shadow-md"
+                    onClick={()=>{saveCover(userId)}}
                   >
                     <BiCloudUpload
                       // onClick={handleSave}
@@ -152,7 +303,7 @@ const UserProfile = ({theme}) => {
             }}
             className={`${
               activeBtn === "created" ? activeBtnStyles : notActiveBtnStyles
-            }`}
+            } mr-3`}
           >
             Created
           </button>
@@ -166,11 +317,11 @@ const UserProfile = ({theme}) => {
               activeBtn === "saved" ? activeBtnStyles : notActiveBtnStyles
             }`}
           >
-            Saved
+            Liked
           </button>
         </div>
 
-        <div className="px-2">
+        <div className="flex items-center justify-center">
           <MasonryLayout pins={pins} theme={theme} />
         </div>
 
