@@ -179,7 +179,11 @@ const UserProfile = ({ theme }) => {
               {!profileImage && (
                 <img
                   className="rounded-full w-20 h-20 -mt-10 shadow-xl object-cover"
-                  src={urlFor(user.image).height(80).width(80)}
+                  src={
+                    user.update === "true"
+                      ? urlFor(user.image).height(80).width(80)
+                      : user.image
+                  }
                   alt="user-pic"
                 />
               )}
