@@ -23,7 +23,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import ReactPlayer from 'react-player'
+import { useInView } from "react-intersection-observer";
+
 
 const Pin = ({ pin, theme }) => {
   const [postHovered, setPostHovered] = useState(false);
@@ -34,6 +35,21 @@ const Pin = ({ pin, theme }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [playing, setPlaying] = useState(false);
   const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [ref, inView] = useInView({
+    threshold: 0,
+    triggerOnce: true,
+  });
+
+  const handleVisibilityChange = (isVisible) => {
+    if (isVisible) {
+      setIsPlaying(true);
+      videoRef.current.play();
+    } else {
+      setIsPlaying(false);
+      videoRef.current.pause();
+    }
+  };
 
   const openReport = Boolean(anchorEl);
   const handleRep = (event) => {
@@ -129,26 +145,46 @@ const Pin = ({ pin, theme }) => {
         style={{ border: theme==='dark'? "1px solid #181818" : '1px solid #D3D3D3', padding: "10px" }}
       >
 
-        <div className="tweet mb-5">
-          <Link to={`/user-profile/${postedBy._id}`}>
+        {/* <div className="tweet mb-5 flex flex-col">
+
+          <div className="flex flex-col">
+            <div className="tweet-content flex">
+          <Link to={`/user-profile/${postedBy._id}`} className='flex'>
           <img
             className="user-profile-image bg-white object-cover"
             src={postedBy.update==='true'?urlFor(postedBy.image).height(80).width(80):postedBy.image}
             // src={postedBy.image}
             alt="user-profile"
             referrerPolicy="no-referrer"
-          />
+            />
           </Link>
 
-          <div className="tweet-content">
             
             <h2 className="user-name flex  items-center gap-1">{postedBy?.userName} {postedBy?.mark == "true" ? (
-                  <GoVerified className="text-blue-400 text-[20px]" />
-                ) : (
-                  ""
+              <GoVerified className="text-blue-400 text-[20px]" />
+              ) : (
+                ""
                 )}<p className="tweet-date ml-5">•{moment(_createdAt).fromNow()}</p></h2>
+            </div>
             <p className="tweet-text">{title}</p>
           </div>
+        </div> */}
+        <div className="">
+          <div className="flex "><img
+            className="user-profile-image bg-white object-cover"
+            src={postedBy.update==='true'?urlFor(postedBy.image).height(80).width(80):postedBy.image}
+            // src={postedBy.image}
+            alt="user-profile"
+            referrerPolicy="no-referrer"
+            /><h2 className="user-name flex  items-center gap-1">{postedBy?.userName} {postedBy?.mark == "true" ? (
+              <GoVerified className="text-blue-400 text-[20px]" />
+              ) : (
+                ""
+                )}<p className="tweet-date ml-5">•{moment(_createdAt).fromNow()}</p></h2>
+            </div>
+            <div className="w-full md:w-[600px] md:ml-16 ml-0" style={{wordWrap:'break-word'}}>
+            <p className="tweet-text">{title}</p>
+            </div>
         </div>
 
         {image && (
@@ -166,15 +202,22 @@ const Pin = ({ pin, theme }) => {
         )}
         {video && (
           <div
-            onClick={() => navigate(`/pin-detail/${_id}`)}
+            // onClick={() => navigate(`/pin-detail/${_id}`)}
+            ref={ref}
             className="cursor-pointer rounded-lg"
             style={{border:theme==='dark'?'1px solid #181818':'1px solid #D3D3D3'}}
           >
+            {inView ?
             <video
-            controls
+            ref={videoRef}
+            onClick={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            controls={isPlaying}
+
             src={video.asset.url}
             className='w-[600px] h-[500px] object-cover outline-none bg-black'
-            />
+            />:''
+            }
           </div>
         )}
         <div id="actions-tab" className="mt-1 flex justify-around">

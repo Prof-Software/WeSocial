@@ -44,7 +44,7 @@ const Feed = ({theme,switchtheme,user}) => {
       {pins && (
         <div className='flex'>
         <MasonryLayout  user={user && user}  switchtheme={switchtheme} theme={theme} pins={pins} />
-        <RightBar switchtheme={switchtheme} theme={theme} searchTerm={searchTerm} setSearchTerm={setSearchTerm} user={user && user} />
+        {/* <RightBar switchtheme={switchtheme} theme={theme} searchTerm={searchTerm} setSearchTerm={setSearchTerm} user={user && user} /> */}
 
         </div>
       )}
