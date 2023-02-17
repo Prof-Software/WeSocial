@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineEdit, AiOutlineLogout, AiOutlineSave } from "react-icons/ai";
 import { useParams, useNavigate } from "react-router-dom";
-import { GoogleLogout } from "react-google-login";
 import { BiCloudUpload } from "react-icons/bi";
 import {
   userCreatedPinsQuery,
