@@ -6,8 +6,9 @@ import { feedQuery, searchQuery } from '../utils/data';
 import MasonryLayout from './MasonryLayout';
 import RightBar from './RightBar';
 import Spinner from './Spinner';
+import Splash from './Splash';
 
-const Feed = ({theme,switchtheme,user}) => {
+const Feed = ({theme,switchtheme,user,autoPlay}) => {
   const [pins, setPins] = useState();
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,7 +35,10 @@ const Feed = ({theme,switchtheme,user}) => {
   const ideaName = categoryId || 'new';
   if (loading) {
     return (
-      <Spinner message={`We are adding ${ideaName} ideas to your feed!`} />
+      <div className='flex h-full w-[60vw] items-center justify-center'>
+
+      <Splash theme={theme}/>
+      </div>
     );
   }
   if(!pins?.length) return <h2>No Pins Available</h2>
@@ -43,7 +47,7 @@ const Feed = ({theme,switchtheme,user}) => {
       
       {pins && (
         <div className='flex'>
-        <MasonryLayout  user={user && user}  switchtheme={switchtheme} theme={theme} pins={pins} />
+        <MasonryLayout autoPlay={autoPlay}  user={user && user}  switchtheme={switchtheme} theme={theme} pins={pins} />
         {/* <RightBar switchtheme={switchtheme} theme={theme} searchTerm={searchTerm} setSearchTerm={setSearchTerm} user={user && user} /> */}
 
         </div>

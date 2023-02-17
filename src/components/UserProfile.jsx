@@ -12,6 +12,8 @@ import { client, urlFor } from "../client";
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
 import { AiOutlinePlus } from "react-icons/ai";
+import {GoCalendar} from 'react-icons/go'
+import moment from "moment";
 const activeBtnStyles =
   "bg-blue-700 text-white font-bold p-2 rounded-full w-20 outline-none";
 const notActiveBtnStyles =
@@ -79,6 +81,7 @@ const UserProfile = ({ theme }) => {
       setUser(data[0]);
     });
   }, [userId]);
+  console.log(user)
   const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
     // uploading asset to sanity
@@ -162,7 +165,7 @@ const UserProfile = ({ theme }) => {
         <div className="relative flex flex-col mb-7">
           <div className="flex flex-col justify-center items-center">
             {!coverImage ? <img
-              className=" w-full h-370 2xl:h-510 shadow-lg object-cover"
+              className=" w-full h-[300px] 2xl:h-[300px] shadow-lg object-cover"
               src={
                 user.cover
                   ? urlFor(user.cover).width(1600).height(900).url()
@@ -175,21 +178,22 @@ const UserProfile = ({ theme }) => {
             alt="user-pic"
           />}
             
-            <div className="relative">
+            <div className="relative  flex items-center justify-end">
               {!profileImage && (
+
                 <img
-                  className="rounded-full w-20 h-20 -mt-10 shadow-xl object-cover"
+                  className="rounded-full w-[135px] h-[135px] -mt-10 left-0 shadow-xl object-cover"
                   src={
                     user.update === "true"
-                      ? urlFor(user.image).height(80).width(80)
+                    ? urlFor(user.image).height(180).width(180)
                       : user.image
-                  }
-                  alt="user-pic"
-                />
+                    }
+                    alt="user-pic"
+                    />
               )}
               {profileImage && (
                 <img
-                  className="rounded-full w-20 h-20 -mt-10 shadow-xl object-cover"
+                  className="rounded-full w-[135px] h-[135px]  left-0  -mt-10 shadow-xl object-cover"
                   src={profileImage?.url}
                   alt="user-pic"
                 />
@@ -218,6 +222,10 @@ const UserProfile = ({ theme }) => {
                   )}
                 </div>
               )}
+            </div>
+            <div className="relative left-0 w-full">
+              <div className="ml-5 flex items-center gap-3 text-[gray]"><GoCalendar fontSize={20}/>Joined {moment(user._createdAt).format("MMM  YYYY")}</div>
+              <p>{}</p>
             </div>
           </div>
           <div className="font-bold text-3xl text-center flex items-center justify-center gap-2  mt-3">

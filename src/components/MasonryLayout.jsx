@@ -10,11 +10,11 @@ const breakpointColumnsObj = {
   500: 1,
 };
 
-const MasonryLayout = ({ pins,theme,switchtheme,user }) => (
+const MasonryLayout = ({ pins,theme,switchtheme,user,autoPlay }) => (
   <div className='flex  flex-col'>
     <NewPost theme={theme}  user={user && user} />
   <div className='flex flex-col'>
-    {pins?.map((pin) => <Pin theme={theme} key={pin._id} pin={pin} className="" />)}
+    {pins?.map((pin) => <Pin autoPlay={autoPlay} theme={theme} key={pin._id} pin={pin} className="" />)}
   </div>
   </div>
 );

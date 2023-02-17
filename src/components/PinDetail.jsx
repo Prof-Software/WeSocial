@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MdDownloadForOffline } from "react-icons/md";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 import { client, urlFor } from "../client";
@@ -8,14 +8,24 @@ import MasonryLayout from "./MasonryLayout";
 import { pinDetailMorePinQuery, pinDetailQuery } from "../utils/data";
 import Spinner from "./Spinner";
 import { Bars, Comment } from "react-loader-spinner";
-
-const PinDetail = ({ user, theme }) => {
+import { BiArrowBack } from "react-icons/bi";
+import { IconButton } from "@mui/material";
+import { useInView } from "react-intersection-observer";
+import moment from "moment";
+const PinDetail = ({ user, theme,autoPlay }) => {
   const { pinId } = useParams();
   const [pins, setPins] = useState();
   const [pinDetail, setPinDetail] = useState();
   const [comment, setComment] = useState("");
   const [addingComment, setAddingComment] = useState(false);
-
+  const navigate = useNavigate();
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const { ref, inView, entry } = useInView({
+    /* Optional options */
+    threshold: 0,
+  });
   const fetchPinDetails = () => {
     const query = pinDetailQuery(pinId);
 
@@ -68,64 +78,118 @@ const PinDetail = ({ user, theme }) => {
     <>
       {pinDetail && (
         <div
-          className={`flex xl:flex-row flex-col m-auto ${
-            theme === "dark" ? "bg-[#181818]" : "bg-white"
-          }`}
-          style={{ maxWidth: "1500px", borderRadius: "32px" }}
+          className=""
+          style={{
+            border:
+              theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3",
+          }}
         >
-          <div className="flex justify-center items-center md:items-start flex-initial">
-            <img
-              className="rounded-t-3xl rounded-b-lg"
-              src={pinDetail?.image && urlFor(pinDetail?.image).url()}
-              alt="user-post"
-            />
+          <div className="flex gap-2 mt-0 top-0 w-full fixed items-center p-3 backdrop-blur-md z-50">
+            <IconButton>
+              <BiArrowBack fontSize={24} />
+            </IconButton>
+            <p className="text-xl font-bold">Thread</p>
           </div>
-          <div className="w-full p-5 flex-1 xl:min-w-620">
-            <div className="flex items-center justify-between">
-              <div className="flex gap-2 items-center">
-                <a
-                  href={`${pinDetail.image.asset.url}?dl=`}
-                  download
-                  className="bg-secondaryColor p-2 text-xl rounded-full flex items-center justify-center text-dark opacity-75 hover:opacity-100"
-                >
-                  <MdDownloadForOffline fill="black" />
-                </a>
-              </div>
-              <a href={pinDetail.destination} target="_blank" rel="noreferrer">
-                {pinDetail.destination?.slice(8)}
-              </a>
+          <div className="w-full h-[50px]"/>
+          <div className="p-3 flex flex-col">
+            <div className="flex">
+              <img
+                className="user-profile-image mr-2 bg-white object-cover"
+                src={
+                  pinDetail.postedBy.update === "true"
+                    ? urlFor(pinDetail.postedBy.image).height(80).width(80)
+                    : pinDetail.postedBy.image
+                }
+                // src={postedBy.image}
+                alt="user-profile"
+                referrerPolicy="no-referrer"
+              />
+              <p>{pinDetail.postedBy.userName}</p>
             </div>
             <div>
-              <h1 className="text-4xl font-bold break-words mt-3">
-                {pinDetail.title}
-              </h1>
-              <p className="mt-3">{pinDetail.about}</p>
+              <p className="mt-3">{pinDetail.title}</p>
             </div>
-            <Link
-              to={`/user-profile/${pinDetail?.postedBy._id}`}
-              className={`flex gap-2 mt-5 items-center ${
-                theme === "dark" ? "bg-[#181818]" : "bg-white"
-              } rounded-lg`}
-            >
-              <img
-                src={pinDetail?.postedBy.image}
-                className="w-10 bg-white h-10 rounded-full"
-                alt="user-profile"
-              />
-              <p className="font-bold">{pinDetail?.postedBy.userName}</p>
-            </Link>
-            <h2 className="mt-5 text-2xl">Comments</h2>
+            <div>
+              {pinDetail.image && (
+                <div
+                  className="cursor-pointer rounded-lg max-h-[750px] w-[600px]  flex items-center justify-center"
+                  style={{
+                    border:
+                      theme === "dark"
+                        ? "1px solid #2f3336"
+                        : "1px solid #D3D3D3",
+                  }}
+                >
+                  <img
+                    className="rounded-lg max-h-[750px] w-[600px] object-cover"
+                    src={urlFor(pinDetail.image)}
+                    alt="user-post"
+                  />
+                </div>
+              )}
+              {pinDetail.video && (
+                <div
+                  // onClick={() => navigate(`/pin-detail/${_id}`)}
+                  ref={ref}
+                  className="cursor-pointer rounded-lg flex items-center justify-center"
+                  style={{
+                    border:
+                      theme === "dark"
+                        ? "1px solid #2f3336"
+                        : "1px solid #D3D3D3",
+                  }}
+                >
+                  <video
+                    ref={videoRef}
+                    onClick={() => {
+                      setIsPlaying(true);
+                      videoRef.current.muted = false;
+                    }}
+                    onPlay={() => {
+                      videoRef.current.muted = false;
+                    }}
+                    onPause={() => {
+                      setIsPlaying(false);
+                    }}
+                    controls
+                    src={pinDetail.video.asset.url}
+                    className="w-[600px] h-[500px] object-cover outline-none bg-black"
+                    muted={!inView}
+                    autoPlay={autoPlay === "On" ? true : false}
+                    onTimeUpdate={() => {
+                      if (inView) {
+                        return;
+                      }
+                      if (!videoRef.current.paused) {
+                        videoRef.current.pause();
+                      }
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="flex text-[gray] gap-1">
+              <p className="uppercase ">
+              {moment(pinDetail._createdAt).format(" h:mm a")}
+              </p>
+              ·
+              <p className="capitalize">
+              {moment(pinDetail._createdAt).format("MMMM Do YYYY")}
+              </p>
+            </div>
             <div className="max-h-370 overflow-y-auto">
               {pinDetail?.comments?.map((item) => (
                 <div
                   className={`flex gap-2 mt-5 items-center ${
-                    theme === "dark" ? "bg-[#181818]" : "bg-white"
+                    theme === "dark" ? "bg-[#38444D]" : "bg-white"
                   } rounded-lg`}
                   key={item.comment}
                 >
                   <img
-                    src={item.postedBy?.image}
-                    className="w-10 h-10 bg-white rounded-full cursor-pointer"
+                  src={
+                       item.postedBy?.update==='true'? urlFor(item.postedBy?.image).height(40).width(40):item.postedBy?.image
+                    }
+                    className="w-10 h-10 bg-white rounded-full cursor-pointer object-cover"
                     alt="user-profile"
                   />
                   <div className="flex flex-col">
@@ -135,10 +199,15 @@ const PinDetail = ({ user, theme }) => {
                 </div>
               ))}
             </div>
+            <div>
             <div className="flex flex-wrap mt-6 gap-3">
               <Link to={`/user-profile/${user._id}`}>
                 <img
-                  src={user.image}
+                src={
+                  user?.update === "true"
+                    ? urlFor(user?.image).height(40).width(40)
+                    : user?.image
+                }
                   className="w-10 bg-white h-10 rounded-full cursor-pointer"
                   alt="user-profile"
                 />
@@ -175,16 +244,12 @@ const PinDetail = ({ user, theme }) => {
                 )}
               </button>
             </div>
+            </div>
           </div>
         </div>
       )}
-      {pins?.length > 0 && (
-        <h2 className="text-center font-bold text-2xl mt-8 mb-4">
-          More like this
-        </h2>
-      )}
       {pins ? (
-        <MasonryLayout pins={pins} />
+        <MasonryLayout theme={theme} pins={pins} />
       ) : (
         <Spinner message="Loading more pins" />
       )}

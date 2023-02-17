@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { MdDownloadForOffline } from "react-icons/md";
-import { AiOutlineFlag, AiTwotoneDelete } from "react-icons/ai";
+import { AiOutlineFlag, AiOutlineMore, AiTwotoneDelete } from "react-icons/ai";
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 import moment from "moment";
 import { client, urlFor } from "../client";
@@ -24,9 +24,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useInView } from "react-intersection-observer";
+import Popover from "@mui/material/Popover";
+import Typography from "@mui/material/Typography";
 
-
-const Pin = ({ pin, theme }) => {
+const Pin = ({ pin, theme, autoPlay }) => {
   const [postHovered, setPostHovered] = useState(false);
   const [savingPost, setSavingPost] = useState(false);
   const [likes, setLikes] = useState(0);
@@ -36,9 +37,24 @@ const Pin = ({ pin, theme }) => {
   const [playing, setPlaying] = useState(false);
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [ref, inView] = useInView({
+  const [popper, setPopper] = useState(null);
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  const handlePopper = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const closePopper = () => {
+    setAnchorEl(null);
+  };
+
+  const openPopper = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+  const { ref, inView, entry } = useInView({
+    /* Optional options */
     threshold: 0,
-    triggerOnce: true,
   });
 
   const handleVisibilityChange = (isVisible) => {
@@ -67,7 +83,16 @@ const Pin = ({ pin, theme }) => {
   };
   const navigate = useNavigate();
 
-  const { update,postedBy, _createdAt, image, _id, destination, title,video } = pin;
+  const {
+    update,
+    postedBy,
+    _createdAt,
+    image,
+    _id,
+    destination,
+    title,
+    video,
+  } = pin;
   const user =
     localStorage.getItem("user") !== "undefined"
       ? JSON.parse(localStorage.getItem("user"))
@@ -78,7 +103,6 @@ const Pin = ({ pin, theme }) => {
       window.location.reload();
     });
   };
-
 
   const handleClick = async () => {
     const transaction = client.transaction();
@@ -142,9 +166,11 @@ const Pin = ({ pin, theme }) => {
         onMouseEnter={() => setPostHovered(true)}
         onMouseLeave={() => setPostHovered(false)}
         className="relative overflow-hidden transition-all duration-500 ease-in-out"
-        style={{ border: theme==='dark'? "1px solid #181818" : '1px solid #D3D3D3', padding: "10px" }}
+        style={{
+          border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #D3D3D3",
+          padding: "10px",
+        }}
       >
-
         {/* <div className="tweet mb-5 flex flex-col">
 
           <div className="flex flex-col">
@@ -170,32 +196,60 @@ const Pin = ({ pin, theme }) => {
           </div>
         </div> */}
         <div className="">
-          <div className="flex "><img
-            className="user-profile-image bg-white object-cover"
-            src={postedBy.update==='true'?urlFor(postedBy.image).height(80).width(80):postedBy.image}
-            // src={postedBy.image}
-            alt="user-profile"
-            referrerPolicy="no-referrer"
-            /><h2 className="user-name flex  items-center gap-1">{postedBy?.userName} {postedBy?.mark == "true" ? (
-              <GoVerified className="text-blue-400 text-[20px]" />
+          <div className="flex ">
+            <Link to={`/user-profile/${postedBy._id}`}>
+              {postedBy.image ? (
+                <img
+                  className="user-profile-image mr-[14px] h-[100px] bg-white object-cover"
+                  src={
+                    postedBy.update === "true"
+                      ? urlFor(postedBy.image).height(80).width(80)
+                      : postedBy.image
+                  }
+                  // src={postedBy.image}
+                  alt="user-profile"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="user-profile-image bg-[gray] object-cover" />
+              )}
+            </Link>
+            <h2 className="user-name flex  items-center gap-1">
+              {postedBy?.userName}{" "}
+              {postedBy?.mark == "true" ? (
+                <GoVerified className="text-blue-400 text-[20px]" />
               ) : (
                 ""
-                )}<p className="tweet-date ml-5">•{moment(_createdAt).fromNow()}</p></h2>
-            </div>
-            <div className="w-full md:w-[600px] md:ml-16 ml-0" style={{wordWrap:'break-word'}}>
-            <p className="tweet-text">{title}</p>
-            </div>
+              )}
+              <div className="text-[gray] text-sm flex items-center"><p className="capitalize truncate mx-1" style={{wordSpacing:'-3px'}}>@{postedBy?.userName}</p><p className="mx-1">•</p>{moment(_createdAt).fromNow()}</div>
+            </h2>
+          </div>
+          <div
+            className="w-full md:w-[400px] md:ml-16 ml-0"
+            style={{ wordWrap: "break-word" }}
+          >
+            <p className="tweet-text">
+              {title ? (
+                title
+              ) : (
+                <div className="bg-[gray] rounded h-[30px] w-40"></div>
+              )}
+            </p>
+          </div>
         </div>
 
         {image && (
           <div
             onClick={() => navigate(`/pin-detail/${_id}`)}
-            className="cursor-pointer rounded-lg"
-            style={{border:theme==='dark'?'1px solid #181818':'1px solid #D3D3D3'}}
+            className="cursor-pointer  w-[500px] ml-16 rounded-lg flex  justify-center md:w-[500px] w-[320px]"
+            style={{
+              border:
+                theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3",
+            }}
           >
             <img
-              className="rounded-lg  h-[500px] w-[600px] object-cover"
-              src={urlFor(image).url()}
+              className="rounded-lg   w-[500px] object-cover md:w-[500px] w-[320px]"
+              src={urlFor(image).height(500).width(600).url()}
               alt="user-post"
             />
           </div>
@@ -204,20 +258,38 @@ const Pin = ({ pin, theme }) => {
           <div
             // onClick={() => navigate(`/pin-detail/${_id}`)}
             ref={ref}
-            className="cursor-pointer rounded-lg"
-            style={{border:theme==='dark'?'1px solid #181818':'1px solid #D3D3D3'}}
+            className="cursor-pointer ml-16  w-[500px] rounded-lg flex items-center justify-center md:w-[500px] w-[320px]"
+            style={{
+              border:
+                theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3",
+            }}
           >
-            {inView ?
             <video
-            ref={videoRef}
-            onClick={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-            controls={isPlaying}
-
-            src={video.asset.url}
-            className='w-[600px] h-[500px] object-cover outline-none bg-black'
-            />:''
-            }
+              ref={videoRef}
+              onClick={() => {
+                setIsPlaying(true);
+                videoRef.current.muted = false;
+              }}
+              onPlay={() => {
+                videoRef.current.muted = false;
+              }}
+              onPause={() => {
+                setIsPlaying(false);
+              }}
+              controls
+              src={video.asset.url}
+              className="  w-[500px] object-cover outline-none bg-black md:w-[500px] w-[320px]"
+              muted={!inView}
+              autoPlay={autoPlay === "On" ? true : false}
+              onTimeUpdate={() => {
+                if (inView) {
+                  return;
+                }
+                if (!videoRef.current.paused) {
+                  videoRef.current.pause();
+                }
+              }}
+            />
           </div>
         )}
         <div id="actions-tab" className="mt-1 flex justify-around">
@@ -229,10 +301,11 @@ const Pin = ({ pin, theme }) => {
             </IconButton>
           </Tooltip>
           <Tooltip title="Share">
-            <IconButton onClick={handleClickOpen}>
+            <IconButton id="share" onClick={handleClickOpen}>
               <ShareIcon
                 className={` ${theme === "dark" ? "text-white" : "text-black"}`}
-              />
+              />{" "}
+              <label htmlFor="share" className="text-sm ml-3">10</label>
             </IconButton>
           </Tooltip>
 
@@ -347,20 +420,41 @@ const Pin = ({ pin, theme }) => {
                         }`}
                       />
                     )}
-                    {pin?.save?.length}{" "}
+                    {pin?.save?.length} {!pin?.save?.length && 0}
                   </div>
                 )}
               </div>
             </IconButton>
           </Tooltip>
           <Tooltip title="Report">
-            <IconButton>
-              <AiOutlineFlag
+            <IconButton
+              aria-describedby={id}
+              variant="contained"
+              onClick={handlePopper}
+            >
+              <AiOutlineMore
                 className={` ${theme === "dark" ? "text-white" : "text-black"}`}
               />
             </IconButton>
           </Tooltip>
         </div>
+        <Popover
+          id={id}
+          open={openPopper}
+          anchorEl={popper}
+          onClose={closePopper}
+        >
+          <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
+        </Popover>
+        <Link to={`/pin-detail/${_id}`}>
+          <p
+            className={`ml-10 ${
+              theme === "dark" ? "text-[#1DA1F2]" : "text-[#1DA1F2] font-bold"
+            }`}
+          >
+            Show This Thread
+          </p>
+        </Link>
         <div>{/* Comments Tab */}</div>
       </div>
     </div>

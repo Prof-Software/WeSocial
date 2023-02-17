@@ -10,7 +10,17 @@ import { userQuery } from "../utils/data";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Settings from "../components/Settings";
-
+import Splash from "../components/Splash";
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+});
 const Home = ({themeset}) => {
   const [user, setUser] = useState(null);
   const [toggleSidebar, setToggleSidebar] = useState(false);
@@ -49,8 +59,26 @@ const Home = ({themeset}) => {
     setCurrentTheme(newTheme);
     setTheme(newTheme);
   };
+  const setPlay = (theme) => {
+    localStorage.setItem("autoplay", theme);
+    
+  };
+
+  // Get theme from local storage
+  const getPlay = () => {
+    return localStorage.getItem("autoplay") || "off";
+  };
+  const [autoPlay, setAutoPlay] = useState(getPlay());
+
+  const switchPlay = () => {
+    const newPlayer = autoPlay === "off" ? "on" : "off";
+    setAutoPlay(newPlayer);
+    setPlay(newPlayer);
+  };
 
   return (
+    <ThemeProvider theme={theme ==='dark'? darkTheme : lightTheme}>
+
     <div className={`flex items-center justify-center ${theme == "dark" ? "bg-[#000]" : "bg-white"}`}>
 
     <div
@@ -59,7 +87,7 @@ const Home = ({themeset}) => {
       }  md:flex-row flex-col h-screen md:w-[84%] w-full transition-height duration-75 ease-out`}
     >
       <div className="hidden md:flex h-screen flex-initial">
-        <Sidebar user={user && user} theme={theme} />
+        <Sidebar user={user && user} autoPlay={autoPlay} theme={theme} />
       </div>
       <div className="flex md:hidden flex-row">
         <div className="p-2 w-full flex flex-row justify-between items-center shadow-md">
@@ -98,6 +126,7 @@ const Home = ({themeset}) => {
             <Sidebar
               closeToggle={setToggleSidebar}
               theme={theme}
+              autoPlay={autoPlay}
               user={user && user}
             />
           </div>
@@ -111,7 +140,7 @@ const Home = ({themeset}) => {
           />
           <Route
             path="/settings"
-            element={<Settings theme={theme} switchtheme={switchtheme} />}
+            element={<Settings theme={theme} autoPlay={autoPlay} switchPlay={switchPlay} switchtheme={switchtheme} />}
           />
           <Route
             path="/*"
@@ -119,15 +148,24 @@ const Home = ({themeset}) => {
               <Pins
                 switchtheme={switchtheme}
                 theme={theme}
+                autoPlay={autoPlay}
                 user={user && user}
                 themeset={themeset}
               />
+            }
+          />
+          <Route
+            path="/splash-screen"
+            element={
+              <Splash/>
             }
           />
         </Routes>
       </div>
     </div>
     </div>
+    </ThemeProvider>
+
   );
 };
 

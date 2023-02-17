@@ -31,7 +31,7 @@ const NewPost = ({ user, theme }) => {
 
   const uploadVideo = async (e) => {
     const selectedFile = e.target.files[0];
-    const fileTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+    const fileTypes = ["video/mp4", "video/webm", "video/ogg"];
 
     // uploading asset to sanity
     if (fileTypes.includes(selectedFile.type)) {
@@ -39,7 +39,7 @@ const NewPost = ({ user, theme }) => {
       setLoading(true);
 
       client.assets
-        .upload('file', selectedFile, {
+        .upload("file", selectedFile, {
           contentType: selectedFile.type,
           filename: selectedFile.name,
         })
@@ -84,7 +84,7 @@ const NewPost = ({ user, theme }) => {
   };
 
   const savePin = () => {
-    if (title  ) {
+    if (title) {
       const doc = {
         _type: "pin",
         title,
@@ -98,9 +98,9 @@ const NewPost = ({ user, theme }) => {
           },
         },
         video: {
-          _type: 'file',
+          _type: "file",
           asset: {
-            _type: 'reference',
+            _type: "reference",
             _ref: videoAsset?._id,
           },
         },
@@ -112,7 +112,7 @@ const NewPost = ({ user, theme }) => {
         category,
       };
       client.create(doc).then(() => {
-        window.location.reload()
+        window.location.reload();
       });
     } else {
       setFields(true);
@@ -147,18 +147,30 @@ const NewPost = ({ user, theme }) => {
   return (
     <div
       className="user-name"
-      style={{ border: theme==='dark'?"1px solid #181818":'1px solid #D3D3D3', borderBottom: theme==='dark'?"3px solid #181818":'3px solid #D3D3D3' }}
+      id="post"
+      style={{
+        border: theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3",
+        borderBottom:
+          theme === "dark" ? "3px solid #2f3336" : "3px solid #D3D3D3",
+      }}
     >
       <div
         className="flex items-center pr-5 pl-5"
-        style={{ borderBottom: "1px solid 181818" }}
+        style={{ borderBottom: "1px solid #2f3336" }}
       >
+        {user && (
+
+          <div className="flex w-full">
+
         <div className="flex w-1/2">
-          <h1>Latest Posts</h1>
+          <h1>Home</h1>
         </div>
         <div className="flex w-1/2 justify-end">
           <img src={sparkles} alt="" className="h-6 w-6 right-0 justify-end" />
         </div>
+        </div>
+          )}
+
       </div>
       <div>
         {fields && (
@@ -185,10 +197,10 @@ const NewPost = ({ user, theme }) => {
                   theme === "dark" ? "bg-black" : "bg-white"
                 } text-[16px] font-light ml-2 w-[100%] mr-3 outline-none`}
                 placeholder="What's Happening?"
-                rows={3}
+                rows={2}
               />
-              
             </div>
+
             {imageAsset ? (
               <div className="ml-10 relative h-[300px] w-[300px]">
                 <img
@@ -204,7 +216,6 @@ const NewPost = ({ user, theme }) => {
                   <MdDelete />
                 </button>
               </div>
-              
             ) : (
               ""
             )}
@@ -213,7 +224,7 @@ const NewPost = ({ user, theme }) => {
                 <video
                   src={videoAsset?.url}
                   alt="uploaded-vid"
-                  controls='true'
+                  controls="true"
                   className="h-[300px] w-[300px] object-cover"
                 />
                 <button
@@ -224,46 +235,53 @@ const NewPost = ({ user, theme }) => {
                   <MdDelete />
                 </button>
               </div>
-              
             ) : (
               ""
             )}
 
             <div className="flex items-center">
               <div className="mt-3 ml-10 flex gap-5 w-1/2">
-                {!videoAsset &&
-                <div className="flex items-center">
-
-                <input
-                  type="file"
-                  name="upload-image"
-                  onChange={uploadImage}
-                  className="w-0 h-0"
-                  id="file-input"
-                  />
-                <label htmlFor="file-input">
-                  <img src={img} alt="" className="w-6 h-6 cursor-pointer" />
-                </label>
+                {!videoAsset && (
+                  <div className="flex items-center">
+                    <input
+                      type="file"
+                      name="upload-image"
+                      onChange={uploadImage}
+                      className="w-0 h-0"
+                      id="file-input"
+                    />
+                    <label htmlFor="file-input">
+                      <img
+                        src={img}
+                        alt=""
+                        className="w-6 h-6 cursor-pointer"
+                      />
+                    </label>
                   </div>
-                }
-                  {!imageAsset && 
-                
-                <div
-                  className="w-6 h-6 flex items-center  rounded justify-center  cursor-pointer"
-                  style={{ border: "2px solid #1da1f2" }}
-                >
-                  <input
-                  type="file"
-                  name="upload-vid"
-                  onChange={uploadVideo}
-                  className="w-0 h-0"
-                  id="vid-input"
-                  />
-                 <label htmlFor="vid-input">
-                  <p id='vid' alt="" className=" text-[10px] text-blue-500 cursor-pointer" >VID</p>
-                 </label>
-                </div>
-                  }
+                )}
+                {!imageAsset && (
+                  <div
+                    className="w-6 h-6 flex items-center  rounded justify-center  cursor-pointer"
+                    style={{ border: "2px solid #1da1f2" }}
+                  >
+                    <input
+                      type="file"
+                      name="upload-vid"
+                      onChange={uploadVideo}
+                      className="w-0 h-0"
+                      id="vid-input"
+                    />
+                    <label htmlFor="vid-input">
+                      <p
+                        id="vid"
+                        alt=""
+                        className=" text-[10px] text-blue-500 cursor-pointer"
+                      >
+                        VID
+                      </p>
+                    </label>
+                  </div>
+                )}
 
                 <button onClick={() => setShowPicker(!showPicker)}>
                   {showPicker ? (
@@ -291,7 +309,10 @@ const NewPost = ({ user, theme }) => {
                 )}
               </div>
               <div className="flex w-1/2 justify-end mr-7">
-                <button onClick={savePin} className="text-[17px] bg-[#1da1f2] pt-1 pr-8 rounded-lg pl-8 pb-1">
+                <button
+                  onClick={savePin}
+                  className="text-[17px] text-white bg-[#1da1f2] pt-1 pr-8 rounded-lg pl-8 pb-1"
+                >
                   Post
                 </button>
               </div>

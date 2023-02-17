@@ -91,6 +91,12 @@ export const categories = [
           url
         }
       },
+      _createdAt,
+      video{
+        asset->{
+          url
+        }
+      },
       _id,
       title, 
       about,
@@ -99,7 +105,8 @@ export const categories = [
       postedBy->{
         _id,
         userName,
-        image
+        image,
+        update
       },
      save[]{
         postedBy->{
@@ -114,7 +121,8 @@ export const categories = [
         postedBy->{
           _id,
           userName,
-          image
+          image,
+          update
         },
       }
     }`;
@@ -128,7 +136,14 @@ export const categories = [
           url
         }
       },
+      video{
+        asset->{
+          url
+        }
+      },
       _id,
+      _createdAt,
+      title,
       destination,
       postedBy->{
         _id,

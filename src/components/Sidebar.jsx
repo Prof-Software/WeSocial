@@ -1,7 +1,11 @@
 import React from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { RiHomeFill } from "react-icons/ri";
-import { IoIosArrowForward } from "react-icons/io";
+import {
+  IoIosArrowForward,
+  IoIosNotificationsOutline,
+  IoMdNotificationsOutline,
+} from "react-icons/io";
 import logo from "../assets/we.png";
 import { categories } from "../utils/data";
 import { HiHome } from "react-icons/hi";
@@ -9,10 +13,10 @@ import { AiOutlineHome, AiOutlineSetting } from "react-icons/ai";
 import { AiFillHome } from "react-icons/ai";
 import { urlFor } from "../client";
 
-const Sidebar = ({ closeToggle, user, theme }) => {
-  const isNotActiveStyle = `flex items-center px-5 gap-3 text-2xl  transition-all duration-200 ease-in-out capitalize`;
+const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
+  const isNotActiveStyle = `flex items-center  text-2xl  transition-all duration-200 ease-in-out capitalize`;
   const isActiveStyle =
-    "flex items-center font-bold text-2xl  px-5 gap-3  border-r-4 border-blue-400  transition-all duration-200 ease-in-out capitalize";
+    "flex items-center font-bold text-2xl     border-r-4 border-blue-400  transition-all duration-200 ease-in-out capitalize";
   const handleCloseSidebar = () => {
     if (closeToggle) closeToggle(false);
   };
@@ -33,7 +37,7 @@ const Sidebar = ({ closeToggle, user, theme }) => {
             WeSocial
           </p>
         </Link>
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col">
           <NavLink
             to="/"
             className={({ isActive }) =>
@@ -41,8 +45,11 @@ const Sidebar = ({ closeToggle, user, theme }) => {
             }
             onClick={handleCloseSidebar}
           >
-            {isActiveStyle ? <AiFillHome fontSize={25} /> : <AiOutlineHome />}
+            <div className="flex gap-3 hover:bg-[#121212] rounded-full p-3">
+
+              <AiFillHome fontSize={25} />
             Home
+            </div>
           </NavLink>
           <NavLink
             to="/settings"
@@ -51,12 +58,32 @@ const Sidebar = ({ closeToggle, user, theme }) => {
             }
             onClick={handleCloseSidebar}
           >
+            <div className="flex gap-3 hover:bg-[#121212] rounded-full p-3">
+
             {isActiveStyle ? (
               <AiOutlineSetting fontSize={25} />
-            ) : (
-              <AiOutlineHome />
-            )}
+              ) : (
+                <AiOutlineHome />
+                )}
             Settings
+                </div>
+          </NavLink>
+          <NavLink
+            to="/notifications"
+            className={({ isActive }) =>
+              isActive ? isActiveStyle : isNotActiveStyle
+            }
+            onClick={handleCloseSidebar}
+          >
+            <div className="flex gap-3 hover:bg-[#121212] rounded-full p-3">
+              
+            {isActiveStyle ? (
+              <IoMdNotificationsOutline fontSize={25} />
+              ) : (
+              <AiOutlineHome />
+              )}
+            Notifications
+              </div>
           </NavLink>
           {/* <h3 className="mt-2 px-5 text-base 2xl:text-xl">Discover cateogries</h3>
           {categories.slice(0, categories.length - 1).map((category) => (
@@ -75,8 +102,8 @@ const Sidebar = ({ closeToggle, user, theme }) => {
       {user && (
         <Link
           to={`user-profile/${user._id}`}
-          className={`flex my-5 mb-3 gap-2 p-2 items-center ${
-            theme == "dark" ? "bg-[#121212]" : "bg-white"
+          className={`flex my-5 mb-3 gap-2 p-2 items-center transition-all ${
+            theme == "dark" ? "hover:bg-[#121212]" : "bg-white"
           } rounded-lg shadow-lg mx-3`}
           onClick={handleCloseSidebar}
         >

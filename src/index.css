@@ -7,7 +7,7 @@
 
 @layer base {
   body {
-    font-family: "Eudoxus Sans", sans-serif;
+    font-family: 'Nunito', sans-serif;
   }
 }
 
@@ -25,7 +25,6 @@
   width: 50px;
   height: 50px;
   border-radius: 25px;
-  margin-right: 20px;
 }
 
 .tweet-content {
@@ -98,7 +97,7 @@ textarea {
   resize: none;
 }
 .user-name {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: bold;
 }
 
@@ -108,7 +107,7 @@ textarea {
 }
 
 .tweet-text {
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .tweet-date {
@@ -262,4 +261,37 @@ textarea {
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: gray;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+.apple{
+    height: 120px;
+    width: 120px;
+    cursor: pointer;
+    transition: 0.2s all;
+}
+.google{
+    cursor: pointer;
+    transition: 0.2s all;
+}
+
+.apple:active,
+.google:active {
+    transform: scale(0.95);
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  font-weight: bold;
+  
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  font-weight: bold;
+  
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  font-weight: bold;
 }
