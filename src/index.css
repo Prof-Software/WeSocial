@@ -306,6 +306,12 @@ html {
   .icon {
     @apply cursor-pointer w-9 h-9 hover:bg-[#1d9bf0] hover:bg-opacity-10 flex items-center justify-center rounded-full transition ease-out;
   }
+  .settings {
+    @apply cursor-pointer hover:bg-[#0099ff] hover:bg-opacity-10 flex items-center justify-center rounded-full transition ease-out;
+  }
+  .fire {
+    @apply cursor-pointer hover:bg-[#df6b0c] hover:bg-opacity-10 flex items-center justify-center rounded-full transition ease-out;
+  }
   .heart {
     @apply cursor-pointer w-9 h-9 hover:bg-[#e83470] hover:bg-opacity-10 flex items-center justify-center rounded-full transition ease-out;
   }

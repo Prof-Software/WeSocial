@@ -204,7 +204,7 @@ const Pin = ({ pin, theme, autoPlay }) => {
           </div>
         </div> */}
         <div className={`flex  "justify-between px-5"`}>
-        
+        <Link to={`/user-profile/${postedBy._id}`} className='flex'>
           <img
             src={
               postedBy.update === "true"
@@ -214,11 +214,14 @@ const Pin = ({ pin, theme, autoPlay }) => {
             alt="Profile Pic"
             className="h-11 w-11 rounded-full mr-4 object-cover bg-white"
           />
+        </Link>
           <div className="text-[#6e767d]">
             <div className="inline-block group">
               <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
                 <p className="flex gap-1">
+                <Link to={`/user-profile/${postedBy._id}`} className='flex'>
                 {postedBy?.userName}
+                </Link>
                 {postedBy?.mark == "true" ? (
                   <p className="font-bold text-[#1d9bf0]"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
@@ -237,11 +240,14 @@ const Pin = ({ pin, theme, autoPlay }) => {
             <span className="hover:underline text-sm sm:text-[15px]">
               {moment(_createdAt).fromNow()}
             </span>
-            <p className="text-[#d9d9d9] mt-0.5 text-md">{title}</p>
           </div>
           <div className="icon group flex-shrink-0 ml-auto">
             <DotsHorizontalIcon className="h-5 text-[#6e767d] group-hover:text-[#1d9bf0]" />
           </div>
+        </div>
+        <div className="relative">
+
+            <p className="text-[#d9d9d9] mt-1.5 text-md  top-0">{title}</p>
         </div>
 
         {image && (

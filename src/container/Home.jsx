@@ -132,7 +132,7 @@ const Home = ({themeset}) => {
           </div>
         )}
       </div>
-      <div className="pb-2 flex-1 h-screen overflow-y-scroll flex" ref={scrollRef}>
+      <div className="pb-2 flex-1 h-full overflow-y-scroll flex" ref={scrollRef}>
         <Routes>
           <Route
             path="/user-profile/:userId"
