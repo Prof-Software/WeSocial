@@ -56,33 +56,43 @@ export const categories = [
         url
       }
     },
+    _createdAt,
     video{
       asset->{
         url
       }
     },
-    
+    _id,
+    title, 
+    about,
+    category,
+    destination,
+    postedBy->{
+      _id,
+      userName,
+      image,
+      update,
+      mark
+    },
+   save[]{
+      postedBy->{
         _id,
-        _createdAt,
-        title,
-        destination,
-        postedBy->{
-          _id,
-          userName,
-          image,
-          mark,
-          update
-        },
-        save[]{
-          _key,
-          postedBy->{
-            _id,
-            userName,
-            image
-          },
-        
-        },
-      }`;
+        userName,
+        image,
+      },
+    },
+    comments[]{
+      comment,
+      _key,
+      _createdAt,
+      postedBy->{
+        _id,
+        userName,
+        image,
+        update
+      },
+    }
+  }`;
   
   export const pinDetailQuery = (pinId) => {
     const query = `*[_type == "pin" && _id == '${pinId}']{
@@ -118,6 +128,7 @@ export const categories = [
       comments[]{
         comment,
         _key,
+        _createdAt,
         postedBy->{
           _id,
           userName,

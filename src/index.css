@@ -295,3 +295,25 @@ html {
 ::-ms-input-placeholder { /* Microsoft Edge */
   font-weight: bold;
 }
+@layer base {
+  body {
+    @apply bg-black;
+  }
+}
+
+@layer components {
+
+  .icon {
+    @apply cursor-pointer w-9 h-9 hover:bg-[#1d9bf0] hover:bg-opacity-10 flex items-center justify-center rounded-full transition ease-out;
+  }
+  .heart {
+    @apply cursor-pointer w-9 h-9 hover:bg-[#e83470] hover:bg-opacity-10 flex items-center justify-center rounded-full transition ease-out;
+  }
+  .share {
+    @apply cursor-pointer w-9 h-9 hover:bg-[#37e834] hover:bg-opacity-10 flex items-center justify-center rounded-full transition ease-out;
+  }
+
+  .tag {
+    @apply text-[#1d9bf0] font-normal hover:underline cursor-pointer;
+  }
+}

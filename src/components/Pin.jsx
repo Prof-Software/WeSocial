@@ -26,7 +26,18 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useInView } from "react-intersection-observer";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
-
+import {
+  ChartBarIcon,
+  ChatIcon,
+  DotsHorizontalIcon,
+  HeartIcon,
+  SwitchHorizontalIcon,
+  TrashIcon,
+} from "@heroicons/react/outline";
+import {
+  HeartIcon as HeartIconFilled,
+  ChatIcon as ChatIconFilled,
+} from "@heroicons/react/solid";
 const Pin = ({ pin, theme, autoPlay }) => {
   const [postHovered, setPostHovered] = useState(false);
   const [savingPost, setSavingPost] = useState(false);
@@ -92,6 +103,7 @@ const Pin = ({ pin, theme, autoPlay }) => {
     destination,
     title,
     video,
+    comments,
   } = pin;
   const user =
     localStorage.getItem("user") !== "undefined"
@@ -158,14 +170,10 @@ const Pin = ({ pin, theme, autoPlay }) => {
         });
     }
   };
-
-  // console.log(pin)
   return (
     <div className="">
       <div
-        onMouseEnter={() => setPostHovered(true)}
-        onMouseLeave={() => setPostHovered(false)}
-        className="relative overflow-hidden transition-all duration-500 ease-in-out"
+        className="relative overflow-hidden transition-all duration-500 ease-in-out  w-[582px]"
         style={{
           border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #D3D3D3",
           padding: "10px",
@@ -195,60 +203,58 @@ const Pin = ({ pin, theme, autoPlay }) => {
             <p className="tweet-text">{title}</p>
           </div>
         </div> */}
-        <div className="">
-          <div className="flex ">
-            <Link to={`/user-profile/${postedBy._id}`}>
-              {postedBy.image ? (
-                <img
-                  className="user-profile-image mr-[14px] h-[100px] bg-white object-cover"
-                  src={
-                    postedBy.update === "true"
-                      ? urlFor(postedBy.image).height(80).width(80)
-                      : postedBy.image
-                  }
-                  // src={postedBy.image}
-                  alt="user-profile"
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <div className="user-profile-image bg-[gray] object-cover" />
-              )}
-            </Link>
-            <h2 className="user-name flex  items-center gap-1">
-              {postedBy?.userName}{" "}
-              {postedBy?.mark == "true" ? (
-                <GoVerified className="text-blue-400 text-[20px]" />
+        <div className={`flex  "justify-between px-5"`}>
+        
+          <img
+            src={
+              postedBy.update === "true"
+                ? urlFor(postedBy.image).height(80).width(80)
+                : postedBy.image
+            }
+            alt="Profile Pic"
+            className="h-11 w-11 rounded-full mr-4 object-cover bg-white"
+          />
+          <div className="text-[#6e767d]">
+            <div className="inline-block group">
+              <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
+                <p className="flex gap-1">
+                {postedBy?.userName}
+                {postedBy?.mark == "true" ? (
+                  <p className="font-bold text-[#1d9bf0]"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                </svg>
+                </p>
               ) : (
                 ""
               )}
-              <div className="text-[gray] text-sm flex items-center"><p className="capitalize truncate mx-1" style={{wordSpacing:'-3px'}}>@{postedBy?.userName}</p><p className="mx-1">•</p>{moment(_createdAt).fromNow()}</div>
-            </h2>
+                </p>
+              </div>
+              
+              <span className={`text-sm sm:text-[15px] gap-2 mr-2`}>
+                @{postedBy?.userName}
+              </span>
+            </div>•{" "}
+            <span className="hover:underline text-sm sm:text-[15px]">
+              {moment(_createdAt).fromNow()}
+            </span>
+            <p className="text-[#d9d9d9] mt-0.5 text-md">{title}</p>
           </div>
-          <div
-            className="w-full md:w-[400px] md:ml-16 ml-0"
-            style={{ wordWrap: "break-word" }}
-          >
-            <p className="tweet-text">
-              {title ? (
-                title
-              ) : (
-                <div className="bg-[gray] rounded h-[30px] w-40"></div>
-              )}
-            </p>
+          <div className="icon group flex-shrink-0 ml-auto">
+            <DotsHorizontalIcon className="h-5 text-[#6e767d] group-hover:text-[#1d9bf0]" />
           </div>
         </div>
 
         {image && (
           <div
             onClick={() => navigate(`/pin-detail/${_id}`)}
-            className="cursor-pointer  w-[500px] ml-16 rounded-lg flex  justify-center md:w-[500px] w-[320px]"
+            className="cursor-pointer  w-[500px] ml-10 rounded-lg flex  justify-center md:w-[500px] w-[320px]"
             style={{
               border:
                 theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3",
             }}
           >
             <img
-              className="rounded-lg   w-[500px] object-cover md:w-[500px] w-[320px]"
+              className="rounded-lg max-h-[700px] object-cover"
               src={urlFor(image).height(500).width(600).url()}
               alt="user-post"
             />
@@ -258,7 +264,7 @@ const Pin = ({ pin, theme, autoPlay }) => {
           <div
             // onClick={() => navigate(`/pin-detail/${_id}`)}
             ref={ref}
-            className="cursor-pointer ml-16  w-[500px] rounded-lg flex items-center justify-center md:w-[500px] w-[320px]"
+            className="cursor-pointer ml-10  w-[500px] rounded-lg flex items-center justify-center md:w-[500px] w-[320px]"
             style={{
               border:
                 theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3",
@@ -294,19 +300,50 @@ const Pin = ({ pin, theme, autoPlay }) => {
         )}
         <div id="actions-tab" className="mt-1 flex justify-around">
           <Tooltip title="Comment">
-            <IconButton>
-              <ChatBubbleOutlineIcon
-                className={` ${theme === "dark" ? "text-white" : "text-black"}`}
-              />
-            </IconButton>
+            <div className="flex items-center space-x-1 group">
+              <div className="icon group-hover:bg-[#1d9bf0] group-hover:bg-opacity-10">
+                <div className="h-4  flex items-center justify-center group-hover:text-[#1d9bf0] text-[#727272]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <p className="text-[#727272] text-sm">
+              {pin.comments?.length}
+              </p>
+            </div>
           </Tooltip>
+
           <Tooltip title="Share">
-            <IconButton id="share" onClick={handleClickOpen}>
-              <ShareIcon
-                className={` ${theme === "dark" ? "text-white" : "text-black"}`}
-              />{" "}
-              <label htmlFor="share" className="text-sm ml-3">10</label>
-            </IconButton>
+            <div className="flex items-center space-x-1 group">
+              <div className="share hover:text-[#21f01d] group-hover:bg-opacity-10 h-4 text-[#727272]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
+                    />
+                  </svg>
+                </div>
+            </div>
           </Tooltip>
 
           <Dialog
@@ -376,76 +413,48 @@ const Pin = ({ pin, theme, autoPlay }) => {
             </div>
           </Dialog>
           <Tooltip title="Like">
-            <IconButton>
-              <div>
-                {alreadySaved?.length !== 0 ? (
-                  <div
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      savePin(_id);
-                    }}
-                    className={`flex items-center justify-center gap-2 text-sm ${
-                      theme === "dark" ? "text-white" : "text-black"
-                    }`}
-                  >
-                    <FavoriteIcon
-                      className={` ${
-                        theme === "dark" ? "text-red-500" : "text-red-500"
-                      }`}
-                    />
-                    {pin?.save?.length}
-                  </div>
-                ) : (
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      savePin(_id);
-                    }}
-                    className={`flex items-center justify-center gap-2 text-sm ${
-                      theme === "dark" ? "text-white" : "text-black"
-                    }`}
-                    type="button"
-                  >
-                    {savingPost ? (
-                      <FavoriteBorderIcon
-                        className={` ${
-                          theme === "dark" ? "text-white" : "text-black"
-                        }`}
-                      />
-                    ) : (
-                      <FavoriteBorderIcon
-                        className={` ${
-                          theme === "dark" ? "text-white" : "text-black"
-                        }`}
-                      />
-                    )}
-                    {pin?.save?.length} {!pin?.save?.length && 0}
-                  </div>
-                )}
-              </div>
-            </IconButton>
+            <div className="flex items-center justify-center">
+              {alreadySaved?.length !== 0 ? (
+                <div
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    savePin(_id);
+                  }}
+                  className={`flex heart group-hover:bg-pink-600/10 items-center justify-center gap-2 text-sm ${
+                    theme === "dark" ? "text-[#727272]" : "text-black"
+                  }`}
+                >
+                  <HeartIconFilled className="h-5 text-pink-600" />
+                </div>
+              ) : (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    savePin(_id);
+                  }}
+                  type="button"
+                  className={`flex icon group-hover:bg-pink-600/10 items-center justify-center gap-2 text-sm ${
+                    theme === "dark" ? "text-[#727272]" : "text-black"
+                  } hover:text-pink-600 heart`}
+                >
+                  <HeartIcon className="h-5" />
+                </button>
+              )}
+              <p className="text-[#727272] text-sm">
+              {pin?.save?.length} {!pin?.save?.length && 0}
+              </p>
+            </div>
           </Tooltip>
           <Tooltip title="Report">
-            <IconButton
-              aria-describedby={id}
-              variant="contained"
-              onClick={handlePopper}
-            >
-              <AiOutlineMore
-                className={` ${theme === "dark" ? "text-white" : "text-black"}`}
-              />
-            </IconButton>
+            <button className="icon">
+
+              <SwitchHorizontalIcon
+                className={` ${theme === "dark" ? "text-[#727272]" : "text-black"} h-5`}
+                />
+                </button>
           </Tooltip>
         </div>
-        <Popover
-          id={id}
-          open={openPopper}
-          anchorEl={popper}
-          onClose={closePopper}
-        >
-          <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
-        </Popover>
         <Link to={`/pin-detail/${_id}`}>
           <p
             className={`ml-10 ${

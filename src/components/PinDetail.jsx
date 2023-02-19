@@ -2,17 +2,21 @@ import React, { useEffect, useRef, useState } from "react";
 import { MdDownloadForOffline } from "react-icons/md";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import { client, urlFor } from "../client";
 import MasonryLayout from "./MasonryLayout";
 import { pinDetailMorePinQuery, pinDetailQuery } from "../utils/data";
 import Spinner from "./Spinner";
 import { Bars, Comment } from "react-loader-spinner";
 import { BiArrowBack } from "react-icons/bi";
-import { IconButton } from "@mui/material";
+import { Divider, IconButton, Tooltip } from "@mui/material";
 import { useInView } from "react-intersection-observer";
 import moment from "moment";
-const PinDetail = ({ user, theme,autoPlay }) => {
+import ShareIcon from "@mui/icons-material/Share";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { AiOutlineMore } from "react-icons/ai";
+
+const PinDetail = ({ user, theme, autoPlay }) => {
   const { pinId } = useParams();
   const [pins, setPins] = useState();
   const [pinDetail, setPinDetail] = useState();
@@ -90,7 +94,7 @@ const PinDetail = ({ user, theme,autoPlay }) => {
             </IconButton>
             <p className="text-xl font-bold">Thread</p>
           </div>
-          <div className="w-full h-[50px]"/>
+          <div className="w-full h-[50px]" />
           <div className="p-3 flex flex-col">
             <div className="flex">
               <img
@@ -168,26 +172,95 @@ const PinDetail = ({ user, theme,autoPlay }) => {
                 </div>
               )}
             </div>
-            <div className="flex text-[gray] gap-1">
+            <div className="flex text-[gray] gap-1 mt-2">
               <p className="uppercase ">
-              {moment(pinDetail._createdAt).format(" h:mm a")}
+                {moment(pinDetail._createdAt).format(" h:mm a")}
               </p>
               ·
               <p className="capitalize">
-              {moment(pinDetail._createdAt).format("MMMM Do YYYY")}
+                {moment(pinDetail._createdAt).format("MMM Do YYYY")}
               </p>
+            </div>
+            <hr className="bg-[#2f3336] border-[#2f3336] my-2" />
+            <div className="flex gap-3">
+              <div className="flex gap-1">
+                {pinDetail.comments?.length}
+                {!pinDetail.comments?.length && <p>0</p>}
+                <p className="text-[gray]">Comments</p>
+              </div>
+              <div className="flex gap-1">
+                {pinDetail.save?.length}
+                {!pinDetail.save?.length && <p>0</p>}
+                <p className="text-[gray]">Likes</p>
+              </div>
+            </div>
+            <hr className="bg-[#2f3336] border-[#2f3336] my-2" />
+            <div
+              className="flex items-center justify-around pb-2 w-full px-0"
+              style={{ borderBottom: "1px solid #2f3336" }}
+            >
+              <div>
+                <Tooltip title="Comment">
+                  <IconButton>
+                    <ChatBubbleOutlineIcon
+                      className={` ${
+                        theme === "dark" ? "text-[#5e6569]" : "text-[black]"
+                      }`}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </div>
+              <div>
+                <Tooltip title="Share">
+                  <IconButton id="share">
+                    <ShareIcon
+                      className={` ${
+                        theme === "dark" ? "text-[#5e6569]" : "text-black"
+                      }`}
+                    />{" "}
+                  </IconButton>
+                </Tooltip>
+              </div>
+              <div>
+                <Tooltip title="Share">
+                  <IconButton id="share">
+                    <FavoriteBorderIcon
+                      className={` ${
+                        theme === "dark" ? "text-[#5e6569]" : "text-black"
+                      }`}
+                    />{" "}
+                  </IconButton>
+                </Tooltip>
+              </div>
+              <div>
+                <Tooltip title="more">
+                  <IconButton
+                    variant="contained"
+                  >
+                    <AiOutlineMore
+                      className={` ${
+                        theme === "dark" ? "text-[#5e6569]" : "text-black"
+                      }`}
+                    />
+                  </IconButton>
+                </Tooltip>
+              </div>
             </div>
             <div className="max-h-370 overflow-y-auto">
               {pinDetail?.comments?.map((item) => (
+                <div>
+
                 <div
                   className={`flex gap-2 mt-5 items-center ${
-                    theme === "dark" ? "bg-[#38444D]" : "bg-white"
+                    theme === "dark" ? "" : "bg-white"
                   } rounded-lg`}
                   key={item.comment}
                 >
                   <img
-                  src={
-                       item.postedBy?.update==='true'? urlFor(item.postedBy?.image).height(40).width(40):item.postedBy?.image
+                    src={
+                      item.postedBy?.update === "true"
+                        ? urlFor(item.postedBy?.image).height(40).width(40)
+                        : item.postedBy?.image
                     }
                     className="w-10 h-10 bg-white rounded-full cursor-pointer object-cover"
                     alt="user-profile"
@@ -197,53 +270,61 @@ const PinDetail = ({ user, theme,autoPlay }) => {
                     <p>{item.comment}</p>
                   </div>
                 </div>
+            <hr className="bg-[#2f3336] border-[#2f3336] my-2" />
+                </div>
+
+
+                
               ))}
             </div>
             <div>
-            <div className="flex flex-wrap mt-6 gap-3">
-              <Link to={`/user-profile/${user._id}`}>
-                <img
-                src={
-                  user?.update === "true"
-                    ? urlFor(user?.image).height(40).width(40)
-                    : user?.image
-                }
-                  className="w-10 bg-white h-10 rounded-full cursor-pointer"
-                  alt="user-profile"
-                />
-              </Link>
-              <input
-                className={` flex-1 ${
-                  theme === "dark" ? "border-[#101010]" : "bg-white"
-                }  ${
-                  theme === "dark" ? "bg-[#121212]" : "bg-white"
-                } outline-none border-2 p-2 rounded-2xl focus:border-gray-300`}
-                type="text"
-                placeholder="Add a comment"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
-              <button
-                type="button"
-                className="bg-red-500 flex w-24 items-center justify-center text-white rounded-full px-6 py-2 font-semibold text-base outline-none"
-                onClick={addComment}
-              >
-                {addingComment ? (
-                  <Bars
-                    visible={true}
-                    height="30"
-                    width="30"
-                    ariaLabel="comment-loading"
-                    wrapperStyle={{}}
-                    wrapperClass="comment-wrapper"
-                    color="#fff"
-                    backgroundColor="#fff"
+              {user &&
+              <div className="flex flex-wrap mt-6 gap-3">
+                <Link to={`/user-profile/${user?._id}`}>
+                  <img
+                    src={
+                      user?.update === "true"
+                        ? urlFor(user?.image).height(40).width(40)
+                        : user?.image
+                    }
+                    className="w-10 bg-white h-10 rounded-full cursor-pointer"
+                    alt="user-profile"
                   />
-                ) : (
-                  "Comment"
-                )}
-              </button>
-            </div>
+                </Link>
+                <input
+                  className={` flex-1 ${
+                    theme === "dark" ? "border-[#101010]" : "bg-white"
+                  }  ${
+                    theme === "dark" ? "bg-[#121212]" : "bg-white"
+                  } outline-none border-2 p-2 rounded-2xl`}
+                  type="text"
+                  placeholder="Add a comment"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="bg-red-500 flex w-24 items-center justify-center text-white rounded-full px-6 py-2 font-semibold text-base outline-none"
+                  onClick={addComment}
+                >
+                  {addingComment ? (
+                    <Bars
+                      visible={true}
+                      height="30"
+                      width="30"
+                      ariaLabel="comment-loading"
+                      wrapperStyle={{}}
+                      wrapperClass="comment-wrapper"
+                      color="#fff"
+                      backgroundColor="#fff"
+                    />
+                  ) : (
+                    "Comment"
+                  )}
+                </button>
+              </div>
+              }
+
             </div>
           </div>
         </div>

@@ -12,7 +12,19 @@ import { HiHome } from "react-icons/hi";
 import { AiOutlineHome, AiOutlineSetting } from "react-icons/ai";
 import { AiFillHome } from "react-icons/ai";
 import { urlFor } from "../client";
-
+import { HomeIcon } from "@heroicons/react/solid";
+import {
+  HashtagIcon,
+  BellIcon,
+  InboxIcon,
+  BookmarkIcon,
+  ClipboardListIcon,
+  UserIcon,
+  DotsCircleHorizontalIcon,
+  DotsHorizontalIcon,
+} from "@heroicons/react/outline";
+import { googleLogout } from '@react-oauth/google';
+import SidebarLink from "./SidebarLink";
 const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
   const isNotActiveStyle = `flex items-center  text-2xl  transition-all duration-200 ease-in-out capitalize`;
   const isActiveStyle =
@@ -28,80 +40,27 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
       } h-full overflow-y-scroll min-w-210 hide-scrollbar`}
     >
       <div className="flex flex-col">
-        <Link
-          to="/"
-          className="flex w-190 flex-col items-center p-5 justify-center"
-          onClick={handleCloseSidebar}
-        >
-          <p className={`${theme == "dark" ? "logo" : "logo-dark"}`}>
-            WeSocial
-          </p>
-        </Link>
-        <div className="flex flex-col">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              isActive ? isActiveStyle : isNotActiveStyle
-            }
-            onClick={handleCloseSidebar}
-          >
-            <div className="flex gap-3 hover:bg-[#121212] rounded-full p-3">
-
-              <AiFillHome fontSize={25} />
-            Home
-            </div>
-          </NavLink>
-          <NavLink
-            to="/settings"
-            className={({ isActive }) =>
-              isActive ? isActiveStyle : isNotActiveStyle
-            }
-            onClick={handleCloseSidebar}
-          >
-            <div className="flex gap-3 hover:bg-[#121212] rounded-full p-3">
-
-            {isActiveStyle ? (
-              <AiOutlineSetting fontSize={25} />
-              ) : (
-                <AiOutlineHome />
-                )}
-            Settings
-                </div>
-          </NavLink>
-          <NavLink
-            to="/notifications"
-            className={({ isActive }) =>
-              isActive ? isActiveStyle : isNotActiveStyle
-            }
-            onClick={handleCloseSidebar}
-          >
-            <div className="flex gap-3 hover:bg-[#121212] rounded-full p-3">
-              
-            {isActiveStyle ? (
-              <IoMdNotificationsOutline fontSize={25} />
-              ) : (
-              <AiOutlineHome />
-              )}
-            Notifications
-              </div>
-          </NavLink>
-          {/* <h3 className="mt-2 px-5 text-base 2xl:text-xl">Discover cateogries</h3>
-          {categories.slice(0, categories.length - 1).map((category) => (
-            <NavLink
-              to={`/category/${category.name}`}
-              className={({ isActive }) => (isActive ? isActiveStyle : isNotActiveStyle)}
-              onClick={handleCloseSidebar}
-              key={category.name}
-            >
-              <img src={category.image} className="w-8 h-8 rounded-full shadow-sm" />
-              {category.name}
-            </NavLink>
-          ))} */}
+        <p className="flex items-center justify-center w-14 h-14 hoverAnimation p-0 ml-6 text-2xl font-bold">
+          WeSocial
+        </p>
+        <div className="space-y-1 mt-4 mb-2.5">
+          <SidebarLink text="Home" link='/' Icon={HomeIcon} active />
+          <SidebarLink text="Explore" link='/' Icon={HashtagIcon}  />
+          <SidebarLink text="Notifications" link='/' Icon={BellIcon} />
+          <SidebarLink text="Messages" link='/' Icon={InboxIcon}  />
+          <SidebarLink text="Bookmarks" link='/' Icon={BookmarkIcon} />
+          <SidebarLink text="Lists" link='/' Icon={ClipboardListIcon} />
+          <SidebarLink text="Profile" link={`/user-profile/${user?._id}`} Icon={UserIcon} />
+          <SidebarLink text="Settings" link='/settings' Icon={AiOutlineSetting} />
         </div>
+        <button className="hidden xl:inline ml-auto bg-[#1d9bf0] text-white rounded-full w-56 h-[52px] text-lg font-bold shadow-md hover:bg-[#1a8cd8]">
+        Tweet
+      </button>
+
       </div>
       {user && (
         <Link
-          to={`user-profile/${user._id}`}
+          to={`user-profile/${user?._id}`}
           className={`flex my-5 mb-3 gap-2 p-2 items-center transition-all ${
             theme == "dark" ? "hover:bg-[#121212]" : "bg-white"
           } rounded-lg shadow-lg mx-3`}
@@ -109,9 +68,9 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
         >
           <img
             src={
-              user.update === "true"
+              user?.update === "true"
                 ? urlFor(user.image).height(80).width(80)
-                : user.image
+                : user?.image
             }
             // src={
             //   user.update === "true"
@@ -122,7 +81,7 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
             alt="user-profile"
           />
           <p>{user.userName}</p>
-          <IoIosArrowForward />
+          <IoIosArrowForward onClick={()=>{googleLogout()}}/>
         </Link>
       )}
     </div>
