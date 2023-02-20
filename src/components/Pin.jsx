@@ -49,6 +49,8 @@ import {
   HeartIcon as HeartIconFilled,
   ChatIcon as ChatIconFilled,
 } from "@heroicons/react/solid";
+import EmojiPicker from "emoji-picker-react";
+import emoji from "../assets/emoji.png";
 const style = {
   position: "absolute",
   top: "50%",
@@ -59,8 +61,9 @@ const style = {
   boxShadow: 24,
 };
 
-const Pin = ({ pin, theme, autoPlay }) => {
+const Pin = ({ pin, theme, autoPlay,userData }) => {
   const [postHovered, setPostHovered] = useState(false);
+  const [comment, setComment] = useState("");
   const [savingPost, setSavingPost] = useState(false);
   const [likes, setLikes] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
@@ -73,10 +76,30 @@ const Pin = ({ pin, theme, autoPlay }) => {
   const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
-  function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+  const [showPicker, setShowPicker] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const pickerContainerRef = useRef(null);
+  const handleEmojiClick = (emoji) => {
+    setComment(comment + emoji.emoji);
+    setShowPicker(false);
+  };
 
+  const handleClickOutside = (event) => {
+    if (
+      showPicker &&
+      pickerContainerRef.current &&
+      !pickerContainerRef.current.contains(event.target)
+    ) {
+      setShowPicker(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
   const handlePopper = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -154,6 +177,25 @@ const Pin = ({ pin, theme, autoPlay }) => {
 
     setLikes(updatedDoc.likes);
     setHasLiked(!hasLiked);
+  };
+  const addComment = () => {
+    if (comment) {
+      client
+        .patch(_id)
+        .setIfMissing({ comments: [] })
+        .insert("after", "comments[-1]", [
+          {
+            comment,
+            _key: uuidv4(),
+            postedBy: { _type: "postedBy", _ref: userData._id },
+          },
+        ])
+        .commit()
+        .then(() => {
+          navigate(`/pin-detail/${_id}`)
+          setComment("");
+        });
+    }
   };
 
   let alreadySaved = pin?.save?.filter(
@@ -380,14 +422,14 @@ const Pin = ({ pin, theme, autoPlay }) => {
           >
             <Box
               sx={style}
-              className="text-white border-2 p-2 h-[300px] border-gray-900 rounded-xl bg-black"
+              className="text-white border-2 p-2 h-[350px] border-gray-900 rounded-xl bg-black"
               style={{ border: "1px solid black" }}
             >
-              <IconButton className="mt-2">
+              <IconButton className="mt-2" onClick={handleModalClose}>
                 <CloseIcon />
               </IconButton>
               <Divider />
-              <div className="flex">
+              <div className="flex ">
                 <img
                   src={
                     postedBy.update === "true"
@@ -398,11 +440,10 @@ const Pin = ({ pin, theme, autoPlay }) => {
                   alt="Profile Pic"
                   className="h-[50px] mt-2 w-[50px] rounded-full mr-4 object-cover bg-white"
                 />
-                <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
-                <p className="flex gap-1">
+                <div className="font-bold text-[14px] mr-2 sm:text-base  text-[#d9d9d9] group-hover:underline inline-block">
+                <div className="flex gap-1 flex-col">
                   <Link to={`/user-profile/${postedBy._id}`} className="flex">
                     {postedBy?.userName}
-                  </Link>
                   {postedBy?.mark == "true" ? (
                     <p className="font-bold text-[#1d9bf0] text-sm">
                       <svg
@@ -423,9 +464,90 @@ const Pin = ({ pin, theme, autoPlay }) => {
                   ) : (
                     ""
                   )}
-                </p>
+                  </Link>
+                  <p>{title}</p>
+                </div>
+                    
               </div>
               </div>
+                    <div className="w-[3px] h-[95px] absolute bg-gray-600 left-[30px] top-[107px] "></div>
+                    <div className="h-[90px] w-[1px]"/>
+
+                    <div className="flex ">
+                <img
+                  src={
+                    postedBy.update === "true"
+                      ? urlFor(userData.image).height(80).width(80)
+                      : userData.image
+                  }
+                  referrerPolicy="no-referrer"
+                  alt="Profile Pic"
+                  className="h-[50px] mt-2 w-[50px] rounded-full mr-4 object-cover bg-white"
+                />
+                <div className="font-bold text-[14px] mr-2 sm:text-base  text-[#d9d9d9] group-hover:underline inline-block">
+                <div className="flex gap-1 flex-col">
+                  <Link to={`/user-profile/${userData._id}`} className="flex">
+                    {userData?.userName}
+                  {userData?.mark == "true" ? (
+                    <p className="font-bold text-[#1d9bf0] text-sm">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+                        />
+                      </svg>
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                  </Link>
+                  <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                className={`${
+                  theme === "dark" ? "bg-black" : "bg-white"
+                } text-[16px] font-light w-[100%] outline-none`}
+                placeholder={`Reply to Post`}
+                rows={2}
+              />
+                </div>
+                {/* <button onClick={() => setShowPicker(!showPicker)}>
+                  {showPicker ? (
+                    <img
+                      src={emoji}
+                      alt=""
+                      className="w-6 h-6  cursor-pointer"
+                    />
+                  ) : (
+                    <img
+                      src={emoji}
+                      alt=""
+                      className="w-6 h-6  cursor-pointer"
+                    />
+                  )}
+                </button>
+                {showPicker && (
+                  <div className="absolute top-0 mt-7 right-0 z-50" ref={pickerContainerRef}>
+                    <EmojiPicker
+                      theme={theme === "dark" ? "dark" : "light"}
+                      emojiStyle="twitter"
+                      onEmojiClick={handleEmojiClick}
+                      height={300}
+                      width={300}
+                    />
+                  </div>
+                )} */}
+              </div>
+              </div>
+              <button onClick={addComment} className="bg-[#1d9bf0] p-2 rounded-full absolute right-[25px] bottom-[15px]">Reply</button>
             </Box>
           </Modal>
 

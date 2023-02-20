@@ -195,7 +195,7 @@ const NewPost = ({ user, theme }) => {
                 onChange={(e) => setTitle(e.target.value)}
                 className={`${
                   theme === "dark" ? "bg-black" : "bg-white"
-                } text-[16px] font-light ml-2 w-[100%] mr-3 outline-none border-b border-b-[#2f3336]`}
+                } text-[16px] font-light ml-2 w-[100%] mr-3 outline-none`}
                 placeholder="What's Happening?"
                 rows={2}
               />
