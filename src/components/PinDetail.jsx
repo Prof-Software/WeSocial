@@ -15,6 +15,7 @@ import moment from "moment";
 import ShareIcon from "@mui/icons-material/Share";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { AiOutlineMore } from "react-icons/ai";
+import RightBar from "./RightBar";
 
 const PinDetail = ({ user, theme, autoPlay }) => {
   const { pinId } = useParams();
@@ -26,6 +27,15 @@ const PinDetail = ({ user, theme, autoPlay }) => {
   const [playing, setPlaying] = useState(false);
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(true);
+
+  function handleClick() {
+    if (document.referrer === '') {
+      navigate('/');
+    } else {
+      navigate(-1);
+    }
+  }
+
   const { ref, inView, entry } = useInView({
     /* Optional options */
     threshold: 0,
@@ -80,7 +90,9 @@ const PinDetail = ({ user, theme, autoPlay }) => {
 
   return (
     <>
+
       {pinDetail && (
+    <div className="flex">
         <div
           className=""
           style={{
@@ -89,7 +101,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
           }}
         >
           <div className="flex gap-2 mt-0 top-0 w-full fixed items-center p-3 backdrop-blur-md z-50">
-            <IconButton>
+            <IconButton onClick={handleClick}>
               <BiArrowBack fontSize={24} />
             </IconButton>
             <p className="text-xl font-bold">Thread</p>
@@ -328,12 +340,15 @@ const PinDetail = ({ user, theme, autoPlay }) => {
             </div>
           </div>
         </div>
+        <div className="w-[100%] z-50 "><RightBar/></div>
+
+      </div>
       )}
       {pins ? (
         <MasonryLayout theme={theme} pins={pins} />
-      ) : (
-        <Spinner message="Loading more pins" />
-      )}
+        ) : (
+          <Spinner message="Loading more pins" />
+          )}
     </>
   );
 };

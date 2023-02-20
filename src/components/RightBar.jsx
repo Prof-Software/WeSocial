@@ -64,7 +64,7 @@ const RightBar = ({ theme, switchtheme, user }) => {
                     urlFor(data[0]?.image?.asset?.url).width(120).height(120)
                   : random[0] && urlFor(random[0]?.image?.asset?.url)
               }
-              className="w-[120px] object-cover h-[120px] bg-yellow-400"
+              className="w-[120px] object-cover h-[120px] bg-[rgb(255,255,255,0.2)] outline-none"
               style={{ borderTopLeftRadius: "20px" }}
               alt=""
             />
@@ -76,7 +76,7 @@ const RightBar = ({ theme, switchtheme, user }) => {
                   : random[1] &&
                     urlFor(random[1]?.image?.asset?.url).width(120).height(120)
               }
-              className="w-[120px] object-cover h-[120px] bg-yellow-400"
+              className="w-[120px] object-cover h-[120px] bg-[rgb(255,255,255,0.2)] outline-none"
               alt=""
             />
             <img
@@ -87,7 +87,7 @@ const RightBar = ({ theme, switchtheme, user }) => {
                   : random[2] &&
                     urlFor(random[2]?.image?.asset?.url).width(120).height(120)
               }
-              className="w-[120px] object-cover h-[120px] bg-yellow-400"
+              className="w-[120px] object-cover h-[120px] bg-[rgb(255,255,255,0.2)] outline-none"
               alt=""
               style={{ borderTopRightRadius: "20px" }}
             />
@@ -101,7 +101,7 @@ const RightBar = ({ theme, switchtheme, user }) => {
                   : random[3] &&
                     urlFor(random[3]?.image?.asset?.url).width(120).height(120)
               }
-              className="w-[120px] object-cover h-[120px] bg-yellow-400"
+              className="w-[120px] object-cover h-[120px] bg-[rgb(255,255,255,0.2)] outline-none"
               style={{ borderBottomLeftRadius: "20px" }}
               alt=""
             />
@@ -113,7 +113,7 @@ const RightBar = ({ theme, switchtheme, user }) => {
                   : random[4] &&
                     urlFor(random[4]?.image?.asset?.url).width(120).height(120)
               }
-              className="w-[120px] object-cover h-[120px] bg-yellow-400"
+              className="w-[120px] object-cover h-[120px] bg-[rgb(255,255,255,0.2)] outline-none"
               alt=""
             />
             <img
@@ -127,7 +127,7 @@ const RightBar = ({ theme, switchtheme, user }) => {
                   : random[5] &&
                     urlFor(random[5]?.image?.asset?.url).width(120).height(120)
               }
-              className="w-[120px] object-cover h-[120px] bg-yellow-400"
+              className="w-[120px] object-cover h-[120px] bg-[rgb(255,255,255,0.2)] outline-none"
               alt=""
               style={{ borderBottomRightRadius: "20px" }}
             />

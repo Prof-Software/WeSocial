@@ -12,7 +12,16 @@ import icon2 from "../assets/share.png";
 import icon3 from "../assets/like.png";
 import icon4 from "../assets/down.png";
 import { GoVerified } from "react-icons/go";
-import { Button, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Menu,
+  MenuItem,
+  Modal,
+  Tooltip,
+} from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -26,6 +35,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useInView } from "react-intersection-observer";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
+
 import {
   ChartBarIcon,
   ChatIcon,
@@ -38,6 +49,16 @@ import {
   HeartIcon as HeartIconFilled,
   ChatIcon as ChatIconFilled,
 } from "@heroicons/react/solid";
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  border: "2px solid #000",
+  boxShadow: 24,
+};
+
 const Pin = ({ pin, theme, autoPlay }) => {
   const [postHovered, setPostHovered] = useState(false);
   const [savingPost, setSavingPost] = useState(false);
@@ -49,6 +70,9 @@ const Pin = ({ pin, theme, autoPlay }) => {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [popper, setPopper] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpen = () => setOpenModal(true);
+  const handleModalClose = () => setOpenModal(false);
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -173,7 +197,7 @@ const Pin = ({ pin, theme, autoPlay }) => {
   return (
     <div className="">
       <div
-        className="relative overflow-hidden transition-all duration-500 ease-in-out  w-[582px]"
+        className="relative overflow-hidden transition-all duration-500 ease-in-out md:w-[560px] w-full"
         style={{
           border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #D3D3D3",
           padding: "10px",
@@ -203,40 +227,56 @@ const Pin = ({ pin, theme, autoPlay }) => {
             <p className="tweet-text">{title}</p>
           </div>
         </div> */}
-        <div className={`flex  "justify-between px-5"`}>
-        <Link to={`/user-profile/${postedBy._id}`} className='flex'>
-          <img
-            src={
-              postedBy.update === "true"
-                ? urlFor(postedBy.image).height(80).width(80)
-                : postedBy.image
-            }
-            alt="Profile Pic"
-            className="h-11 w-11 rounded-full mr-4 object-cover bg-white"
-          />
-        </Link>
+        <div className={`flex  "justify-between "`}>
+          <Link to={`/user-profile/${postedBy._id}`} className="flex">
+            <div className="relative w-[60px]">
+              <img
+                src={
+                  postedBy.update === "true"
+                    ? urlFor(postedBy.image).height(80).width(80)
+                    : postedBy.image
+                }
+                referrerPolicy="no-referrer"
+                alt="Profile Pic"
+                className="h-[50px] absolute w-[50px] rounded-full mr-4 object-cover bg-white"
+              />
+            </div>
+          </Link>
           <div className="text-[#6e767d]">
             <div className="inline-block group">
               <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
                 <p className="flex gap-1">
-                <Link to={`/user-profile/${postedBy._id}`} className='flex'>
-                {postedBy?.userName}
-                </Link>
-                {postedBy?.mark == "true" ? (
-                  <p className="font-bold text-[#1d9bf0]"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                </svg>
-                </p>
-              ) : (
-                ""
-              )}
+                  <Link to={`/user-profile/${postedBy._id}`} className="flex">
+                    {postedBy?.userName}
+                  </Link>
+                  {postedBy?.mark == "true" ? (
+                    <p className="font-bold text-[#1d9bf0] text-sm">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+                        />
+                      </svg>
+                    </p>
+                  ) : (
+                    ""
+                  )}
                 </p>
               </div>
-              
-              <span className={`text-sm sm:text-[15px] gap-2 mr-2`}>
+
+              <span className={`text-sm sm:text-[15px] mr-2`}>
                 @{postedBy?.userName}
               </span>
-            </div>•{" "}
+            </div>
+            •{" "}
             <span className="hover:underline text-sm sm:text-[15px]">
               {moment(_createdAt).fromNow()}
             </span>
@@ -245,15 +285,14 @@ const Pin = ({ pin, theme, autoPlay }) => {
             <DotsHorizontalIcon className="h-5 text-[#6e767d] group-hover:text-[#1d9bf0]" />
           </div>
         </div>
-        <div className="relative">
-
-            <p className="text-[#d9d9d9] mt-1.5 text-md  top-0">{title}</p>
+        <div className="relative w-[80%] ml-[3.75rem] mb-3">
+          <p className="text-[#d9d9d9] text-sm  top-0">{title}</p>
         </div>
 
         {image && (
           <div
             onClick={() => navigate(`/pin-detail/${_id}`)}
-            className="cursor-pointer  w-[500px] ml-10 rounded-lg flex  justify-center md:w-[500px] w-[320px]"
+            className="cursor-pointer   ml-10 rounded-lg flex  justify-center"
             style={{
               border:
                 theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3",
@@ -270,7 +309,7 @@ const Pin = ({ pin, theme, autoPlay }) => {
           <div
             // onClick={() => navigate(`/pin-detail/${_id}`)}
             ref={ref}
-            className="cursor-pointer ml-10  w-[500px] rounded-lg flex items-center justify-center md:w-[500px] w-[320px]"
+            className="cursor-pointer ml-10   rounded-lg flex items-center justify-center "
             style={{
               border:
                 theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3",
@@ -307,7 +346,10 @@ const Pin = ({ pin, theme, autoPlay }) => {
         <div id="actions-tab" className="mt-1 flex justify-around">
           <Tooltip title="Comment">
             <div className="flex items-center space-x-1 group">
-              <div className="icon group-hover:bg-[#1d9bf0] group-hover:bg-opacity-10">
+              <div
+                className="icon group-hover:bg-[#1d9bf0] group-hover:bg-opacity-10"
+                onClick={handleOpen}
+              >
                 <div className="h-4  flex items-center justify-center group-hover:text-[#1d9bf0] text-[#727272]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -325,30 +367,89 @@ const Pin = ({ pin, theme, autoPlay }) => {
                   </svg>
                 </div>
               </div>
-              <p className="text-[#727272] text-sm">
-              {pin.comments?.length}
-              </p>
+              <p className="text-[#727272] text-sm">{pin.comments?.length}</p>
             </div>
           </Tooltip>
+          <Modal
+            open={openModal}
+            onClose={handleModalClose}
+            closeAfterTransition
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            className="outline-none bg-[rgb(29,155,240,0.2)]"
+          >
+            <Box
+              sx={style}
+              className="text-white border-2 p-2 h-[300px] border-gray-900 rounded-xl bg-black"
+              style={{ border: "1px solid black" }}
+            >
+              <IconButton className="mt-2">
+                <CloseIcon />
+              </IconButton>
+              <Divider />
+              <div className="flex">
+                <img
+                  src={
+                    postedBy.update === "true"
+                      ? urlFor(postedBy.image).height(80).width(80)
+                      : postedBy.image
+                  }
+                  referrerPolicy="no-referrer"
+                  alt="Profile Pic"
+                  className="h-[50px] mt-2 w-[50px] rounded-full mr-4 object-cover bg-white"
+                />
+                <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
+                <p className="flex gap-1">
+                  <Link to={`/user-profile/${postedBy._id}`} className="flex">
+                    {postedBy?.userName}
+                  </Link>
+                  {postedBy?.mark == "true" ? (
+                    <p className="font-bold text-[#1d9bf0] text-sm">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+                        />
+                      </svg>
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                </p>
+              </div>
+              </div>
+            </Box>
+          </Modal>
 
           <Tooltip title="Share">
-            <div className="flex items-center space-x-1 group">
+            <div
+              className="flex items-center space-x-1 group"
+              onClick={handleClickOpen}
+            >
               <div className="share hover:text-[#21f01d] group-hover:bg-opacity-10 h-4 text-[#727272]">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
-                    />
-                  </svg>
-                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
+                  />
+                </svg>
+              </div>
             </div>
           </Tooltip>
 
@@ -357,6 +458,7 @@ const Pin = ({ pin, theme, autoPlay }) => {
             onClose={handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
+            className="bg-[rgb(29,155,240,0.2)]"
           >
             <div className="border-2">
               <DialogTitle
@@ -448,17 +550,18 @@ const Pin = ({ pin, theme, autoPlay }) => {
                 </button>
               )}
               <p className="text-[#727272] text-sm">
-              {pin?.save?.length} {!pin?.save?.length && 0}
+                {pin?.save?.length} {!pin?.save?.length && 0}
               </p>
             </div>
           </Tooltip>
           <Tooltip title="Report">
             <button className="icon">
-
               <SwitchHorizontalIcon
-                className={` ${theme === "dark" ? "text-[#727272]" : "text-black"} h-5`}
-                />
-                </button>
+                className={` ${
+                  theme === "dark" ? "text-[#727272]" : "text-black"
+                } h-5`}
+              />
+            </button>
           </Tooltip>
         </div>
         <Link to={`/pin-detail/${_id}`}>
