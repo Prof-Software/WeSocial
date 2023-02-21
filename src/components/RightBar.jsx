@@ -52,9 +52,10 @@ const RightBar = ({ theme, switchtheme, user }) => {
           <input
             type="text"
             className="bg-transparent abs placeholder-gray-500  outline-none text-[#d9d9d9] pl-10 p-3 pr-10 inset-0  border border-transparent w-full focus:border-[#1d9bf0] rounded-full focus:bg-black focus:shadow-lg"
-            placeholder="Search Twitter"
+            placeholder="Search WeSocial"
           />
         </div>
+        {user && (
         <div>
           <div className="flex mt-4">
             <img
@@ -133,6 +134,18 @@ const RightBar = ({ theme, switchtheme, user }) => {
             />
           </div>
         </div>
+        )}
+        {!user && (
+          <div className="w-[360px] border p-3 border-[#15181c] mt-3 rounded-xl">
+            <h1 className="text-xl font-extrabold">New to WeSocial?</h1>
+            <p className="text-sm font-thin text-gray-400">Sign up now and get your own personalized timeline!</p>
+            <button className="bg-[#1d9bf0] p-2 w-full mt-2 text-xl rounded">
+              <Link to={`/login`}>
+                Login
+              </Link>
+            </button>
+          </div>
+        )}
         <div className="bg-[#15181c]  mt-3 rounded-xl">
           <div
             className="flex items-center"

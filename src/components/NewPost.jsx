@@ -149,29 +149,30 @@ const NewPost = ({ user, theme }) => {
       className="user-name"
       id="post"
       style={{
-        border: theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3",
-        borderBottom:
-          theme === "dark" ? "3px solid #2f3336" : "3px solid #D3D3D3",
+        border: user && ( theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3"),
+        borderBottom: user && (
+          theme === "dark" ? "3px solid #2f3336" : "3px solid #D3D3D3")
       }}
     >
-      <div
-        className="flex items-center pr-5 pl-5"
-        style={{ borderBottom: "1px solid #2f3336" }}
-      >
-        {user && (
-
+      {user && (
+        <div
+          className="flex items-center pr-5 pl-5"
+          style={{ borderBottom: "1px solid #2f3336" }}
+        >
           <div className="flex w-full">
-
-        <div className="flex w-1/2">
-          <h1>Home</h1>
+            <div className="flex w-1/2">
+              <h1>Home</h1>
+            </div>
+            <div className="flex w-1/2 justify-end">
+              <img
+                src={sparkles}
+                alt=""
+                className="h-6 w-6 right-0 justify-end"
+              />
+            </div>
+          </div>
         </div>
-        <div className="flex w-1/2 justify-end">
-          <img src={sparkles} alt="" className="h-6 w-6 right-0 justify-end" />
-        </div>
-        </div>
-          )}
-
-      </div>
+      )}
       <div>
         {fields && (
           <p className="text-red-500 mb-5 text-xl transition-all duration-150 ease-in ">

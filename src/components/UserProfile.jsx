@@ -13,6 +13,7 @@ import Spinner from "./Spinner";
 import { AiOutlinePlus } from "react-icons/ai";
 import {GoCalendar} from 'react-icons/go'
 import moment from "moment";
+import RightBar from './RightBar'
 const activeBtnStyles =
   "bg-blue-700 text-white font-bold p-2 rounded-full w-20 outline-none";
 const notActiveBtnStyles =
@@ -333,7 +334,7 @@ const UserProfile = ({ theme }) => {
         </div>
 
         <div className="flex items-center justify-center">
-          <MasonryLayout pins={pins} theme={theme} />
+          <MasonryLayout pins={pins} theme={theme}/>
         </div>
 
         {pins?.length === 0 && (

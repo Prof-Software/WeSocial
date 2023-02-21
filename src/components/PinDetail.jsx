@@ -212,17 +212,6 @@ const PinDetail = ({ user, theme, autoPlay }) => {
               style={{ borderBottom: "1px solid #2f3336" }}
             >
               <div>
-                <Tooltip title="Comment">
-                  <IconButton>
-                    <ChatBubbleOutlineIcon
-                      className={` ${
-                        theme === "dark" ? "text-[#5e6569]" : "text-[black]"
-                      }`}
-                    />
-                  </IconButton>
-                </Tooltip>
-              </div>
-              <div>
                 <Tooltip title="Share">
                   <IconButton id="share">
                     <ShareIcon
@@ -263,7 +252,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
                 <div>
 
                 <div
-                  className={`flex gap-2 mt-5 items-center ${
+                  className={`flex gap-2 relative mt-5 items-center ${
                     theme === "dark" ? "" : "bg-white"
                   } rounded-lg`}
                   key={item.comment}
@@ -274,12 +263,15 @@ const PinDetail = ({ user, theme, autoPlay }) => {
                         ? urlFor(item.postedBy?.image).height(40).width(40)
                         : item.postedBy?.image
                     }
-                    className="w-10 h-10 bg-white rounded-full cursor-pointer object-cover"
+                    referrerPolicy="no-referrer"
+                    className="w-[50px] h-[50px] top-0 p-1 z-50 absolute bg-black rounded-full cursor-pointer object-cover"
                     alt="user-profile"
                   />
-                  <div className="flex flex-col">
+                  <div className="w-[50px] h-[50px]"/>
+                  <div className="w-[2px] top-10 right-[577px] h-full bg-gray-500 absolute"/>
+                  <div className="flex flex-col w-[500px]">
                     <p className="font-bold">{item.postedBy?.userName}</p>
-                    <p>{item.comment}</p>
+                    <p className="break-words w- text-clip">{item.comment}</p>
                   </div>
                 </div>
             <hr className="bg-[#2f3336] border-[#2f3336] my-2" />
@@ -291,7 +283,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
             </div>
             <div>
               {user &&
-              <div className="flex flex-wrap mt-6 gap-3">
+              <div className="flex flex-wrap mt-2 gap-3">
                 <Link to={`/user-profile/${user?._id}`}>
                   <img
                     src={
@@ -299,6 +291,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
                         ? urlFor(user?.image).height(40).width(40)
                         : user?.image
                     }
+                    referrerPolicy="no-referrer"
                     className="w-10 bg-white h-10 rounded-full cursor-pointer"
                     alt="user-profile"
                   />
@@ -316,13 +309,13 @@ const PinDetail = ({ user, theme, autoPlay }) => {
                 />
                 <button
                   type="button"
-                  className="bg-red-500 flex w-24 items-center justify-center text-white rounded-full px-6 py-2 font-semibold text-base outline-none"
+                  className="bg-[#1da1f2] flex w-24 items-center justify-center text-white rounded-full px-6 py-2 font-semibold text-base outline-none"
                   onClick={addComment}
                 >
                   {addingComment ? (
                     <Bars
                       visible={true}
-                      height="30"
+                      height="20"
                       width="30"
                       ariaLabel="comment-loading"
                       wrapperStyle={{}}
@@ -340,7 +333,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
             </div>
           </div>
         </div>
-        <div className="w-[100%] z-50 "><RightBar/></div>
+        <div className="w-[100%] z-50 "><RightBar user={user && user}/></div>
 
       </div>
       )}

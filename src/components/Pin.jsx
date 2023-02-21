@@ -162,22 +162,7 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
       window.location.reload();
     });
   };
-
-  const handleClick = async () => {
-    const transaction = client.transaction();
-    const post = await client.getDocument(_id);
-
-    const newLikes = hasLiked ? post.likes - 1 : post.likes + 1;
-
-    const updatedDoc = await transaction.patch(post._id).set({
-      likes: newLikes,
-    });
-
-    await transaction.commit();
-
-    setLikes(updatedDoc.likes);
-    setHasLiked(!hasLiked);
-  };
+  
   const addComment = () => {
     if (comment) {
       client
@@ -270,13 +255,13 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
           </div>
         </div> */}
         <div className={`flex  "justify-between "`}>
-          <Link to={`/user-profile/${postedBy._id}`} className="flex">
+          <Link to={`/user-profile/${postedBy?._id}`} className="flex">
             <div className="relative w-[60px]">
               <img
                 src={
                   postedBy.update === "true"
-                    ? urlFor(postedBy.image).height(80).width(80)
-                    : postedBy.image
+                    ? urlFor(postedBy?.image).height(80).width(80)
+                    : postedBy?.image
                 }
                 referrerPolicy="no-referrer"
                 alt="Profile Pic"
@@ -288,7 +273,7 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
             <div className="inline-block group">
               <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
                 <p className="flex gap-1">
-                  <Link to={`/user-profile/${postedBy._id}`} className="flex">
+                  <Link to={`/user-profile/${postedBy?._id}`} className="flex">
                     {postedBy?.userName}
                   </Link>
                   {postedBy?.mark == "true" ? (
@@ -477,8 +462,8 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
                 <img
                   src={
                     postedBy.update === "true"
-                      ? urlFor(userData.image).height(80).width(80)
-                      : userData.image
+                      ? urlFor(userData?.image).height(80).width(80)
+                      : userData?.image
                   }
                   referrerPolicy="no-referrer"
                   alt="Profile Pic"
@@ -486,7 +471,7 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
                 />
                 <div className="font-bold text-[14px] mr-2 sm:text-base  text-[#d9d9d9] group-hover:underline inline-block">
                 <div className="flex gap-1 flex-col">
-                  <Link to={`/user-profile/${userData._id}`} className="flex">
+                  <Link to={`/user-profile/${userData?._id}`} className="flex">
                     {userData?.userName}
                   {userData?.mark == "true" ? (
                     <p className="font-bold text-[#1d9bf0] text-sm">
