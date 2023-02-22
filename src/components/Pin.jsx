@@ -61,7 +61,7 @@ const style = {
   boxShadow: 24,
 };
 
-const Pin = ({ pin, theme, autoPlay,userData }) => {
+const Pin = ({ pin, theme, autoPlay, userData }) => {
   const [postHovered, setPostHovered] = useState(false);
   const [comment, setComment] = useState("");
   const [savingPost, setSavingPost] = useState(false);
@@ -162,7 +162,7 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
       window.location.reload();
     });
   };
-  
+
   const addComment = () => {
     if (comment) {
       client
@@ -177,7 +177,7 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
         ])
         .commit()
         .then(() => {
-          navigate(`/pin-detail/${_id}`)
+          navigate(`/pin-detail/${_id}`);
           setComment("");
         });
     }
@@ -226,34 +226,10 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
       <div
         className="relative overflow-hidden transition-all duration-500 ease-in-out md:w-[560px] w-full"
         style={{
-          border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #D3D3D3",
+          border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #999999",
           padding: "10px",
         }}
       >
-        {/* <div className="tweet mb-5 flex flex-col">
-
-          <div className="flex flex-col">
-            <div className="tweet-content flex">
-          <Link to={`/user-profile/${postedBy._id}`} className='flex'>
-          <img
-            className="user-profile-image bg-white object-cover"
-            src={postedBy.update==='true'?urlFor(postedBy.image).height(80).width(80):postedBy.image}
-            // src={postedBy.image}
-            alt="user-profile"
-            referrerPolicy="no-referrer"
-            />
-          </Link>
-
-            
-            <h2 className="user-name flex  items-center gap-1">{postedBy?.userName} {postedBy?.mark == "true" ? (
-              <GoVerified className="text-blue-400 text-[20px]" />
-              ) : (
-                ""
-                )}<p className="tweet-date ml-5">•{moment(_createdAt).fromNow()}</p></h2>
-            </div>
-            <p className="tweet-text">{title}</p>
-          </div>
-        </div> */}
         <div className={`flex  "justify-between "`}>
           <Link to={`/user-profile/${postedBy?._id}`} className="flex">
             <div className="relative w-[60px]">
@@ -273,7 +249,7 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
             <div className="inline-block group">
               <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
                 <p className="flex gap-1">
-                  <Link to={`/user-profile/${postedBy?._id}`} className="flex">
+                  <Link to={`/user-profile/${postedBy?._id}`} className={`flex ${theme !== 'dark' && 'text-[#000]'}`}>
                     {postedBy?.userName}
                   </Link>
                   {postedBy?.mark == "true" ? (
@@ -313,7 +289,7 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
           </div>
         </div>
         <div className="relative w-[80%] ml-[3.75rem] mb-3">
-          <p className="text-[#d9d9d9] text-sm  top-0">{title}</p>
+          <p className={`text-[#d9d9d9] text-sm  top-0 ${theme !== 'dark' && 'text-[#000]'}`}>{title}</p>
         </div>
 
         {image && (
@@ -426,39 +402,38 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
                   className="h-[50px] mt-2 w-[50px] rounded-full mr-4 object-cover bg-white"
                 />
                 <div className="font-bold text-[14px] mr-2 sm:text-base  text-[#d9d9d9] group-hover:underline inline-block">
-                <div className="flex gap-1 flex-col">
-                  <Link to={`/user-profile/${postedBy._id}`} className="flex">
-                    {postedBy?.userName}
-                  {postedBy?.mark == "true" ? (
-                    <p className="font-bold text-[#1d9bf0] text-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
-                        />
-                      </svg>
-                    </p>
-                  ) : (
-                    ""
-                  )}
-                  </Link>
-                  <p>{title}</p>
+                  <div className="flex gap-1 flex-col">
+                    <Link to={`/user-profile/${postedBy._id}`} className="flex">
+                      {postedBy?.userName}
+                      {postedBy?.mark == "true" ? (
+                        <p className="font-bold text-[#1d9bf0] text-sm">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+                            />
+                          </svg>
+                        </p>
+                      ) : (
+                        ""
+                      )}
+                    </Link>
+                    <p>{title}</p>
+                  </div>
                 </div>
-                    
               </div>
-              </div>
-                    <div className="w-[3px] h-[95px] absolute bg-gray-600 left-[30px] top-[107px] "></div>
-                    <div className="h-[90px] w-[1px]"/>
+              <div className="w-[3px] h-[95px] absolute bg-gray-600 left-[30px] top-[107px] "></div>
+              <div className="h-[90px] w-[1px]" />
 
-                    <div className="flex ">
+              <div className="flex ">
                 <img
                   src={
                     postedBy.update === "true"
@@ -470,41 +445,44 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
                   className="h-[50px] mt-2 w-[50px] rounded-full mr-4 object-cover bg-white"
                 />
                 <div className="font-bold text-[14px] mr-2 sm:text-base  text-[#d9d9d9] group-hover:underline inline-block">
-                <div className="flex gap-1 flex-col">
-                  <Link to={`/user-profile/${userData?._id}`} className="flex">
-                    {userData?.userName}
-                  {userData?.mark == "true" ? (
-                    <p className="font-bold text-[#1d9bf0] text-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
-                        />
-                      </svg>
-                    </p>
-                  ) : (
-                    ""
-                  )}
-                  </Link>
-                  <textarea
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                className={`${
-                  theme === "dark" ? "bg-black" : "bg-white"
-                } text-[16px] font-light w-[100%] outline-none`}
-                placeholder={`Reply to Post`}
-                rows={2}
-              />
-                </div>
-                {/* <button onClick={() => setShowPicker(!showPicker)}>
+                  <div className="flex gap-1 flex-col">
+                    <Link
+                      to={`/user-profile/${userData?._id}`}
+                      className="flex"
+                    >
+                      {userData?.userName}
+                      {userData?.mark == "true" ? (
+                        <p className="font-bold text-[#1d9bf0] text-sm">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
+                            className="w-6 h-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+                            />
+                          </svg>
+                        </p>
+                      ) : (
+                        ""
+                      )}
+                    </Link>
+                    <textarea
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      className={`${
+                        theme === "dark" ? "bg-black" : "bg-white"
+                      } text-[16px] font-light w-[100%] outline-none`}
+                      placeholder={`Reply to Post`}
+                      rows={2}
+                    />
+                  </div>
+                  {/* <button onClick={() => setShowPicker(!showPicker)}>
                   {showPicker ? (
                     <img
                       src={emoji}
@@ -530,9 +508,14 @@ const Pin = ({ pin, theme, autoPlay,userData }) => {
                     />
                   </div>
                 )} */}
+                </div>
               </div>
-              </div>
-              <button onClick={addComment} className="bg-[#1d9bf0] p-2 rounded-full absolute right-[25px] bottom-[15px]">Reply</button>
+              <button
+                onClick={addComment}
+                className="bg-[#1d9bf0] p-2 rounded-full absolute right-[25px] bottom-[15px]"
+              >
+                Reply
+              </button>
             </Box>
           </Modal>
 

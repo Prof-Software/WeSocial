@@ -79,7 +79,7 @@ const Home = ({themeset}) => {
   return (
     <ThemeProvider theme={theme ==='dark'? darkTheme : lightTheme}>
 
-    <div className={`flex items-center justify-center ${theme == "dark" ? "bg-[#000]" : "bg-white"}`}>
+    <div className={`flex items-center w-full justify-center ${theme == "dark" ? "bg-[#000]" : "bg-white"}`}>
 
     <div
       className={`flex ${theme == "dark" ? "bg-[#000]" : "bg-white"}  ${

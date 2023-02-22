@@ -128,7 +128,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
             <div>
               {pinDetail.image && (
                 <div
-                  className="cursor-pointer rounded-lg max-h-[750px] w-[600px]  flex items-center justify-center"
+                  className="cursor-pointer rounded-lg max-h-[750px] w-[534.5px]   flex items-center justify-center"
                   style={{
                     border:
                       theme === "dark"
@@ -269,7 +269,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
                   />
                   <div className="w-[50px] h-[50px]"/>
                   <div className="w-[2px] top-10 right-[577px] h-full bg-gray-500 absolute"/>
-                  <div className="flex flex-col w-[500px]">
+                  <div className="flex flex-col w-[450px]">
                     <p className="font-bold">{item.postedBy?.userName}</p>
                     <p className="break-words w- text-clip">{item.comment}</p>
                   </div>
@@ -333,7 +333,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
             </div>
           </div>
         </div>
-        <div className="w-[100%] z-50 "><RightBar user={user && user}/></div>
+        <div className="w-[100%] z-50 "><RightBar theme={theme} user={user && user}/></div>
 
       </div>
       )}

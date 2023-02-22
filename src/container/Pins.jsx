@@ -7,7 +7,7 @@ const Pins = ({ user,theme,switchtheme,themeset,autoPlay }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   return (
-    <div className="px- md:px-5">
+    <div className="px- md:px-5 ">
       <div className={`${theme=='dark' ? 'bg-[#000]' : ' bg-gray-50'} absolute right-[330px] md:block hidden`}>
         {/* <Navbar switchtheme={switchtheme} themeset={themeset} theme={theme} searchTerm={searchTerm} setSearchTerm={setSearchTerm} user={user && user} /> */}
       </div>

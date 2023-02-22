@@ -44,14 +44,14 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
           WeSocial
         </p>
         <div className="space-y-1 mt-4 mb-2.5">
-          <SidebarLink text="Home" link='/' Icon={HomeIcon} active />
-          <SidebarLink text="Explore" link='/' Icon={HashtagIcon}  />
-          <SidebarLink text="Notifications" link='/' Icon={BellIcon} />
-          <SidebarLink text="Messages" link='/' Icon={InboxIcon}  />
-          <SidebarLink text="Bookmarks" link='/' Icon={BookmarkIcon} />
-          <SidebarLink text="Lists" link='/' Icon={ClipboardListIcon} />
-          <SidebarLink text="Profile" link={`/user-profile/${user?._id}`} Icon={UserIcon} />
-          <SidebarLink text="Settings" link='/settings' Icon={AiOutlineSetting} />
+          <SidebarLink theme={theme} text="Home" link='/' Icon={HomeIcon} active />
+          <SidebarLink theme={theme} text="Explore" link='/' Icon={HashtagIcon}  />
+          <SidebarLink theme={theme} text="Notifications" link='/' Icon={BellIcon} />
+          <SidebarLink theme={theme} text="Messages" link='/' Icon={InboxIcon}  />
+          <SidebarLink theme={theme} text="Bookmarks" link='/' Icon={BookmarkIcon} />
+          <SidebarLink theme={theme} text="Lists" link='/' Icon={ClipboardListIcon} />
+          <SidebarLink theme={theme} text="Profile" link={`/user-profile/${user?._id}`} Icon={UserIcon} />
+          <SidebarLink theme={theme} text="Settings" link='/settings' Icon={AiOutlineSetting} />
         </div>
         <button className="hidden xl:inline ml-auto bg-[#1d9bf0] text-white rounded-full w-56 h-[52px] text-lg font-bold shadow-md hover:bg-[#1a8cd8]">
         Tweet

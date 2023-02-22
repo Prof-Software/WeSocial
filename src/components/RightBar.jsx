@@ -47,11 +47,11 @@ const RightBar = ({ theme, switchtheme, user }) => {
   return (
     <div className="md:block hidden md:ml-14 ml-0 overflow-y-scroll overflow-x-hidden h-screen w-full min-w-210" >
       <div className="absolute overflow-y-auto overflow-x-hidden h-screen min-w-210">
-        <div className="flex items-center bg-[#202327] rounded-full mt-3">
-          <SearchIcon className="text-gray-500 ml-3 h-5 z-50 absolute" />
+        <div className={`flex items-center bg-[#202327] ${theme !== 'dark' && 'bg-[#eeeeee]'} rounded-full mt-3`}>
+          <SearchIcon className={`text-gray-500 ${theme !== 'dark' && 'text-gray-700'} ml-3 h-5 z-50 absolute`} />
           <input
             type="text"
-            className="bg-transparent abs placeholder-gray-500  outline-none text-[#d9d9d9] pl-10 p-3 pr-10 inset-0  border border-transparent w-full focus:border-[#1d9bf0] rounded-full focus:bg-black focus:shadow-lg"
+            className={`bg-transparent abs placeholder-gray-500 ${theme !== 'dark' && 'placeholder-gray-400 focus:bg-white'}  outline-none text-[#d9d9d9] pl-10 p-3 pr-10 inset-0  border border-transparent w-full focus:border-[#1d9bf0] rounded-full  focus:bg-black focus:shadow-lg`}
             placeholder="Search WeSocial"
           />
         </div>
@@ -136,17 +136,17 @@ const RightBar = ({ theme, switchtheme, user }) => {
         </div>
         )}
         {!user && (
-          <div className="w-[360px] border p-3 border-[#15181c] mt-3 rounded-xl">
+          <div className={`w-[360px] border p-3 border-[#15181c] ${theme !== 'dark' && 'border-[#7e8389]'} mt-3 rounded-xl`}>
             <h1 className="text-xl font-extrabold">New to WeSocial?</h1>
-            <p className="text-sm font-thin text-gray-400">Sign up now and get your own personalized timeline!</p>
-            <button className="bg-[#1d9bf0] p-2 w-full mt-2 text-xl rounded">
+            <p className={`text-sm font-thin text-gray-400 ${theme !== 'dark' && 'text-gray-500'}`}>Sign up now and get your own personalized timeline!</p>
+            <button className={`bg-[#1d9bf0] p-2 w-full mt-2 text-xl rounded ${theme !== 'dark' && 'text-white'}`}>
               <Link to={`/login`}>
                 Login
               </Link>
             </button>
           </div>
         )}
-        <div className="bg-[#15181c]  mt-3 rounded-xl">
+        <div className={`bg-[#15181c]  mt-3 rounded-xl ${theme !== 'dark' && 'bg-[#eeeeee]'}`}>
           <div
             className="flex items-center"
             style={{ borderBottom: "2px solid #444444" }}

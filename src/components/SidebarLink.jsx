@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 
-function SidebarLink({ Icon, text, active,link }) {
+function SidebarLink({ Icon, text, active,link,theme }) {
   const router = useNavigate();
   return (
     <Link
-      className={`text-[#d9d9d9] flex items-center  justify-center xl:justify-start  hoverAnimation ${
+      className={`text-[#d9d9d9] ${theme !== 'dark' && 'text-[#000]'} flex items-center  justify-center xl:justify-start  hoverAnimation ${
         active && "font-extrabold"
       }`}
       to={link}

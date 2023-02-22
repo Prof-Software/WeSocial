@@ -7,7 +7,10 @@ import EmojiPicker from "emoji-picker-react";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
-
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import { categories } from "../utils/data";
 import { client, urlFor } from "../client";
 import Spinner from "./Spinner";
@@ -28,6 +31,10 @@ const NewPost = ({ user, theme }) => {
   const [wrongImageType, setWrongImageType] = useState(false);
   const [wrongFileType, setWrongFileType] = useState(false);
   const navigate = useNavigate();
+
+  const handleChange = (event) => {
+    setCategory(event.target.value);
+  };
 
   const uploadVideo = async (e) => {
     const selectedFile = e.target.files[0];
@@ -84,7 +91,7 @@ const NewPost = ({ user, theme }) => {
   };
 
   const savePin = () => {
-    if (title) {
+    if (title && category) {
       const doc = {
         _type: "pin",
         title,
@@ -149,9 +156,12 @@ const NewPost = ({ user, theme }) => {
       className="user-name"
       id="post"
       style={{
-        border: user && ( theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3"),
-        borderBottom: user && (
-          theme === "dark" ? "3px solid #2f3336" : "3px solid #D3D3D3")
+        border:
+          user &&
+          (theme === "dark" ? "1px solid #2f3336" : "1px solid #999999"),
+        borderBottom:
+          user &&
+          (theme === "dark" ? "3px solid #2f3336" : "3px solid #999999"),
       }}
     >
       {user && (
@@ -312,10 +322,46 @@ const NewPost = ({ user, theme }) => {
               <div className="flex w-1/2 justify-end mr-7">
                 <button
                   onClick={savePin}
-                  className="text-[17px] text-white bg-[#1da1f2] pt-1 pr-8 rounded-lg pl-8 pb-1"
+                  className="text-[17px] mr-[1rem] text-white bg-[#1da1f2] pt-1 pr-8 rounded-lg pl-8 pb-1"
                 >
                   Post
                 </button>
+                {title && (
+                  <div className="relative">
+                    <FormControl
+                      sx={{ minWidth: 120 }}
+                      className="absolute "
+                      size="small"
+                    >
+                      <InputLabel id="demo-select-small">Category</InputLabel>
+                      <Select
+                        labelId="demo-select-small"
+                        id="demo-select-small"
+                        value={category}
+                        label="Category"
+                        onChange={handleChange}
+                      >
+                        {/* <MenuItem value="">
+                          <em>None</em>
+                        </MenuItem>
+                        <MenuItem value={10}>Ten</MenuItem>
+                        <MenuItem value={20}>Twenty</MenuItem>
+                        <MenuItem value={30}>Thirty</MenuItem> */}
+                        {categories.map((item, index) => (
+                          <MenuItem
+                            key={index}
+                            className={`text-base border-0 outline-none capitalize ${
+                              theme == "dark" ? "bg-[#181818] " : ""
+                            } `}
+                            value={item.name}
+                          >
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+                )}
               </div>
             </div>
           </div>

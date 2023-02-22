@@ -46,7 +46,7 @@ const Feed = ({theme,switchtheme,user,autoPlay}) => {
     <div className=''>
       
       {pins && (
-        <div className='flex'>
+        <div className='flex '>
         <MasonryLayout autoPlay={autoPlay}  user={user && user}  switchtheme={switchtheme} theme={theme} pins={pins} />
         <RightBar switchtheme={switchtheme} theme={theme} searchTerm={searchTerm} setSearchTerm={setSearchTerm} user={user && user} />
 
