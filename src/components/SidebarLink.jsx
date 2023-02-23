@@ -13,7 +13,7 @@ function SidebarLink({ Icon, text, active,link,theme }) {
         <div className="flex hover:bg-[rgb(255,255,255,0.1)] rounded-full transition-all space-x-3 p-2 px-3">
 
       <Icon className="h-8" fontSize={30} />
-      <span className="hidden xl:inline text-2xl">{text}</span>
+      <span className="hidden md:inline text-2xl">{text}</span>
         </div>
     </Link>
   );

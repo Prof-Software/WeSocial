@@ -84,12 +84,12 @@ const Home = ({themeset}) => {
     <div
       className={`flex ${theme == "dark" ? "bg-[#000]" : "bg-white"}  ${
         theme == "dark" ? "text-white" : "text-black"
-      }  md:flex-row flex-col h-screen md:w-[84%] w-full transition-height duration-75 ease-out`}
+      }  flex-row h-screen md:w-[84%] w-full transition-height duration-75 ease-out`}
     >
-      <div className="hidden md:flex h-screen flex-initial">
+      <div className="flex h-screen flex-initial">
         <Sidebar user={user && user} autoPlay={autoPlay} theme={theme} />
       </div>
-      <div className="flex md:hidden flex-row">
+      {/* <div className="flex md:hidden flex-row">
         <div className="p-2 w-full flex flex-row justify-between items-center shadow-md">
           <HiMenu
             fontSize={40}
@@ -131,7 +131,7 @@ const Home = ({themeset}) => {
             />
           </div>
         )}
-      </div>
+      </div> */}
       <div className="pb-2 flex-1 h-full overflow-y-scroll flex" ref={scrollRef}>
         <Routes>
           <Route
