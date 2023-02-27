@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineEdit, AiOutlineLogout, AiOutlineSave } from "react-icons/ai";
 import { useParams, useNavigate } from "react-router-dom";
-import { BiCloudUpload } from "react-icons/bi";
+import { BiArrowBack, BiCloudUpload } from "react-icons/bi";
 import {
   userCreatedPinsQuery,
   userQuery,
@@ -14,6 +14,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import {GoCalendar} from 'react-icons/go'
 import moment from "moment";
 import RightBar from './RightBar'
+import { IconButton } from "@mui/material";
 const activeBtnStyles =
   "bg-blue-700 text-white font-bold p-2 rounded-full w-20 outline-none";
 const notActiveBtnStyles =
@@ -157,155 +158,25 @@ const UserProfile = ({ theme }) => {
       });
     }
   }, [text, userId]);
+  function handleClick() {
+    if (document.referrer === "") {
+      navigate("/");
+    } else {
+      navigate(-1);
+    }
+  }
   if (!user) return <Spinner message="Loading profile" />;
 
   return (
     <div className="relative pb-2 h-full justify-center items-center">
       <div className="flex flex-col pb-5">
-        <div className="relative flex flex-col mb-7">
-          <div className="flex flex-col justify-center items-center">
-            {!coverImage ? <img
-              className=" w-full h-[300px] 2xl:h-[300px] shadow-lg object-cover"
-              src={
-                user.cover
-                  ? urlFor(user.cover).width(1600).height(900).url()
-                  : "https://source.unsplash.com/1600x900/?nature,photography,technology"
-              }
-              alt="user-pic"
-            /> : <img
-            className=" w-full h-370 2xl:h-510 shadow-lg object-cover"
-            src={coverImage?.url}
-            alt="user-pic"
-          />}
-            
-            <div className="relative  flex items-center justify-end">
-              {!profileImage && (
-
-                <img
-                  className="rounded-full w-[135px] h-[135px] -mt-10 left-0 shadow-xl object-cover"
-                  src={
-                    user.update === "true"
-                    ? urlFor(user.image).height(180).width(180)
-                      : user.image
-                    }
-                    alt="user-pic"
-                    />
-              )}
-              {profileImage && (
-                <img
-                  className="rounded-full w-[135px] h-[135px]  left-0  -mt-10 shadow-xl object-cover"
-                  src={profileImage?.url}
-                  alt="user-pic"
-                />
-              )}
-              {userId === User.sub && (
-                <div>
-                  <input
-                    type="file"
-                    onChange={uploadImage}
-                    className="w-0 h-0"
-                    id="file-input"
-                  />
-                  {!profileImage ? (
-                    <label htmlFor="file-input">
-                      <AiOutlineEdit
-                        className={`absolute top-[-44px] right-[-25px] bg-black text-white rounded-full border-2 border-white p-1`}
-                        fontSize={32}
-                      />
-                    </label>
-                  ) : (
-                    <AiOutlineSave
-                      className={`absolute cursor-pointer top-[-44px] right-[-25px] bg-black text-white rounded-full border-2 border-white p-1`}
-                      onClick={()=>{saveImage(userId)}}
-                      fontSize={32}
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="relative left-0 w-full">
-              <div className="ml-5 flex items-center gap-3 text-[gray]"><GoCalendar fontSize={20}/>Joined {moment(user._createdAt).format("MMM  YYYY")}</div>
-              <p>{}</p>
-            </div>
-          </div>
-          <div className="font-bold text-3xl text-center flex items-center justify-center gap-2  mt-3">
-            {input === false && user.userName}{" "}
-            {userId === User.sub && (
-              <div className="flex items-center justify-center">
-                <AiOutlineEdit onClick={showinput} className="cursor-pointer" />
-                {input === true && (
-                  <div className="flex">
-                    <div>
-                      <input
-                        type="text"
-                        value={newName}
-                        onChange={handleNameChange}
-                        placeholder="Enter New Name"
-                        className={`${
-                          theme === "dark"
-                            ? "border-b-2 bg-[#181818] border-b-blue-600"
-                            : "border-2 border-b-blue-600"
-                        } outline-none`}
-                      />{" "}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            {input === true && (
-              <button
-                className={`${
-                  theme === "dark"
-                    ? " rounded bg-pink-400"
-                    : "rounded bg-pink-400 text-white"
-                }`}
-                onClick={() => {
-                  saveName(userId);
-                }}
-              >
-                Save
-              </button>
-            )}
-          </div>
-          <div className="absolute top-0 z-1 right-0 p-2">
-            {userId === User.sub && (
-              <div className=" bg-white p-2 h-10 rounded-full cursor-pointer outline-none shadow-md">
-                {!coverImage && <label>
-                  <div className="flex flex-col items-center justify-center h-full">
-                    <AiOutlinePlus
-                      className="cursor-pointer"
-                      color="red"
-                      fontSize={21}
-                    />
-                  </div>
-                  <input
-                    type="file"
-                    name="upload-image"
-                    onChange={handleFileChange}
-                    className="w-0 h-0"
-                  />
-                </label>}
-                
-                {coverImage ? (
-                  <button
-                    type="button"
-                    className=" rounded-full cursor-pointer outline-none shadow-md"
-                    onClick={()=>{saveCover(userId)}}
-                  >
-                    <BiCloudUpload
-                      // onClick={handleSave}
-                      className="cursor-pointer"
-                      color="red"
-                      fontSize={21}
-                    />
-                  </button>
-                ) : (
-                  ""
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+      <div className="flex gap-2 mt-0 top-0 w-full fixed items-center p-3 backdrop-blur-md z-50">
+        <IconButton onClick={handleClick}>
+          <BiArrowBack fontSize={24} />
+        </IconButton>
+        <p className="text-xl font-bold">Profile</p>
+      </div>
+        <div className="h-[70px] w-full"/>
         <div className="text-center mb-7">
           <button
             type="button"

@@ -186,6 +186,14 @@ const Pin = ({ pin, theme, autoPlay, userData }) => {
   let alreadySaved = pin?.save?.filter(
     (item) => item?.postedBy?._id === user?.sub
   );
+  const formatDate = (date) => {
+    const diff = moment().diff(moment(date), "hours");
+    if (diff < 24) {
+      return moment(date).fromNow(true);
+    } else {
+      return moment(date).format("MMM D");
+    }
+  };
 
   alreadySaved = alreadySaved?.length > 0 ? alreadySaved : [];
   const savePin = (id) => {
@@ -249,8 +257,24 @@ const Pin = ({ pin, theme, autoPlay, userData }) => {
             <div className="inline-block group">
               <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
                 <p className="flex gap-1">
-                  <Link to={`/user-profile/${postedBy?._id}`} className={`flex ${theme !== 'dark' && 'text-[#000]'}`}>
-                    {postedBy?.userName}
+                  <Link
+                    to={`/user-profile/${postedBy?._id}`}
+                    className={`flex ${
+                      theme !== "dark" && "text-[#000]"
+                    } truncate`}
+                  >
+                    {postedBy?.userName.length > 12 ? (
+                      <>
+                        <span className="hidden md:inline">
+                          {postedBy?.userName}
+                        </span>
+                        <span className="inline md:hidden">
+                          {postedBy?.userName.substring(0, 3)}...
+                        </span>
+                      </>
+                    ) : (
+                      postedBy?.userName
+                    )}
                   </Link>
                   {postedBy?.mark == "true" ? (
                     <p className="font-bold text-[#1d9bf0] text-sm">
@@ -275,13 +299,25 @@ const Pin = ({ pin, theme, autoPlay, userData }) => {
                 </p>
               </div>
 
-              <span className={`text-sm sm:text-[15px] mr-2`}>
-                @{postedBy?.userName}
+              <span className={`text-sm sm:text-[15px] md:mr-2 mr-1 truncate`}>
+                @{" "}
+                {postedBy?.userName.length > 12 ? (
+                      <>
+                        <span className="hidden md:inline">
+                          {postedBy?.userName}
+                        </span>
+                        <span className="inline md:hidden">
+                          {postedBy?.userName.substring(0, 0)}...
+                        </span>
+                      </>
+                    ) : (
+                      postedBy?.userName
+                    )}
               </span>
             </div>
             •{" "}
             <span className="hover:underline text-sm sm:text-[15px]">
-              {moment(_createdAt).fromNow()}
+              {formatDate(_createdAt)}
             </span>
           </div>
           <div className="icon group flex-shrink-0 ml-auto">
@@ -289,7 +325,13 @@ const Pin = ({ pin, theme, autoPlay, userData }) => {
           </div>
         </div>
         <div className="relative w-[80%] ml-[3.75rem] mb-3">
-          <p className={`text-[#d9d9d9] text-sm  top-0 ${theme !== 'dark' && 'text-[#000]'}`}>{title}</p>
+          <p
+            className={`text-[#d9d9d9] text-sm  top-0 ${
+              theme !== "dark" && "text-[#000]"
+            }`}
+          >
+            {title}
+          </p>
         </div>
 
         {image && (
@@ -348,7 +390,7 @@ const Pin = ({ pin, theme, autoPlay, userData }) => {
         )}
         <div id="actions-tab" className="mt-1 flex justify-around">
           <Tooltip title="Comment">
-            <div className="flex items-center space-x-1 group">
+            <div className="flex items-center space-x-1 group hover:text-[#1d9bf0] text-[#727272]">
               <div
                 className="icon group-hover:bg-[#1d9bf0] group-hover:bg-opacity-10"
                 onClick={handleOpen}
@@ -370,7 +412,7 @@ const Pin = ({ pin, theme, autoPlay, userData }) => {
                   </svg>
                 </div>
               </div>
-              <p className="text-[#727272] text-sm">{pin.comments?.length}</p>
+              <p className=" text-sm">{pin.comments?.length}</p>
             </div>
           </Tooltip>
           <Modal
@@ -611,7 +653,7 @@ const Pin = ({ pin, theme, autoPlay, userData }) => {
             </div>
           </Dialog>
           <Tooltip title="Like">
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center hover:text-pink-600 text-[#727272]">
               {alreadySaved?.length !== 0 ? (
                 <div
                   type="button"
@@ -619,7 +661,7 @@ const Pin = ({ pin, theme, autoPlay, userData }) => {
                     e.stopPropagation();
                     savePin(_id);
                   }}
-                  className={`flex heart group-hover:bg-pink-600/10 items-center justify-center gap-2 text-sm ${
+                  className={`flex heart group-hover:bg-pink-600/10 group-hover:text-pink-600  items-center justify-center gap-2 text-sm ${
                     theme === "dark" ? "text-[#727272]" : "text-black"
                   }`}
                 >
@@ -632,15 +674,15 @@ const Pin = ({ pin, theme, autoPlay, userData }) => {
                     savePin(_id);
                   }}
                   type="button"
-                  className={`flex icon group-hover:bg-pink-600/10 items-center justify-center gap-2 text-sm ${
+                  className={`flex icon group-hover:bg-pink-600/10 group-hover:text-pink-600 items-center justify-center gap-2 text-sm ${
                     theme === "dark" ? "text-[#727272]" : "text-black"
                   } hover:text-pink-600 heart`}
                 >
                   <HeartIcon className="h-5" />
                 </button>
               )}
-              <p className="text-[#727272] text-sm">
-                {pin?.save?.length} {!pin?.save?.length && 0}
+              <p className=" text-sm">
+                {pin?.save?.length ? pin?.save?.length : 0}
               </p>
             </div>
           </Tooltip>

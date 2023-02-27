@@ -13,7 +13,7 @@ import { AiOutlineHome, AiOutlineSetting } from "react-icons/ai";
 import { AiFillHome } from "react-icons/ai";
 import { urlFor } from "../client";
 import { HomeIcon } from "@heroicons/react/solid";
-import {GiFireDash} from 'react-icons/gi'
+import { GiFireDash } from "react-icons/gi";
 import {
   HashtagIcon,
   BellIcon,
@@ -24,7 +24,7 @@ import {
   DotsCircleHorizontalIcon,
   DotsHorizontalIcon,
 } from "@heroicons/react/outline";
-import { googleLogout } from '@react-oauth/google';
+import { googleLogout } from "@react-oauth/google";
 import SidebarLink from "./SidebarLink";
 const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
   const isNotActiveStyle = `flex items-center  text-2xl  transition-all duration-200 ease-in-out capitalize`;
@@ -42,26 +42,66 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
     >
       <div className="flex flex-col">
         <p className="items-center md:flex hidden justify-center w-14 h-14 hoverAnimation p-0  text-2xl font-bold">
-          <GiFireDash fontSize={40}/>
+          <GiFireDash fontSize={40} />
         </p>
         <p className="flex items-center md:hidden  top-0 justify-center w-14 h-14 hoverAnimation p-0 absolute text-2xl font-bold">
-        <GiFireDash fontSize={40}/>
+          <GiFireDash fontSize={40} />
         </p>
-        <div className="w-14 h-14 md:hidden flex"/>
+        <div className="w-14 h-14 md:hidden flex" />
         <div className="space-y-1 mt-4 mb-2.5">
-          <SidebarLink theme={theme} text="Home" link='/' Icon={HomeIcon} active />
-          <SidebarLink theme={theme} text="Explore" link='/' Icon={HashtagIcon}  />
-          <SidebarLink theme={theme} text="Notifications" link='/' Icon={BellIcon} />
-          <SidebarLink theme={theme} text="Messages" link='/' Icon={InboxIcon}  />
-          <SidebarLink theme={theme} text="Bookmarks" link='/' Icon={BookmarkIcon} />
-          <SidebarLink theme={theme} text="Lists" link='/' Icon={ClipboardListIcon} />
-          <SidebarLink theme={theme} text="Profile" link={`/user-profile/${user?._id}`} Icon={UserIcon} />
-          <SidebarLink theme={theme} text="Settings" link='/settings' Icon={AiOutlineSetting} />
+          <SidebarLink
+            theme={theme}
+            text="Home"
+            link="/"
+            Icon={HomeIcon}
+            active
+          />
+          <SidebarLink
+            theme={theme}
+            text="Explore"
+            link="/"
+            Icon={HashtagIcon}
+          />
+          <SidebarLink
+            theme={theme}
+            text="Notifications"
+            link="/notifications"
+            Icon={BellIcon}
+          />
+          <SidebarLink
+            theme={theme}
+            text="Messages"
+            link="/"
+            Icon={InboxIcon}
+          />
+          <SidebarLink
+            theme={theme}
+            text="Bookmarks"
+            link="/"
+            Icon={BookmarkIcon}
+          />
+          <SidebarLink
+            theme={theme}
+            text="Lists"
+            link="/"
+            Icon={ClipboardListIcon}
+          />
+          <SidebarLink
+            theme={theme}
+            text="Profile"
+            link={`/user-profile/${user?._id}`}
+            Icon={UserIcon}
+          />
+          <SidebarLink
+            theme={theme}
+            text="Settings"
+            link="/settings"
+            Icon={AiOutlineSetting}
+          />
         </div>
         <button className="hidden xl:inline ml-auto bg-[#1d9bf0] text-white rounded-full w-56 h-[52px] text-lg font-bold shadow-md hover:bg-[#1a8cd8]">
-        Tweet
-      </button>
-
+          Tweet
+        </button>
       </div>
       {user && (
         <Link
@@ -86,7 +126,7 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
             alt="user-profile"
           />
           <p className="md:block hidden">{user.userName}</p>
-          <IoIosArrowForward className="hidden md:block"/>
+          <IoIosArrowForward className="hidden md:block" />
         </Link>
       )}
     </div>

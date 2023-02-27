@@ -10,6 +10,7 @@ import { userQuery } from "../utils/data";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Settings from "../components/Settings";
+import Notification from "../components/Notification";
 import Splash from "../components/Splash";
 const darkTheme = createTheme({
   palette: {
@@ -141,6 +142,10 @@ const Home = ({themeset}) => {
           <Route
             path="/settings"
             element={<Settings theme={theme} autoPlay={autoPlay} switchPlay={switchPlay} switchtheme={switchtheme} />}
+          />
+          <Route
+            path="/notifications"
+            element={<Notification theme={theme} user={user && user} autoPlay={autoPlay} switchPlay={switchPlay} switchtheme={switchtheme} />}
           />
           <Route
             path="/*"
