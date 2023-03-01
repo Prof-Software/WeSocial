@@ -72,7 +72,8 @@ export const categories = [
       userName,
       image,
       update,
-      mark
+      mark,
+      about
     },
    save[]{
       postedBy->{

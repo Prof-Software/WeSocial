@@ -14,7 +14,7 @@ const MasonryLayout = ({ pins,theme,switchtheme,user,autoPlay }) => (
   <div className='flex  flex-col'>
     <NewPost theme={theme}  user={user && user} />
   <div className='flex flex-col '>
-    {pins?.map((pin) => <Pin autoPlay={autoPlay} userData={user && user} theme={theme} key={pin._id} pin={pin} className="" />)}
+    {pins?.map((pin) => <Pin autoPlay={autoPlay} border userData={user && user} theme={theme} key={pin._id} pin={pin} className="" />)}
   </div>
   </div>
 );

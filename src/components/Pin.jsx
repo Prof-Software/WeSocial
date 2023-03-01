@@ -61,7 +61,7 @@ const style = {
   boxShadow: 24,
 };
 
-const Pin = ({ pin, theme, autoPlay, userData }) => {
+const Pin = ({ pin, theme, autoPlay, userData,border }) => {
   const [postHovered, setPostHovered] = useState(false);
   const [comment, setComment] = useState("");
   const [savingPost, setSavingPost] = useState(false);
@@ -234,7 +234,8 @@ const Pin = ({ pin, theme, autoPlay, userData }) => {
       <div
         className="relative overflow-hidden transition-all duration-500 ease-in-out md:w-[560px] w-full"
         style={{
-          border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #999999",
+          
+            border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #999999",
           padding: "10px",
         }}
       >
@@ -566,7 +567,7 @@ const Pin = ({ pin, theme, autoPlay, userData }) => {
               className="flex items-center space-x-1 group"
               onClick={handleClickOpen}
             >
-              <div className="share hover:text-[#21f01d] group-hover:bg-opacity-10 h-4 text-[#727272]">
+              <div className="share hover:text-[#21f01d] flex items-center justify-center group-hover:bg-opacity-10 text-[#727272]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

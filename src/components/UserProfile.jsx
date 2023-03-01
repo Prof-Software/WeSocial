@@ -14,11 +14,14 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { GoCalendar } from "react-icons/go";
 import moment from "moment";
 import RightBar from "./RightBar";
-import { IconButton } from "@mui/material";
+import { Button, IconButton, Modal, TextField } from "@mui/material";
+import { Box } from "@mui/system";
+import CloseIcon from "@mui/icons-material/Close";
+
 const activeBtnStyles =
-  "bg-blue-700 text-white font-bold p-2 rounded-full w-20 outline-none";
+  "border-b-4 border-b-blue-700 text-white hover:bg-[rgb(255,255,255,0.1)]  font-bold p-2 w-1/2 outline-none";
 const notActiveBtnStyles =
-  "bg-primary mr-4 bg-blue-500 text-white font-bold p-2 rounded-full w-20 outline-none";
+  " text-white font-bold p-2 w-1/2 hover:bg-[rgb(255,255,255,0.1)] outline-none";
 
 const UserProfile = ({ theme }) => {
   const [user, setUser] = useState();
@@ -38,11 +41,19 @@ const UserProfile = ({ theme }) => {
   const [imageAsset, setImageAsset] = useState();
   const [input, setInput] = useState(false);
   const [newName, setNewName] = useState("");
+  const [newAbout, setNewAbout] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const [coverImage, setCoverImage] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpen = () => setOpenModal(true);
+  const handleModalClose = () => setOpenModal(false);
+
   const handleNameChange = (event) => {
     setNewName(event.target.value);
+  };
+  const handleAboutChange = (event) => {
+    setNewAbout(event.target.value);
   };
 
   const uploadImage = (e) => {
@@ -124,6 +135,49 @@ const UserProfile = ({ theme }) => {
       setInput(true);
     }
   };
+  const saveChanges = async (id) => {
+    if (newName) {
+      client
+        .patch(id)
+        .set({ userName: newName })
+        .commit()
+        .then(() => {
+          window.location.reload();
+        });
+    }
+    if (profileImage) {
+      client
+        .patch(id)
+        .set({ image: profileImage?.url })
+        .commit()
+        .then(() => {
+          window.location.reload();
+        });
+    }
+    if (coverImage) {
+      await client
+        .patch(id)
+        .set({
+          cover: {
+            _type: "reference",
+            _ref: coverImage._id,
+          },
+        })
+        .commit()
+        .then(() => {
+          window.location.reload();
+        });
+    }
+    if(newAbout){
+      client
+      .patch(id)
+      .set({ about: newAbout })
+      .commit()
+      .then(() => {
+        window.location.reload();
+      });
+    }
+  };
   const saveImage = async (id) => {
     await client
       .patch(id)
@@ -147,6 +201,7 @@ const UserProfile = ({ theme }) => {
         window.location.reload();
       });
   };
+  console.log(user)
   useEffect(() => {
     if (text === "Created") {
       const createdPinsQuery = userCreatedPinsQuery(userId);
@@ -172,12 +227,13 @@ const UserProfile = ({ theme }) => {
   if (!user) return <Spinner message="Loading profile" />;
 
   return (
-    <div className="relative pb-2 h-full justify-center items-center ml-5 w-[600px]"
-    
-    >
-      <div className="flex flex-col pb-5 " style={{
-      border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #999999",
-    }}>
+    <div className="relative pb-2 h-full justify-center items-center ml-5">
+      <div
+        className="flex flex-col pb-5 "
+        style={{
+          border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #999999",
+        }}
+      >
         <div className="flex gap-2 mt-0 top-0 w-[598px] fixed items-center py-2 backdrop-blur-md z-50">
           <IconButton onClick={handleClick}>
             <BiArrowBack fontSize={24} />
@@ -197,7 +253,7 @@ const UserProfile = ({ theme }) => {
           />
         ) : (
           <img
-            className=" w-full h-370 2xl:h-510 shadow-lg object-cover"
+            className="w-full h-[220px] 2xl:h-[220px] shadow-lg object-cover"
             src={coverImage?.url}
             alt="user-pic"
           />
@@ -206,8 +262,8 @@ const UserProfile = ({ theme }) => {
           <div>
             {!profileImage && (
               <img
-                className="rounded-full w-[135px] h-[135px] -mt-[4.5rem] ml-3 left-0 shadow-xl object-cover"
-                style={{border:'6px solid black'}}
+                className="rounded-full w-[135px] h-[135px] bg-white -mt-[4.5rem] ml-3 left-0 shadow-xl object-cover"
+                style={{ border: "6px solid black" }}
                 src={
                   user.update === "true"
                     ? urlFor(user.image).height(180).width(180)
@@ -218,25 +274,168 @@ const UserProfile = ({ theme }) => {
             )}
             {profileImage && (
               <img
-                className="rounded-full w-[135px] h-[135px]  left-0  -mt-[4.5rem] ml-3 shadow-xl object-cover"
-                style={{border:'6px solid black'}}
+                className="rounded-full w-[135px] h-[135px] bg-white  left-0  -mt-[4.5rem] ml-3 shadow-xl object-cover"
+                style={{ border: "6px solid black" }}
                 src={profileImage?.url}
                 alt="user-pic"
               />
             )}
           </div>
-          <button className="absolute right-[25px] bg-white text-black p-2 px-4 rounded-full font-bold top-[18.5rem]">Follow</button>
+          {userId === User.sub ? (
+            <button
+              onClick={handleOpen}
+              className="absolute right-[25px] bg-white text-black p-2 px-4 rounded-full font-bold top-[18.5rem]"
+            >
+              {" "}
+              Edit
+            </button>
+          ) : (
+            <button className="absolute right-[25px] bg-white text-black p-2 px-4 rounded-full font-bold top-[18.5rem]">
+              Follow
+            </button>
+          )}
+          <Modal
+            open={openModal}
+            onClose={handleModalClose}
+            closeAfterTransition
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            className="outline-none bg-[rgb(29,155,240,0.2)] flex items-center justify-center"
+          >
+            <Box className="bg-black text-white p-3 rounded-md">
+              <div
+                className="flex gap-1 items-center"
+                style={{ borderBottom: "1px solid gray", marginBottom: "10px" }}
+              >
+                <IconButton className="mt-2" onClick={handleModalClose}>
+                  <CloseIcon />
+                </IconButton>
+                <p className="text-md">Edit Profile</p>
+              </div>
+              <div>
+                {!coverImage ? (
+                  <div>
+                    <label htmlFor="cover-input">
+                      <img
+                        className=" h-[150px] cursor-pointer  2xl:h-[180px] w-[440px] shadow-lg object-cover"
+                        src={
+                          user.cover
+                            ? urlFor(user.cover).width(500).height(200).url()
+                            : "https://source.unsplash.com/1600x900/?nature,photography,technology"
+                        }
+                        alt="user-pic"
+                      />
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      className="w-0 h-0"
+                      id="cover-input"
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <label htmlFor="cover-input">
+                      <img
+                        className=" h-[150px] cursor-pointer  2xl:h-[180px] w-[440px] shadow-lg object-cover"
+                        src={coverImage?.url}
+                        alt="user-pic"
+                      />
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      className="w-0 h-0"
+                      id="cover-input"
+                    />
+                  </div>
+                )}
+
+                {!profileImage && (
+                  <div>
+                    <label htmlFor="file-input">
+                      <img
+                        className="rounded-full cursor-pointer w-[135px] h-[135px] -mt-[4.5rem] ml-3 left-0 shadow-xl object-cover z-50"
+                        src={
+                          user.update === "true"
+                            ? urlFor(user.image).height(180).width(180)
+                            : user.image
+                        }
+                        alt="user-pic"
+                      />
+                    </label>
+                    <input
+                      type="file"
+                      onChange={uploadImage}
+                      className="w-0 h-0"
+                      id="file-input"
+                    />
+                  </div>
+                )}
+                {profileImage && (
+                  <div>
+                    <label htmlFor="file-input">
+                      <img
+                        className="rounded-full cursor-pointer w-[135px] h-[135px]  left-0  -mt-[4.5rem] ml-3 shadow-xl object-cover z-50"
+                        src={profileImage?.url}
+                        alt="user-pic"
+                      />
+                    </label>
+
+                    <input
+                      type="file"
+                      onChange={uploadImage}
+                      className="w-0 h-0"
+                      id="file-input"
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col gap-2">
+                <TextField
+                  id="outlined-basic"
+                  value={newName}
+                  onChange={handleNameChange}
+                  label="Name"
+                  variant="outlined"
+                />
+                <TextField
+                  id="outlined-multiline-flexible"
+                  label="About"
+                  value={newAbout}
+                  onChange={handleAboutChange}
+                  multiline
+                  rows={3}
+                />
+              </div>
+              <div className="flex justify-end w-full mt-3">
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    saveChanges(userId);
+                  }}
+                  color="success"
+                >
+                  Save Changes
+                </Button>
+              </div>
+            </Box>
+          </Modal>
         </div>
         <h1 className="text-xl ml-5 font-extrabold">{user.userName}</h1>
-        <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">@{user.userName}</h1>
-        <p className="ml-5">about</p>
+        <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">
+          @{user.userName}
+        </h1>
+        {user?.about &&
+        
+        <p className="ml-5">{user?.about}</p>
+        }
         <div className="ml-5 flex gap-1 mt-2 text-[gray] items-center">
-
-          <GoCalendar className="" fontSize={20}/>
+          <GoCalendar className="" fontSize={20} />
           Joined {moment(user._createdAt).format("MMM  YYYY")}
         </div>
 
-        <div className="text-center mb-7">
+        <div className="text-center flex w-full justify-cente">
           <button
             type="button"
             onClick={(e) => {
@@ -245,9 +444,9 @@ const UserProfile = ({ theme }) => {
             }}
             className={`${
               activeBtn === "created" ? activeBtnStyles : notActiveBtnStyles
-            } mr-3`}
+            } w-1/2  transition-all`}
           >
-            Created
+            Posts
           </button>
           <button
             type="button"
@@ -257,18 +456,14 @@ const UserProfile = ({ theme }) => {
             }}
             className={`${
               activeBtn === "saved" ? activeBtnStyles : notActiveBtnStyles
-            }`}
+            } w-1/2 transition-all`}
           >
             Liked
           </button>
         </div>
 
-        <div className="flex items-center justify-center w-full"
-        style={{
-          border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #999999",
-        }}
-        >
-          <MasonryLayout pins={pins} theme={theme} />
+        <div className="flex items-center justify-center w-full">
+          <MasonryLayout pins={pins} border theme={theme} />
         </div>
 
         {pins?.length === 0 && (
