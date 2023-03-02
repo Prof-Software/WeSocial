@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineEdit, AiOutlineLogout, AiOutlineSave } from "react-icons/ai";
 import { useParams, useNavigate } from "react-router-dom";
 import { BiArrowBack, BiCloudUpload } from "react-icons/bi";
+import { v4 as uuidv4 } from "uuid";
 import {
   userCreatedPinsQuery,
   userQuery,
@@ -23,7 +24,7 @@ const activeBtnStyles =
 const notActiveBtnStyles =
   " text-white font-bold p-2 w-1/2 hover:bg-[rgb(255,255,255,0.1)] outline-none";
 
-const UserProfile = ({ theme }) => {
+const UserProfile = ({ theme, pin }) => {
   const [user, setUser] = useState();
   const [pins, setPins] = useState();
   const [text, setText] = useState("Created");
@@ -46,6 +47,7 @@ const UserProfile = ({ theme }) => {
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const [coverImage, setCoverImage] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
   const handleOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
 
@@ -93,7 +95,6 @@ const UserProfile = ({ theme }) => {
       setUser(data[0]);
     });
   }, [userId]);
-  console.log(user);
   const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
     // uploading asset to sanity
@@ -119,22 +120,42 @@ const UserProfile = ({ theme }) => {
       console.log("first");
     }
   };
-  const saveName = async (id) => {
-    client
-      .patch(id)
-      .set({ userName: newName })
-      .commit()
-      .then(() => {
-        window.location.reload();
-      });
-  };
-  const showinput = () => {
-    if (input === true) {
-      setInput(false);
-    } else {
-      setInput(true);
+
+  let alreadySaved = user?.followers?.filter(
+    (item) => item?.follower?._id === User?.sub
+  );
+  console.log(user);
+  const follow = (id) => {
+    if (!alreadySaved && alreadySaved.length === 0) {
+      client
+        .patch(id)
+        .setIfMissing({ followers: [] })
+        .insert("after", "followers[-1]", [
+          {
+            _key: uuidv4(),
+            userId: User?.sub,
+            follower: {
+              _type: "postedBy",
+              _ref: User?.sub,
+            },
+          },
+        ])
+        .commit()
+        .then(() => {
+          window.location.reload();
+        });
     }
   };
+  const unfollow = (id) => {
+    client
+        .patch(id)
+        .unset([`followers[userId==${User?.sub}]`])
+        .commit()
+        .then(() => {
+          window.location.reload();
+        });
+  }
+
   const saveChanges = async (id) => {
     if (newName) {
       client
@@ -168,40 +189,16 @@ const UserProfile = ({ theme }) => {
           window.location.reload();
         });
     }
-    if(newAbout){
+    if (newAbout) {
       client
-      .patch(id)
-      .set({ about: newAbout })
-      .commit()
-      .then(() => {
-        window.location.reload();
-      });
+        .patch(id)
+        .set({ about: newAbout })
+        .commit()
+        .then(() => {
+          window.location.reload();
+        });
     }
   };
-  const saveImage = async (id) => {
-    await client
-      .patch(id)
-      .set({ image: profileImage?.url })
-      .commit()
-      .then(() => {
-        window.location.reload();
-      });
-  };
-  const saveCover = async (id) => {
-    await client
-      .patch(id)
-      .set({
-        cover: {
-          _type: "reference",
-          _ref: coverImage._id,
-        },
-      })
-      .commit()
-      .then(() => {
-        window.location.reload();
-      });
-  };
-  console.log(user)
   useEffect(() => {
     if (text === "Created") {
       const createdPinsQuery = userCreatedPinsQuery(userId);
@@ -281,7 +278,7 @@ const UserProfile = ({ theme }) => {
               />
             )}
           </div>
-          {userId === User.sub ? (
+          {userId === User.sub && (
             <button
               onClick={handleOpen}
               className="absolute right-[25px] bg-white text-black p-2 px-4 rounded-full font-bold top-[18.5rem]"
@@ -289,11 +286,36 @@ const UserProfile = ({ theme }) => {
               {" "}
               Edit
             </button>
-          ) : (
-            <button className="absolute right-[25px] bg-white text-black p-2 px-4 rounded-full font-bold top-[18.5rem]">
-              Follow
-            </button>
           )}
+
+          {userId !== User.sub && (
+            <div>
+              {alreadySaved?.length !== 0 ? (
+                <button
+                  className="absolute right-[25px] bg-white text-black p-2 px-4 rounded-full font-bold top-[18.5rem]"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    follow(userId);
+                  }}
+                >
+                  Follow
+                </button>
+              ) : (
+                <button
+                  className="absolute right-[25px] bg-white text-black p-2 px-4 rounded-full font-bold top-[18.5rem]"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    unfollow(userId);
+                  }}
+                >
+                  Unfollow
+                </button>
+              )}
+            </div>
+          )}
+
           <Modal
             open={openModal}
             onClose={handleModalClose}
@@ -426,13 +448,14 @@ const UserProfile = ({ theme }) => {
         <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">
           @{user.userName}
         </h1>
-        {user?.about &&
-        
-        <p className="ml-5">{user?.about}</p>
-        }
+        {user?.about && <p className="ml-5">{user?.about}</p>}
         <div className="ml-5 flex gap-1 mt-2 text-[gray] items-center">
           <GoCalendar className="" fontSize={20} />
           Joined {moment(user._createdAt).format("MMM  YYYY")}
+        </div>
+        <div className="ml-5 flex gap-1 mt-2 text-[gray] items-center">
+          <p className=" text-white">0</p> Following{" "}
+          <p className="ml-2 text-white">{user?.followers?.length}</p> Followers
         </div>
 
         <div className="text-center flex w-full justify-cente">

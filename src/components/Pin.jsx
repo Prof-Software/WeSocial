@@ -12,6 +12,7 @@ import icon2 from "../assets/share.png";
 import icon3 from "../assets/like.png";
 import icon4 from "../assets/down.png";
 import { GoVerified } from "react-icons/go";
+import { VerifiedRounded } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -61,7 +62,7 @@ const style = {
   boxShadow: 24,
 };
 
-const Pin = ({ pin, theme, autoPlay, userData,border }) => {
+const Pin = ({ pin, theme, autoPlay, userData, border }) => {
   const [postHovered, setPostHovered] = useState(false);
   const [comment, setComment] = useState("");
   const [savingPost, setSavingPost] = useState(false);
@@ -234,8 +235,7 @@ const Pin = ({ pin, theme, autoPlay, userData,border }) => {
       <div
         className="relative overflow-hidden transition-all duration-500 ease-in-out md:w-[560px] w-full"
         style={{
-          
-            border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #999999",
+          border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #999999",
           padding: "10px",
         }}
       >
@@ -257,7 +257,7 @@ const Pin = ({ pin, theme, autoPlay, userData,border }) => {
           <div className="text-[#6e767d]">
             <div className="inline-block group">
               <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
-                <p className="flex gap-1">
+                <div className="flex gap-1 items-center justify-center">
                   <Link
                     to={`/user-profile/${postedBy?._id}`}
                     className={`flex ${
@@ -278,42 +278,33 @@ const Pin = ({ pin, theme, autoPlay, userData,border }) => {
                     )}
                   </Link>
                   {postedBy?.mark == "true" ? (
-                    <p className="font-bold text-[#1d9bf0] text-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
-                        />
-                      </svg>
-                    </p>
+                    <VerifiedRounded
+                      sx={{
+                        color: "#1DA1F2",
+                        fontSize: 17,
+                        marginTop: "-5px",
+                      }}
+                    />
                   ) : (
                     ""
                   )}
-                </p>
+                </div>
               </div>
 
               <span className={`text-sm sm:text-[15px] md:mr-2 mr-1 truncate`}>
                 @{" "}
                 {postedBy?.userName.length > 12 ? (
-                      <>
-                        <span className="hidden md:inline">
-                          {postedBy?.userName}
-                        </span>
-                        <span className="inline md:hidden">
-                          {postedBy?.userName.substring(0, 0)}...
-                        </span>
-                      </>
-                    ) : (
-                      postedBy?.userName
-                    )}
+                  <>
+                    <span className="hidden md:inline">
+                      {postedBy?.userName}
+                    </span>
+                    <span className="inline md:hidden">
+                      {postedBy?.userName.substring(0, 0)}...
+                    </span>
+                  </>
+                ) : (
+                  postedBy?.userName
+                )}
               </span>
             </div>
             •{" "}
