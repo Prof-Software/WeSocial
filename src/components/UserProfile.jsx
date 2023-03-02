@@ -289,7 +289,7 @@ const UserProfile = ({ theme, pin }) => {
 
           {userId !== User.sub && (
             <div>
-              {alreadySaved?.length === 0 ? (
+              {alreadySaved?.length === 0 || alreadySaved?.length === undefined  ? (
                 <button
                   className="absolute right-[25px] bg-white text-black p-2 px-4 rounded-full font-bold top-[18.5rem]"
                   type="button"
@@ -455,7 +455,7 @@ const UserProfile = ({ theme, pin }) => {
         </div>
         <div className="ml-5 flex gap-1 mt-2 text-[gray] items-center">
           <p className=" text-white">0</p> Following{" "}
-          <p className="ml-2 text-white">{user?.followers?.length}</p> Followers
+          <p className="ml-2 text-white">{user?.followers?.length?user?.followers?.length:0}</p> Followers
         </div>
 
         <div className="text-center flex w-full justify-cente">
