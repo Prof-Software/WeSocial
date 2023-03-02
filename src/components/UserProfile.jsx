@@ -122,11 +122,11 @@ const UserProfile = ({ theme, pin }) => {
   };
 
   let alreadySaved = user?.followers?.filter(
-    (item) => item?.follower?._id === User?.sub
+    (item) => item?.follower?._ref === User?.sub
   );
   console.log(user);
   const follow = (id) => {
-    if (!alreadySaved && alreadySaved.length === 0) {
+    
       client
         .patch(id)
         .setIfMissing({ followers: [] })
@@ -144,12 +144,11 @@ const UserProfile = ({ theme, pin }) => {
         .then(() => {
           window.location.reload();
         });
-    }
   };
   const unfollow = (id) => {
     client
         .patch(id)
-        .unset([`followers[userId==${User?.sub}]`])
+        .unset([`followers[userId=="${User?.sub}"]`])
         .commit()
         .then(() => {
           window.location.reload();
@@ -290,7 +289,7 @@ const UserProfile = ({ theme, pin }) => {
 
           {userId !== User.sub && (
             <div>
-              {alreadySaved?.length !== 0 ? (
+              {alreadySaved?.length === 0 ? (
                 <button
                   className="absolute right-[25px] bg-white text-black p-2 px-4 rounded-full font-bold top-[18.5rem]"
                   type="button"
@@ -312,6 +311,7 @@ const UserProfile = ({ theme, pin }) => {
                 >
                   Unfollow
                 </button>
+                
               )}
             </div>
           )}
