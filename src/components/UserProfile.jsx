@@ -48,12 +48,33 @@ const UserProfile = ({ theme, pin }) => {
   const [coverImage, setCoverImage] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [showFollowers, setShowFollowers] = useState(false);
   const handleOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
+  const [followerData, setFollowerData] = useState([]);
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
   };
+  {
+    showFollowers === true && (
+      <div className="w-[560px] p-5">
+        {user.followers.map((follower) => (
+          <li key={follower.follower._ref}>{follower.follower._ref}</li>
+        ))}
+      </div>
+    );
+  }
+  useEffect(() => {
+    if (user?.followers?.length > 0) {
+      const followers = user.followers.map(
+        (follower) => follower.follower._ref
+      );
+      const query = `*[_type == "user" && _id in ${JSON.stringify(followers)}]`;
+      client.fetch(query).then((data) => setFollowerData(data));
+    }
+  }, [user]);
+  console.log(followerData);
   const handleAboutChange = (event) => {
     setNewAbout(event.target.value);
   };
@@ -124,36 +145,35 @@ const UserProfile = ({ theme, pin }) => {
   let alreadySaved = user?.followers?.filter(
     (item) => item?.follower?._ref === User?.sub
   );
-  console.log(user);
+
   const follow = (id) => {
-    
-      client
-        .patch(id)
-        .setIfMissing({ followers: [] })
-        .insert("after", "followers[-1]", [
-          {
-            _key: uuidv4(),
-            userId: User?.sub,
-            follower: {
-              _type: "postedBy",
-              _ref: User?.sub,
-            },
+    client
+      .patch(id)
+      .setIfMissing({ followers: [] })
+      .insert("after", "followers[-1]", [
+        {
+          _key: uuidv4(),
+          userId: User?.sub,
+          follower: {
+            _type: "postedBy",
+            _ref: User?.sub,
           },
-        ])
-        .commit()
-        .then(() => {
-          window.location.reload();
-        });
+        },
+      ])
+      .commit()
+      .then(() => {
+        window.location.reload();
+      });
   };
   const unfollow = (id) => {
     client
-        .patch(id)
-        .unset([`followers[userId=="${User?.sub}"]`])
-        .commit()
-        .then(() => {
-          window.location.reload();
-        });
-  }
+      .patch(id)
+      .unset([`followers[userId=="${User?.sub}"]`])
+      .commit()
+      .then(() => {
+        window.location.reload();
+      });
+  };
 
   const saveChanges = async (id) => {
     if (newName) {
@@ -198,6 +218,7 @@ const UserProfile = ({ theme, pin }) => {
         });
     }
   };
+
   useEffect(() => {
     if (text === "Created") {
       const createdPinsQuery = userCreatedPinsQuery(userId);
@@ -289,7 +310,8 @@ const UserProfile = ({ theme, pin }) => {
 
           {userId !== User.sub && (
             <div>
-              {alreadySaved?.length === 0 || alreadySaved?.length === undefined  ? (
+              {alreadySaved?.length === 0 ||
+              alreadySaved?.length === undefined ? (
                 <button
                   className="absolute right-[25px] bg-white text-black p-2 px-4 rounded-full font-bold top-[18.5rem]"
                   type="button"
@@ -311,7 +333,6 @@ const UserProfile = ({ theme, pin }) => {
                 >
                   Unfollow
                 </button>
-                
               )}
             </div>
           )}
@@ -453,45 +474,76 @@ const UserProfile = ({ theme, pin }) => {
           <GoCalendar className="" fontSize={20} />
           Joined {moment(user._createdAt).format("MMM  YYYY")}
         </div>
-        <div className="ml-5 flex gap-1 mt-2 text-[gray] items-center">
-          <p className=" text-white">0</p> Following{" "}
-          <p className="ml-2 text-white">{user?.followers?.length?user?.followers?.length:0}</p> Followers
-        </div>
-
-        <div className="text-center flex w-full justify-cente">
+        <div className="ml-4 flex gap-1 mt-2 text-[gray] items-center">
+          
           <button
-            type="button"
-            onClick={(e) => {
-              setText(e.target.textContent);
-              setActiveBtn("created");
+            className="hover:underline cursor-pointer flex gap-1"
+            onClick={() => {
+              setShowFollowers(!showFollowers);
             }}
-            className={`${
-              activeBtn === "created" ? activeBtnStyles : notActiveBtnStyles
-            } w-1/2  transition-all`}
           >
-            Posts
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              setText(e.target.textContent);
-              setActiveBtn("saved");
-            }}
-            className={`${
-              activeBtn === "saved" ? activeBtnStyles : notActiveBtnStyles
-            } w-1/2 transition-all`}
-          >
-            Liked
+            <p className="ml-2 text-white">
+              {user?.followers?.length ? user?.followers?.length : 0}
+            </p>{" "}
+            Followers
           </button>
         </div>
+        {showFollowers === false && (
+          <div className="text-center flex w-full justify-cente">
+            <button
+              type="button"
+              onClick={(e) => {
+                setText(e.target.textContent);
+                setActiveBtn("created");
+              }}
+              className={`${
+                activeBtn === "created" ? activeBtnStyles : notActiveBtnStyles
+              } w-1/2  transition-all`}
+            >
+              Posts
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                setText(e.target.textContent);
+                setActiveBtn("saved");
+              }}
+              className={`${
+                activeBtn === "saved" ? activeBtnStyles : notActiveBtnStyles
+              } w-1/2 transition-all`}
+            >
+              Liked
+            </button>
+          </div>
+        )}
 
-        <div className="flex items-center justify-center w-full">
-          <MasonryLayout pins={pins} border theme={theme} />
-        </div>
+        {showFollowers === false && (
+          <div>
+            <div className="flex items-center justify-center w-full">
+              <MasonryLayout pins={pins} border theme={theme} />
+            </div>
 
-        {pins?.length === 0 && (
-          <div className="flex justify-center font-bold items-center w-full text-1xl mt-2">
-            No Pins Found!
+            {pins?.length === 0 && (
+              <div className="flex justify-center font-bold items-center w-full text-1xl mt-2">
+                No Pins Found!
+              </div>
+            )}
+          </div>
+        )}
+        {showFollowers === true && (
+          <div className="w-[560px] p-5">
+            <h1 className="text-xl font-extrabold mb-3">
+               Followers:
+            </h1>
+            {followerData.map((follower) => (
+              <div key={follower._id} className='flex items-center my-5'>
+                <img src={follower.image} className='w-14 h-14 rounded-full mr-5' alt={follower.userName} />
+                <div className="flex flex-col">
+                <p className="text-lg">{follower.userName}</p>
+                <p className="text-sm text-[gray]">@{follower.userName}</p>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
