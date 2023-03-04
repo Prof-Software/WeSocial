@@ -611,7 +611,7 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
                           : "bg-slate-200 text-black"
                       } p-3 flex`}
                     >
-                      {"http://localhost:3000/pin-detail/" + _id}
+                      {`${window.location.href}pin-detail/` + _id}
                     </div>
                     <Button
                       type="primary"

@@ -244,7 +244,7 @@ const UserProfile = ({ theme, pin }) => {
   if (!user) return <Spinner message="Loading profile" />;
 
   return (
-    <div className="relative pb-2 h-full justify-center items-center ml-5">
+    <div className="relative pb-2 h-full justify-center items-center ml-5 md:w-[560px] w-full">
       <div
         className="flex flex-col pb-5 "
         style={{
@@ -531,7 +531,7 @@ const UserProfile = ({ theme, pin }) => {
           </div>
         )}
         {showFollowers === true && (
-          <div className="w-[560px] p-5">
+          <div className="md:w-[560px] w-full p-5">
             <h1 className="text-xl font-extrabold mb-3">
                Followers:
             </h1>
