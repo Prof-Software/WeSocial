@@ -51,7 +51,7 @@ const Home = ({themeset}) => {
 
   // Get theme from local storage
   const getTheme = () => {
-    return localStorage.getItem("theme") || "light";
+    return localStorage.getItem("theme") || "dark";
   };
   const [theme, setCurrentTheme] = useState(getTheme());
 

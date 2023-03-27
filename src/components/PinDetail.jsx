@@ -93,7 +93,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
       {pinDetail && (
     <div className="flex">
         <div
-          className=""
+          className="md:w-[560px] w-[85vw]"
           style={{
             border:
               theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3",
@@ -127,7 +127,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
             <div>
               {pinDetail.image && (
                 <div
-                  className="cursor-pointer rounded-lg max-h-[750px] w-[534.5px]   flex items-center justify-center"
+                  className="cursor-pointer rounded-lg max-h-[750px]   flex items-center justify-center"
                   style={{
                     border:
                       theme === "dark"
@@ -136,7 +136,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
                   }}
                 >
                   <img
-                    className="rounded-lg max-h-[750px] w-[600px] object-cover"
+                    className="rounded-lg max-h-[750px] w-full  object-cover"
                     src={urlFor(pinDetail.image)}
                     alt="user-post"
                   />
@@ -168,7 +168,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
                     }}
                     controls
                     src={pinDetail.video.asset.url}
-                    className="w-[600px] h-[500px] object-cover outline-none bg-black"
+                    className=" h-[500px] object-cover outline-none bg-black"
                     muted={!inView}
                     autoPlay={autoPlay === "On" ? true : false}
                     onTimeUpdate={() => {

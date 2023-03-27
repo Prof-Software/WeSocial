@@ -42,6 +42,7 @@ const UserProfile = ({ theme, pin }) => {
   const [imageAsset, setImageAsset] = useState();
   const [input, setInput] = useState(false);
   const [newName, setNewName] = useState("");
+  const [newId, setNewId] = useState("");
   const [newAbout, setNewAbout] = useState("");
   const [profileImage, setProfileImage] = useState(null);
   const [profileImageUrl, setProfileImageUrl] = useState("");
@@ -55,6 +56,9 @@ const UserProfile = ({ theme, pin }) => {
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
+  };
+  const handleIdChange = (event) => {
+    setNewId(event.target.value);
   };
   {
     showFollowers === true && (
@@ -211,7 +215,16 @@ const UserProfile = ({ theme, pin }) => {
     if (newAbout) {
       client
         .patch(id)
-        .set({ about: newAbout })
+        .setIfMissing({ about: newAbout })
+        .commit()
+        .then(() => {
+          window.location.reload();
+        });
+    }
+    if (newId) {
+      client
+        .patch(id)
+        .set({ _id: newId })
         .commit()
         .then(() => {
           window.location.reload();
@@ -443,6 +456,13 @@ const UserProfile = ({ theme, pin }) => {
                   variant="outlined"
                 />
                 <TextField
+                  id="outlined-basic"
+                  value={newId}
+                  onChange={handleIdChange}
+                  label="User Id"
+                  variant="outlined"
+                />
+                <TextField
                   id="outlined-multiline-flexible"
                   label="About"
                   value={newAbout}
@@ -467,7 +487,7 @@ const UserProfile = ({ theme, pin }) => {
         </div>
         <h1 className="text-xl ml-5 font-extrabold">{user.userName}</h1>
         <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">
-          @{user.userName}
+          @{user?._id}
         </h1>
         {user?.about && <p className="ml-5">{user?.about}</p>}
         <div className="ml-5 flex gap-1 mt-2 text-[gray] items-center">

@@ -59,7 +59,7 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 400,
   border: "2px solid #000",
-  boxShadow: 24,
+  boxShadow: "0 0  24px #999999",
 };
 
 const Pin = ({ pin, theme, autoPlay, userData, border }) => {
@@ -240,7 +240,7 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
         }}
       >
         <div className={`flex  "justify-between "`}>
-          <Link to={`/user-profile/${postedBy?._id}`} className="flex">
+          <a href={`/user-profile/${postedBy?._id}`} className="flex">
             <div className="relative w-[60px]">
               <img
                 src={
@@ -253,13 +253,13 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
                 className="h-[50px] absolute w-[50px] rounded-full mr-4 object-cover bg-white"
               />
             </div>
-          </Link>
+          </a>
           <div className="text-[#6e767d]">
             <div className="inline-block group">
               <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
                 <div className="flex gap-1 items-center justify-center">
-                  <Link
-                    to={`/user-profile/${postedBy?._id}`}
+                  <a
+                    href={`/user-profile/${postedBy?._id}`}
                     className={`flex ${
                       theme !== "dark" && "text-[#000]"
                     } truncate`}
@@ -276,7 +276,7 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
                     ) : (
                       postedBy?.userName
                     )}
-                  </Link>
+                  </a>
                   {postedBy?.mark == "true" ? (
                     <VerifiedRounded
                       sx={{
@@ -415,10 +415,10 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
             aria-describedby="modal-modal-description"
             className="outline-none bg-[rgb(29,155,240,0.2)]"
           >
-            <Box
-              sx={style}
+            <div
+              style={style}
               className="text-white border-2 p-2 h-[350px] border-gray-900 rounded-xl bg-black"
-              style={{ border: "1px solid black" }}
+              // style={{ border: "1px solid black" }}
             >
               <IconButton className="mt-2" onClick={handleModalClose}>
                 <CloseIcon />
@@ -550,7 +550,7 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
               >
                 Reply
               </button>
-            </Box>
+            </div>
           </Modal>
 
           <Tooltip title="Share">

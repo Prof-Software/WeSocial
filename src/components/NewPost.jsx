@@ -322,7 +322,7 @@ const NewPost = ({ user, theme }) => {
               <div className="flex w-1/2 justify-end mr-7">
                 <button
                   onClick={savePin}
-                  className="text-[17px] mr-[1rem] text-white bg-[#1da1f2] pt-1 pr-8 rounded-lg pl-8 pb-1"
+                  className="text-[17px] mr-[1rem] text-white bg-[#1da1f2] ml-3 md:h-full pt-1 pr-8 rounded-lg pl-8 pb-1"
                 >
                   Post
                 </button>
@@ -341,12 +341,7 @@ const NewPost = ({ user, theme }) => {
                         label="Category"
                         onChange={handleChange}
                       >
-                        {/* <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem>
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem> */}
+                        
                         {categories.map((item, index) => (
                           <MenuItem
                             key={index}

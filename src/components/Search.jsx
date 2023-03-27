@@ -32,7 +32,7 @@ const Search = ({ searchTerm,switchtheme,theme,user }) => {
       {loading && <Spinner message="Searching pins" />}
       {pins?.length !== 0 && 
       <div className='flex bg-black'>
-      <MasonryLayout pins={pins} switchtheme={switchtheme} theme={theme} user={user && user} />
+         <MasonryLayout pins={pins} switchtheme={switchtheme} theme={theme} user={user && user} />
       <RightBar switchtheme={switchtheme} theme={theme} searchTerm={searchTerm}  user={user && user} />
       </div>
       }
