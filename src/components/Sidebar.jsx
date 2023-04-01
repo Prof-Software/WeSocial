@@ -89,7 +89,7 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
           <SidebarLink
             theme={theme}
             text="Profile"
-            link={`/user-profile/${user?._id}`}
+            link={`/user-profile/${user?.userId? user?.userId:user?._id}`}
             Icon={UserIcon}
           />
           <SidebarLink
@@ -105,7 +105,7 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
       </div>
       {user && (
         <Link
-          to={`user-profile/${user?._id}`}
+          to={`user-profile/${user?.userId? user?.userId:user?._id}`}
           className={`flex my-5 mb-3 gap-2 p-2 items-center transition-all ${
             theme == "dark" ? "hover:bg-[#121212]" : "bg-white"
           } rounded-lg shadow-lg md:mx-3 `}

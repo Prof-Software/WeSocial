@@ -240,7 +240,7 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
         }}
       >
         <div className={`flex  "justify-between "`}>
-          <a href={`/user-profile/${postedBy?._id}`} className="flex">
+          <a href={`/user-profile/${postedBy?.userId? postedBy?.userId:postedBy?._id}`} className="flex">
             <div className="relative w-[60px]">
               <img
                 src={
@@ -259,7 +259,7 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
               <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
                 <div className="flex gap-1 items-center justify-center">
                   <a
-                    href={`/user-profile/${postedBy?._id}`}
+                    href={`/user-profile/${postedBy?.userId? postedBy?.userId:postedBy?._id}`}
                     className={`flex ${
                       theme !== "dark" && "text-[#000]"
                     } truncate`}
@@ -292,18 +292,18 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
               </div>
 
               <span className={`text-sm sm:text-[15px] md:mr-2 mr-1 truncate`}>
-                @{" "}
-                {postedBy?.userName.length > 12 ? (
+                @
+                {postedBy?.userId > 12 ? (
                   <>
                     <span className="hidden md:inline">
-                      {postedBy?.userName}
+                      {postedBy?.userId}
                     </span>
                     <span className="inline md:hidden">
-                      {postedBy?.userName.substring(0, 0)}...
+                      {postedBy?.userId.substring(0, 0)}...
                     </span>
                   </>
                 ) : (
-                  postedBy?.userName
+                  postedBy?.userId
                 )}
               </span>
             </div>
@@ -437,7 +437,7 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
                 />
                 <div className="font-bold text-[14px] mr-2 sm:text-base  text-[#d9d9d9] group-hover:underline inline-block">
                   <div className="flex gap-1 flex-col">
-                    <Link to={`/user-profile/${postedBy._id}`} className="flex">
+                    <Link to={`/user-profile/${postedBy?.userId? postedBy?.userId:postedBy?._id}`} className="flex">
                       {postedBy?.userName}
                       {postedBy?.mark == "true" ? (
                         <p className="font-bold text-[#1d9bf0] text-sm">
@@ -481,7 +481,7 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
                 <div className="font-bold text-[14px] mr-2 sm:text-base  text-[#d9d9d9] group-hover:underline inline-block">
                   <div className="flex gap-1 flex-col">
                     <Link
-                      to={`/user-profile/${userData?._id}`}
+                      to={`/user-profile/${userData?.userId? userData?.userId:userData?._id}`}
                       className="flex"
                     >
                       {userData?.userName}

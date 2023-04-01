@@ -6,7 +6,7 @@ import { Sidebar, UserProfile } from "../components";
 import { client } from "../client";
 import logo from "../assets/we.png";
 import Pins from "./Pins";
-import { userQuery } from "../utils/data";
+import { homeUser, userQuery } from "../utils/data";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Settings from "../components/Settings";
@@ -33,7 +33,7 @@ const Home = ({themeset}) => {
       : localStorage.clear();
 
   useEffect(() => {
-    const query = userQuery(userInfo?.sub);
+    const query = homeUser(userInfo?.sub);
 
     client.fetch(query).then((data) => {
       setUser(data[0]);

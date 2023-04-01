@@ -93,7 +93,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
       {pinDetail && (
     <div className="flex">
         <div
-          className="md:w-[560px] w-[85vw]"
+          className=""
           style={{
             border:
               theme === "dark" ? "1px solid #2f3336" : "1px solid #D3D3D3",
@@ -246,13 +246,13 @@ const PinDetail = ({ user, theme, autoPlay }) => {
                 </Tooltip>
               </div>
             </div>
-            <div className="max-h-370 overflow-y-auto">
+            <div className="max-h-370 w-[535px] overflow-y-auto">
               {pinDetail?.comments?.map((item) => (
-                <div>
+                <div className="">
 
                 <div
                   className={`flex gap-2 relative mt-5 items-center ${
-                    theme === "dark" ? "" : "bg-white"
+                    theme === "dark" ? "" : ""
                   } rounded-lg`}
                   key={item.comment}
                 >
@@ -283,7 +283,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
             <div>
               {user &&
               <div className="flex flex-wrap mt-2 gap-3">
-                <Link to={`/user-profile/${user?._id}`}>
+                <Link to={`/user-profile/${user?.userId? user?.userId:user?._id}`}>
                   <img
                     src={
                       user?.update === "true"

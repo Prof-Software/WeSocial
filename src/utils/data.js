@@ -73,7 +73,8 @@ export const categories = [
       image,
       update,
       mark,
-      about
+      about,
+      userId
     },
    save[]{
       postedBy->{
@@ -211,13 +212,17 @@ export const categories = [
     return query;
   };
   
-  export const userQuery = (userId) => {
+  export const homeUser = (userId) => {
     const query = `*[_type == "user" && _id == '${userId}']`;
+    return query;
+  };
+  export const userQuery = (id) => {
+    const query = `*[_type == "user" && (userId == '${id}' || _id == '${id}')]`;
     return query;
   };
   
   export const userCreatedPinsQuery = (userId) => {
-    const query = `*[ _type == 'pin' && userId == '${userId}'] | order(_createdAt desc){
+    const query = `*[_type == 'pin' && userId == '${userId}'] | order(_createdAt desc){
       image{
         asset->{
           url

@@ -111,7 +111,7 @@ const NewPost = ({ user, theme }) => {
             _ref: videoAsset?._id,
           },
         },
-        userId: user._id,
+        userId: user.userId?user.userId:user._id,
         postedBy: {
           _type: "postedBy",
           _ref: user._id,

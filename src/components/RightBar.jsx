@@ -13,7 +13,7 @@ const RightBar = ({ theme, switchtheme, user }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState([]);
   useEffect(() => {
-    const query = `*[ _type == 'pin' && userId == '${user?._id}' && defined(image{
+    const query = `*[ _type == 'pin'  && defined(image{
       asset->{
         url
       }

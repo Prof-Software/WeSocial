@@ -60,15 +60,7 @@ const UserProfile = ({ theme, pin }) => {
   const handleIdChange = (event) => {
     setNewId(event.target.value);
   };
-  {
-    showFollowers === true && (
-      <div className="w-[560px] p-5">
-        {user.followers.map((follower) => (
-          <li key={follower.follower._ref}>{follower.follower._ref}</li>
-        ))}
-      </div>
-    );
-  }
+  
   useEffect(() => {
     if (user?.followers?.length > 0) {
       const followers = user.followers.map(
@@ -222,12 +214,31 @@ const UserProfile = ({ theme, pin }) => {
         });
     }
     if (newId) {
+      const query = `*[userId == "${newId}"]`;
       client
-        .patch(id)
-        .set({ _id: newId })
-        .commit()
-        .then(() => {
-          window.location.reload();
+        .fetch(query)
+        .then((result) => {
+          // If a user with the new ID already exists, display an error message
+          if (result.length > 0) {
+            alert("The user ID you entered is already taken.");
+          } else {
+            // If the new ID is available, make the patch request to update the user's ID
+            client
+              .patch(id)
+              .set({ userId: newId })
+              .commit()
+              .then(() => {
+                window.history.replaceState(
+                  null,
+                  null,
+                  `/user-profile/${newId}`
+                );
+                window.location.reload();
+              });
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
         });
     }
   };
@@ -311,7 +322,7 @@ const UserProfile = ({ theme, pin }) => {
               />
             )}
           </div>
-          {userId === User.sub && (
+          {user?._id === User.sub && (
             <button
               onClick={handleOpen}
               className="absolute right-[25px] bg-white text-black p-2 px-4 rounded-full font-bold top-[18.5rem]"
@@ -321,7 +332,7 @@ const UserProfile = ({ theme, pin }) => {
             </button>
           )}
 
-          {userId !== User.sub && (
+          {user?._id !== User.sub && (
             <div>
               {alreadySaved?.length === 0 ||
               alreadySaved?.length === undefined ? (
@@ -456,13 +467,6 @@ const UserProfile = ({ theme, pin }) => {
                   variant="outlined"
                 />
                 <TextField
-                  id="outlined-basic"
-                  value={newId}
-                  onChange={handleIdChange}
-                  label="User Id"
-                  variant="outlined"
-                />
-                <TextField
                   id="outlined-multiline-flexible"
                   label="About"
                   value={newAbout}
@@ -475,7 +479,7 @@ const UserProfile = ({ theme, pin }) => {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    saveChanges(userId);
+                    saveChanges(user?._id);
                   }}
                   color="success"
                 >
@@ -487,7 +491,7 @@ const UserProfile = ({ theme, pin }) => {
         </div>
         <h1 className="text-xl ml-5 font-extrabold">{user.userName}</h1>
         <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">
-          @{user?._id}
+          @{user?.userId ? user?.userId : user?._id}
         </h1>
         {user?.about && <p className="ml-5">{user?.about}</p>}
         <div className="ml-5 flex gap-1 mt-2 text-[gray] items-center">
@@ -495,7 +499,6 @@ const UserProfile = ({ theme, pin }) => {
           Joined {moment(user._createdAt).format("MMM  YYYY")}
         </div>
         <div className="ml-4 flex gap-1 mt-2 text-[gray] items-center">
-          
           <button
             className="hover:underline cursor-pointer flex gap-1"
             onClick={() => {
@@ -552,15 +555,18 @@ const UserProfile = ({ theme, pin }) => {
         )}
         {showFollowers === true && (
           <div className="md:w-[560px] w-full p-5">
-            <h1 className="text-xl font-extrabold mb-3">
-               Followers:
-            </h1>
+            <h1 className="text-xl font-extrabold mb-3">Followers:</h1>
             {followerData.map((follower) => (
-              <div key={follower._id} className='flex items-center my-5'>
-                <img src={follower.image} className='w-14 h-14 rounded-full mr-5' alt={follower.userName} />
+              <div key={follower._id} className="flex items-center my-5">
+                <img
+                  src={follower.image}
+                  className="w-14 h-14 rounded-full mr-5"
+                  referrerPolicy="no-referrer"
+                  alt={follower.userName}
+                />
                 <div className="flex flex-col">
-                <p className="text-lg">{follower.userName}</p>
-                <p className="text-sm text-[gray]">@{follower.userName}</p>
+                  <p className="text-lg">{follower.userName}</p>
+                  <p className="text-sm text-[gray]">@{follower.userName}</p>
                 </div>
               </div>
             ))}

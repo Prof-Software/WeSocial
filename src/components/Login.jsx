@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   GoogleLogin,
   GoogleOAuthProvider,
@@ -12,12 +12,17 @@ import jwt_decode from "jwt-decode";
 import { FcGoogle } from "react-icons/fc";
 import googleplay from "../assets/goplay.png";
 import { ReactComponent as AppStore } from "../assets/appstore.svg";
+import { Input } from "@mui/material";
+import Button from "@mui/material/Button";
+import { homeUser, userQuery } from "../utils/data";
+import { useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
-  const login = useGoogleLogin({
-    onSuccess: (tokenResponse) => console.log(tokenResponse),
-  });
+  const [show, setShow] = useState(false);
+  const [newId, setNewId] = useState("");
+  const [user, setUser] = useState();
+
   const responseGoogle = (response) => {
     const userResponse = jwt_decode(response.credential);
 
@@ -32,8 +37,47 @@ const Login = () => {
     };
 
     client.createIfNotExists(doc).then(() => {
-      navigate("/", { replace: true });
+      const query = userQuery(sub);
+      client.fetch(query).then((data) => {
+        setUser(data[0]);
+      });
+      setShow(true);
     });
+  };
+
+  const handleClick = () => {
+    if (newId) {
+      const query = `*[userId == "${newId}"]`;
+      client
+        .fetch(query)
+        .then((result) => {
+          // If a user with the new ID already exists, just show the user's profile
+          if (result.length > 0) {
+            const query = userQuery(result[0]._id);
+            client.fetch(query).then((data) => {
+              setUser(data[0]);
+              setShow(true);
+            });
+          } else {
+            // If the new ID is available, make the patch request to update the user's ID
+            client
+              .patch(user._id)
+              .set({ userId: newId })
+              .commit()
+              .then(() => {
+                window.history.replaceState(
+                  null,
+                  null,
+                  `/user-profile/${newId}`
+                );
+                window.location.reload();
+              });
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
   };
 
   return (
@@ -59,17 +103,50 @@ const Login = () => {
             </div>
 
             <div className="shadow-2xl">
-              <GoogleLogin
-                onSuccess={responseGoogle}
-                onFailure={responseGoogle}
-                cookiePolicy="single_host_origin"
-              />
-              <div className="flex mt-3">
-
-              <img className="w-[122px] h-[37px] google mt-[2.6rem] gap-2 mr-4" src={googleplay} alt="" />
-              <AppStore className='apple' />
-             </div>
-
+              {show === false ? (
+                <GoogleLogin
+                  onSuccess={responseGoogle}
+                  onFailure={responseGoogle}
+                  cookiePolicy="single_host_origin"
+                />
+              ) : (
+                <div className="bg-white text-black w-full p-3 flex flex-col items-center justify-center">
+                  {user && user.userId ? (
+                    <>
+                      <p>Welcome back, {user.userName}!</p>
+                      <Button
+                        className="w-full text-black mt-5"
+                        onClick={() => navigate(`/user-profile/${user.userId}`)}
+                        variant="contained"
+                        label="User Id"
+                      >
+                        Go to your profile
+                      </Button>
+                    </>
+                  ) : (
+                    <div>
+                      <p>Please enter a user ID to continue:</p>
+                      <Input
+                        value={newId}
+                        onChange={(e) => {
+                          setNewId(e.target.value);
+                        }}
+                        className="w-full text-black mb-3"
+                        variant="outlined"
+                        label="User Id"
+                      />
+                      <Button
+                        className="w-full text-black mt-5"
+                        onClick={handleClick}
+                        variant="contained"
+                        label="User Id"
+                      >
+                        Submit
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
