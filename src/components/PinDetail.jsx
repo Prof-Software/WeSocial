@@ -91,7 +91,7 @@ const PinDetail = ({ user, theme, autoPlay }) => {
     <>
 
       {pinDetail && (
-    <div className="flex">
+    <div className="flex w-[50%]">
         <div
           className=""
           style={{

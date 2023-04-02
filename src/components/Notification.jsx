@@ -42,7 +42,7 @@ const Notification = ({ user }) => {
           <div className="hover:bg-[#121212]  p-3 w-full border-l-4 border-l-[#333333]  bg-[#0c0c0c] border-b-2 border-b-[#151414]" key={notification?._id}>
             <div className="w-full flex justify-between">
             <h2 className="font-black text-white text-xl">{notification?.title}</h2>
-            {moment(`${notification._createdAt}`).fromNow()}
+            {moment(`${notification._createdAt}`).format("DD/MM/YYYY")}
             {/* {notification._createdAt} */}
             </div>
             <p className="text-[#999999]">{notification?.about}</p>
