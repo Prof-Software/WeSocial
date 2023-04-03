@@ -11,12 +11,14 @@ Can Post -> Text
             Text + Video
             Text and Emojis
 Dark And Light Mode (Persistent)
+Ability to create own category 
+follow and unfollow system
 Settings Page
+Infinite Scroll
 
 
 On Work:
-Ability to create own category 
-follow and unfollow system
+
 Fetch data according to the people u follow
 Light Theme Better layout
 Post Detail page supporing actions
@@ -25,4 +27,3 @@ Ability to Chat with people you follow
 
 Most Important Assignments:
 Feed System
-Infinite Scroll
