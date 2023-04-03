@@ -27,3 +27,5 @@ Ability to Chat with people you follow
 
 Most Important Assignments:
 Feed System
+
+Events System -> Events that gives rewards like shout-outs or a verification check mark to those who complete a certain task. Fully automated system. some tasks -> get the most likes in 1 week, get followed by 20 people in 1 week etc. Freebies to customize the profile page. Mostly just accessories system
