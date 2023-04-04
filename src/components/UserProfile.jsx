@@ -341,7 +341,7 @@ const UserProfile = ({ theme, pin }) => {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    follow(userId);
+                    follow(user?._id);
                   }}
                 >
                   Follow
