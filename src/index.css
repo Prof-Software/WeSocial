@@ -254,7 +254,14 @@ textarea {
 ::-webkit-scrollbar {
   width: 0px;
 }
-
+.green-pink-gradient {
+  background: "#00cea8";
+  background: linear-gradient(90.13deg, #00cea8 1.9%, #bf61ff 97.5%);
+  background: -webkit-linear-gradient(-90.13deg, #00cea8 1.9%, #bf61ff 97.5%);
+}
+.hand{
+  background: linear-gradient(to right, #F6C000, #F9A600, #FF8B00, #FF6F00, #FF5500);
+}
 /* Track */
 ::-webkit-scrollbar-track {
 }

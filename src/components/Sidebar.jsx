@@ -9,7 +9,7 @@ import {
 import logo from "../assets/we.png";
 import { categories } from "../utils/data";
 import { HiHome } from "react-icons/hi";
-import { AiOutlineHome, AiOutlineSetting } from "react-icons/ai";
+import { AiOutlineHome, AiOutlineSetting, AiOutlineShop } from "react-icons/ai";
 import { AiFillHome } from "react-icons/ai";
 import { urlFor } from "../client";
 import { HomeIcon } from "@heroicons/react/solid";
@@ -82,14 +82,14 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
           />
           <SidebarLink
             theme={theme}
-            text="Lists"
-            link="/"
-            Icon={ClipboardListIcon}
+            text="Shop"
+            link="/shop"
+            Icon={AiOutlineShop}
           />
           <SidebarLink
             theme={theme}
             text="Profile"
-            link={`/user-profile/${user?.userId? user?.userId:user?._id}`}
+            link={`/user-profile/${user?.userId ? user?.userId : user?._id}`}
             Icon={UserIcon}
           />
           <SidebarLink
@@ -105,7 +105,7 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
       </div>
       {user && (
         <Link
-          to={`user-profile/${user?.userId? user?.userId:user?._id}`}
+          to={`user-profile/${user?.userId ? user?.userId : user?._id}`}
           className={`flex my-5 mb-3 gap-2 p-2 items-center transition-all ${
             theme == "dark" ? "hover:bg-[#121212]" : "bg-white"
           } rounded-lg shadow-lg md:mx-3 `}
@@ -125,7 +125,11 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
             className="md:w-10 md:h-10 h-[40px] md:relative absolute rounded-full"
             alt="user-profile"
           />
-          <p className="md:block hidden">{user.userName}</p>
+          <p className="md:block hidden">
+            {user.userName.length > 10
+              ? user.userName.substring(0, 10) + "..."
+              : user.userName}
+          </p>
           <IoIosArrowForward className="hidden md:block" />
         </Link>
       )}

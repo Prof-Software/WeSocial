@@ -543,7 +543,7 @@ const UserProfile = ({ theme, pin }) => {
         {showFollowers === false && (
           <div>
             <div className="flex items-center justify-center w-full">
-              <MasonryLayout pins={pins} border theme={theme} />
+              <MasonryLayout pins={pins} profile theme={theme} />
             </div>
 
             {pins?.length === 0 && (

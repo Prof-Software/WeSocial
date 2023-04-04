@@ -12,6 +12,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Settings from "../components/Settings";
 import Notification from "../components/Notification";
 import Splash from "../components/Splash";
+import Shop from "../components/Shop";
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -138,6 +139,10 @@ const Home = ({themeset}) => {
           <Route
             path="/user-profile/:userId"
             element={<UserProfile theme={theme} />}
+          />
+          <Route
+            path="/shop"
+            element={<Shop user={user&&user} theme={theme} />}
           />
           <Route
             path="/settings"

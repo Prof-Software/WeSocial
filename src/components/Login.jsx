@@ -53,11 +53,7 @@ const Login = () => {
         .then((result) => {
           // If a user with the new ID already exists, just show the user's profile
           if (result.length > 0) {
-            const query = userQuery(result[0]._id);
-            client.fetch(query).then((data) => {
-              setUser(data[0]);
-              setShow(true);
-            });
+            alert('ID is taken')
           } else {
             // If the new ID is available, make the patch request to update the user's ID
             client
