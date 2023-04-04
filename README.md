@@ -11,12 +11,14 @@ Can Post -> Text
             Text + Video
             Text and Emojis
 Dark And Light Mode (Persistent)
+Ability to create own category 
+follow and unfollow system
 Settings Page
+Infinite Scroll
 
 
 On Work:
-Ability to create own category 
-follow and unfollow system
+
 Fetch data according to the people u follow
 Light Theme Better layout
 Post Detail page supporing actions
@@ -25,4 +27,5 @@ Ability to Chat with people you follow
 
 Most Important Assignments:
 Feed System
-Infinite Scroll
+
+Events System -> Events that gives rewards like shout-outs or a verification check mark to those who complete a certain task. Fully automated system. some tasks -> get the most likes in 1 week, get followed by 20 people in 1 week etc. Freebies to customize the profile page. Mostly just accessories system
