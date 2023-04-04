@@ -285,7 +285,7 @@ const UserProfile = ({ theme, pin }) => {
         {!coverImage ? (
           <img
             className=" w-full h-[220px] 2xl:h-[220px] shadow-lg object-cover"
-            src={
+            src={ 
               user.cover
                 ? urlFor(user.cover).width(1600).height(900).url()
                 : "https://source.unsplash.com/1600x900/?nature,photography,technology"
