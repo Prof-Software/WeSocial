@@ -26,7 +26,7 @@ const MasonryLayout = ({
         const newPins = pins?.slice(start, end);
         setVisiblePins((prevPins) => [...prevPins, ...newPins]);
         setIsLoading(false);
-      }, 3000);
+      }, 1000);
     }
   }, [inView, isLoading, currentPage, pins]);
 

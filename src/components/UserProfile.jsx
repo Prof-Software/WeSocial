@@ -8,6 +8,7 @@ import {
   userQuery,
   userSavedPinsQuery,
 } from "../utils/data";
+
 import { client, urlFor } from "../client";
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
@@ -60,7 +61,7 @@ const UserProfile = ({ theme, pin }) => {
   const handleIdChange = (event) => {
     setNewId(event.target.value);
   };
-  
+
   useEffect(() => {
     if (user?.followers?.length > 0) {
       const followers = user.followers.map(
@@ -285,7 +286,7 @@ const UserProfile = ({ theme, pin }) => {
         {!coverImage ? (
           <img
             className=" w-full h-[220px] 2xl:h-[220px] shadow-lg object-cover"
-            src={ 
+            src={
               user.cover
                 ? urlFor(user.cover).width(1600).height(900).url()
                 : "https://source.unsplash.com/1600x900/?nature,photography,technology"
@@ -489,7 +490,9 @@ const UserProfile = ({ theme, pin }) => {
             </Box>
           </Modal>
         </div>
-        <h1 className="text-xl ml-5 font-extrabold">{user.userName}</h1>
+        <h1 className="text-xl ml-5 font-extrabold">
+          <span className="text">{user.userName}</span>
+        </h1>
         <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">
           @{user?.userId ? user?.userId : user?._id}
         </h1>
