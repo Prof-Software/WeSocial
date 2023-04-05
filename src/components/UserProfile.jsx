@@ -491,7 +491,10 @@ const UserProfile = ({ theme, pin }) => {
           </Modal>
         </div>
         <h1 className="text-xl ml-5 font-extrabold">
-          <span className="text">{user.userName}</span>
+          {user?.pass === "gold" ?
+            <span className="text">{user.userName}</span>
+            :<span>{user.userName}</span>
+          }
         </h1>
         <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">
           @{user?.userId ? user?.userId : user?._id}
