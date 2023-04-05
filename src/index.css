@@ -284,7 +284,17 @@ textarea {
     background-position: 400%;
   }
 }
+.image-container {
+  position: relative;
+  display: inline-block;
+  box-shadow: 0 0 30px 4px #ffc700;
 
+}
+
+/* Set the background color of the container to black */
+.image-container {
+  background-color: black;
+}
 .hand {
   background: linear-gradient(
     to right,

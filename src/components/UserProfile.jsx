@@ -271,7 +271,7 @@ const UserProfile = ({ theme, pin }) => {
   return (
     <div className="relative pb-2 h-full justify-center items-center ml-5 md:w-[560px] w-full">
       <div
-        className="flex flex-col pb-5 "
+        className="flex flex-col pb-5"
         style={{
           border: theme === "dark" ? "1px solid  #2f3336" : "1px solid #999999",
         }}
@@ -284,15 +284,17 @@ const UserProfile = ({ theme, pin }) => {
         </div>
         <div className="h-[60px] w-full" />
         {!coverImage ? (
-          <img
-            className=" w-full h-[220px] 2xl:h-[220px] shadow-lg object-cover"
-            src={
-              user.cover
-                ? urlFor(user.cover).width(1600).height(900).url()
-                : "https://source.unsplash.com/1600x900/?nature,photography,technology"
-            }
-            alt="user-pic"
-          />
+          <div className="relative" style={{borderTop:"2px solid #f6c000",borderRight:"2px solid #f6c000",borderLeft:"2px solid #f6c000",borderBottom:"2px solid #f6c000"}}>
+            <img
+              className=" w-full h-[220px] 2xl:h-[220px] shadow-lg object-cover"
+              src={
+                user.cover
+                  ? urlFor(user.cover).width(1600).height(900).url()
+                  : "https://source.unsplash.com/1600x900/?nature,photography,technology"
+              }
+              alt="user-pic"
+            />
+            </div>
         ) : (
           <img
             className="w-full h-[220px] 2xl:h-[220px] shadow-lg object-cover"
@@ -304,8 +306,9 @@ const UserProfile = ({ theme, pin }) => {
           <div>
             {!profileImage && (
               <img
-                className="rounded-full w-[135px] h-[135px] bg-white -mt-[4.5rem] ml-3 left-0 shadow-xl object-cover"
-                style={{ border: "6px solid black" }}
+                className={`rounded-full ${
+                  user?.pass === "gold" && "image-container"
+                } w-[135px] h-[135px] ml-3 bg-white -mt-[4.5rem] left-0 shadow-xl object-cover`}
                 src={
                   user.update === "true"
                     ? urlFor(user.image).height(180).width(180)
@@ -491,10 +494,11 @@ const UserProfile = ({ theme, pin }) => {
           </Modal>
         </div>
         <h1 className="text-xl ml-5 font-extrabold">
-          {user?.pass === "gold" ?
+          {user?.pass === "gold" ? (
             <span className="text">{user.userName}</span>
-            :<span>{user.userName}</span>
-          }
+          ) : (
+            <span>{user.userName}</span>
+          )}
         </h1>
         <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">
           @{user?.userId ? user?.userId : user?._id}
