@@ -19,7 +19,9 @@ import RightBar from "./RightBar";
 import { Button, IconButton, Modal, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
-
+import gol from "../assets/gol.png";
+import silv from "../assets/silv.png";
+import dia from "../assets/dia.png";
 const activeBtnStyles =
   "border-b-4 border-b-blue-700 text-white hover:bg-[rgb(255,255,255,0.1)]  font-bold p-2 w-1/2 outline-none";
 const notActiveBtnStyles =
@@ -284,7 +286,7 @@ const UserProfile = ({ theme, pin }) => {
         </div>
         <div className="h-[60px] w-full" />
         {!coverImage ? (
-          <div className="relative" style={{borderTop:"2px solid #f6c000",borderRight:"2px solid #f6c000",borderLeft:"2px solid #f6c000",borderBottom:"2px solid #f6c000"}}>
+          <div className="relativ">
             <img
               className=" w-full h-[220px] 2xl:h-[220px] shadow-lg object-cover"
               src={
@@ -294,7 +296,30 @@ const UserProfile = ({ theme, pin }) => {
               }
               alt="user-pic"
             />
-            </div>
+            {user?.pass === "gold" && (
+              <div className="rounded-full h-[50px] w-[50px] bg-[rgba(240,248,87,0.22)] shadow-md flex items-center justify-center p-1 absolute top-0 right-0 mr-5 mt-16">
+                <img
+                  className="top-0 h-[40px] absolute mt-1  right-0"
+                  src={gol}
+                  alt=""
+                />
+              </div>
+            )}
+            {user?.pass === "silver" && (
+              <div className="rounded-full h-[50px] w-[50px] bg-[rgb(255,255,255,0.1)] shadow-md flex items-center justify-center p-1 absolute top-0 right-0 mr-5 mt-16">
+                <img
+                  className="top-0 h-[40px] absolute mt-1  right-0"
+                  src={silv}
+                  alt=""
+                />
+              </div>
+            )}
+            {user?.pass === "diamond" && (
+              <div className="rounded-full bg-[rgba(0,81,90,0.32)] shadow-lg flex items-center justify-center p-2 absolute top-0 right-0 mr-5 mt-16">
+                <img className="h-[40px] top-0 right-0" src={dia} alt="" />
+              </div>
+            )}
+          </div>
         ) : (
           <img
             className="w-full h-[220px] 2xl:h-[220px] shadow-lg object-cover"
@@ -302,24 +327,29 @@ const UserProfile = ({ theme, pin }) => {
             alt="user-pic"
           />
         )}
+
         <div className="mb-2">
           <div>
             {!profileImage && (
-              <img
-                className={`rounded-full ${
-                  user?.pass === "gold" && "image-container"
-                } w-[135px] h-[135px] ml-3 bg-white -mt-[4.5rem] left-0 shadow-xl object-cover`}
-                src={
-                  user.update === "true"
-                    ? urlFor(user.image).height(180).width(180)
-                    : user.image
-                }
-                alt="user-pic"
-              />
+              <div className="">
+                <img
+                  className={`rounded-full ${
+                    user?.pass === "gold" && "image-container"
+                  } ${
+                    user?.pass === "diamond" ? "diamond-shadow" : ""
+                  } w-[135px] z-50 h-[135px] ml-3 bg-white -mt-[4.5rem] left-0 shadow-xl object-cover`}
+                  src={
+                    user.update === "true"
+                      ? urlFor(user.image).height(180).width(180)
+                      : user.image
+                  }
+                  alt="user-pic"
+                />
+              </div>
             )}
             {profileImage && (
               <img
-                className="rounded-full w-[135px] h-[135px] bg-white  left-0  -mt-[4.5rem] ml-3 shadow-xl object-cover"
+                className="rounded-full z-50 w-[135px] h-[135px] bg-white  left-0  -mt-[4.5rem] ml-3 shadow-xl object-cover"
                 style={{ border: "6px solid black" }}
                 src={profileImage?.url}
                 alt="user-pic"
@@ -493,11 +523,12 @@ const UserProfile = ({ theme, pin }) => {
             </Box>
           </Modal>
         </div>
-        <h1 className="text-xl ml-5 font-extrabold">
-          {user?.pass === "gold" ? (
+        <h1 className="text-xl  ml-5 font-extrabold">
+          {user?.pass === "gold" && (
             <span className="text">{user.userName}</span>
-          ) : (
-            <span>{user.userName}</span>
+          )}
+          {user?.pass === "diamond" && (
+            <span className="diamond-text">{user.userName}</span>
           )}
         </h1>
         <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">

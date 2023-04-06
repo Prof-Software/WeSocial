@@ -284,6 +284,32 @@ textarea {
     background-position: 400%;
   }
 }
+.diamond-text {
+  font-weight: 900;
+  outline: none;
+  background: linear-gradient(
+    to right,
+    #00ffff 0,
+    #46fffc 22%,
+    #05b5bf 45%,
+    #c3dee3 50%,
+    #00ccff 55%,
+    #ecf0f1 78%,
+    #00746c 100%
+  );
+  background-size: 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: dia 10s linear infinite;
+}
+@keyframes dia {
+  to {
+    background-position: 400%;
+  }
+}
+
+
+
 .image-container {
   position: relative;
   display: inline-block;
@@ -295,6 +321,29 @@ textarea {
 .image-container {
   background-color: black;
 }
+
+.box {
+  position: relative;
+  z-index: 0; /* We force a stacking context */
+}
+.gradient-01 {
+  background-image: linear-gradient(
+    270deg,
+    hsl(295deg 76% 51%) 0%,
+    hsl(284deg 70% 73%) 26%,
+    hsl(257deg 70% 86%) 39%,
+    hsl(202deg 92% 90%) 50%,
+    hsl(215deg 77% 81%) 61%,
+    hsl(221deg 73% 70%) 74%,
+    hsl(220deg 76% 51%) 100%
+  );
+  filter: blur(125px);
+} 
+.diamond-shadow {
+  box-shadow:  0 0 30px 4px rgba(14, 210, 247, 0.5),  0 0 30px 4px rgba(178, 254, 250, 0.5);
+}
+
+
 .hand {
   background: linear-gradient(
     to right,
