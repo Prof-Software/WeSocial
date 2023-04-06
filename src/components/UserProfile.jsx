@@ -536,6 +536,9 @@ const UserProfile = ({ theme, pin }) => {
           {user?.pass === "diamond" && (
             <span className="diamond-text hero-gradient">{user.userName}</span>
           )}
+          {user?.pass === null||undefined && (
+            <span className="">{user.userName}</span>
+          )}
         </h1>
         <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">
           @{user?.userId ? user?.userId : user?._id}
