@@ -297,26 +297,32 @@ const UserProfile = ({ theme, pin }) => {
               alt="user-pic"
             />
             {user?.pass === "gold" && (
-              <div className="rounded-full h-[50px] w-[50px] bg-[rgba(240,248,87,0.22)] shadow-md flex items-center justify-center p-1 absolute top-0 right-0 mr-5 mt-16">
+              <div className="rounded-full h-[60px] w-[60px] gradient-gold shadow-lg flex items-center justify-center absolute top-0 right-0 mr-5 mt-16">
                 <img
-                  className="top-0 h-[40px] absolute mt-1  right-0"
+                  className="top-0 z-20 h-[50px] absolute  right-0"
                   src={gol}
                   alt=""
                 />
+                 <div
+                className="top-0 h-[60px] w-[60px] rounded-full bg-[rgb(0,0,0,0.3)] z-10 absolute  right-0"
+              />
               </div>
             )}
             {user?.pass === "silver" && (
-              <div className="rounded-full h-[50px] w-[50px] bg-[rgb(255,255,255,0.1)] shadow-md flex items-center justify-center p-1 absolute top-0 right-0 mr-5 mt-16">
-                <img
-                  className="top-0 h-[40px] absolute mt-1  right-0"
-                  src={silv}
-                  alt=""
-                />
-              </div>
+              <div className="rounded-full h-[60px] w-[60px] gradient-silv shadow-lg flex items-center justify-center absolute top-0 right-0 mr-5 mt-16">
+              <img
+                className="top-0 z-20 h-[50px] absolute  right-0"
+                src={silv}
+                alt=""
+              />
+              <div
+                className="top-0 h-[60px] w-[60px] rounded-full bg-[rgb(0,0,0,0.3)] z-10 absolute  right-0"
+              />
+            </div>
             )}
             {user?.pass === "diamond" && (
-              <div className="rounded-full bg-[rgba(0,81,90,0.32)] shadow-lg flex items-center justify-center p-2 absolute top-0 right-0 mr-5 mt-16">
-                <img className="h-[40px] top-0 right-0" src={dia} alt="" />
+              <div className="rounded-full h-[60px] gradient-01 shadow-lg flex items-center justify-center absolute top-0 right-0 mr-5 mt-16">
+                <img className="h-full bg-[rgb(0,0,0,0.4)] rounded-full top-0 right-0" src={dia} alt="" />
               </div>
             )}
           </div>
@@ -528,7 +534,7 @@ const UserProfile = ({ theme, pin }) => {
             <span className="text">{user.userName}</span>
           )}
           {user?.pass === "diamond" && (
-            <span className="diamond-text">{user.userName}</span>
+            <span className="diamond-text hero-gradient">{user.userName}</span>
           )}
         </h1>
         <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">

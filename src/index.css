@@ -289,13 +289,13 @@ textarea {
   outline: none;
   background: linear-gradient(
     to right,
-    #00ffff 0,
+    #ff0000 0,
     #46fffc 22%,
-    #05b5bf 45%,
+    #ff0000 45%,
     #c3dee3 50%,
-    #00ccff 55%,
+    #ff0000 55%,
     #ecf0f1 78%,
-    #00746c 100%
+    #ff0000 100%
   );
   background-size: 400%;
   -webkit-background-clip: text;
@@ -329,7 +329,7 @@ textarea {
 .gradient-01 {
   background-image: linear-gradient(
     270deg,
-    hsl(295deg 76% 51%) 0%,
+    hwb(0 100% 0%) 0%,
     hsl(284deg 70% 73%) 26%,
     hsl(257deg 70% 86%) 39%,
     hsl(202deg 92% 90%) 50%,
@@ -337,8 +337,87 @@ textarea {
     hsl(221deg 73% 70%) 74%,
     hsl(220deg 76% 51%) 100%
   );
-  filter: blur(125px);
-} 
+  
+}
+.gradient-gold {
+  background-image: linear-gradient(
+    270deg,
+    hsl(20, 76%, 51%) 0%,
+    hsl(64, 55%, 65%) 26%,
+    hsl(23, 69%, 86%) 39%,
+    hsl(0, 92%, 90%) 50%,
+    hsl(69, 75%, 50%) 61%,
+    hsl(54, 73%, 70%) 74%,
+    hsl(33, 76%, 51%) 100%
+  );
+  
+}
+.gradient-silv {
+  background-image: linear-gradient(
+    270deg,
+    hsl(172, 12%, 26%) 0%,
+    hsl(65, 6%, 56%) 26%,
+    hsl(180, 5%, 57%) 39%,
+    hsl(0, 13%, 80%) 50%,
+    hsl(67, 6%, 28%) 61%,
+    hsl(51, 4%, 61%) 74%,
+    hsl(35, 5%, 55%) 100%
+  );
+  
+}
+.hero-gradient {
+  background-image: linear-gradient(
+    270deg,
+    rgb(0, 255, 234) 0%,
+    rgb(59, 181, 171),
+    rgb(0, 255, 255) 39%,
+    rgb(245, 255, 135) 50%,
+    rgb(0, 255, 255) 61%,
+    rgb(255, 196, 0) 74%,
+    rgb(255, 0, 0)  100%
+  );
+}
+
+.gradient-02 {
+  position: absolute;
+  width: 200px;
+  height: 438px;
+  top: 0px;
+  right: 0px;
+
+  background: #7aebfb;
+  
+}
+.gradient-03 {
+  position: absolute;
+  width: 404px;
+  height: 800px;
+  left: 20%;
+  top: 5%;
+
+  background: rgba(149, 66, 232, 0.35);
+  
+  transform: rotate(-114.2deg);
+}
+
+.gradient-04 {
+  position: absolute;
+  width: 304px;
+  height: 100vh;
+  left: 30%;
+  top: 10%;
+
+  background: rgba(45, 72, 152, 0.75);
+  
+  transform: rotate(-53.13deg);
+}
+.gradient-05 {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
 .diamond-shadow {
   box-shadow:  0 0 30px 4px rgba(14, 210, 247, 0.5),  0 0 30px 4px rgba(178, 254, 250, 0.5);
 }
