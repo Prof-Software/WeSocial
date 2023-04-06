@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlineEdit, AiOutlineLogout, AiOutlineSave } from "react-icons/ai";
+import {
+  AiFillCheckCircle,
+  AiOutlineEdit,
+  AiOutlineLogout,
+  AiOutlineSave,
+} from "react-icons/ai";
 import { useParams, useNavigate } from "react-router-dom";
 import { BiArrowBack, BiCloudUpload } from "react-icons/bi";
 import { v4 as uuidv4 } from "uuid";
@@ -21,6 +26,7 @@ import { Box } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
 import gol from "../assets/gol.png";
 import silv from "../assets/silv.png";
+import check from "../assets/check.png";
 import dia from "../assets/dia.png";
 const activeBtnStyles =
   "border-b-4 border-b-blue-700 text-white hover:bg-[rgb(255,255,255,0.1)]  font-bold p-2 w-1/2 outline-none";
@@ -268,6 +274,8 @@ const UserProfile = ({ theme, pin }) => {
       navigate(-1);
     }
   }
+  console.log(user)
+
   if (!user) return <Spinner message="Loading profile" />;
 
   return (
@@ -303,26 +311,26 @@ const UserProfile = ({ theme, pin }) => {
                   src={gol}
                   alt=""
                 />
-                 <div
-                className="top-0 h-[60px] w-[60px] rounded-full bg-[rgb(0,0,0,0.3)] z-10 absolute  right-0"
-              />
+                <div className="top-0 h-[60px] w-[60px] rounded-full bg-[rgb(0,0,0,0.3)] z-10 absolute  right-0" />
               </div>
             )}
             {user?.pass === "silver" && (
               <div className="rounded-full h-[60px] w-[60px] gradient-silv shadow-lg flex items-center justify-center absolute top-0 right-0 mr-5 mt-16">
-              <img
-                className="top-0 z-20 h-[50px] absolute  right-0"
-                src={silv}
-                alt=""
-              />
-              <div
-                className="top-0 h-[60px] w-[60px] rounded-full bg-[rgb(0,0,0,0.3)] z-10 absolute  right-0"
-              />
-            </div>
+                <img
+                  className="top-0 z-20 h-[50px] absolute  right-0"
+                  src={silv}
+                  alt=""
+                />
+                <div className="top-0 h-[60px] w-[60px] rounded-full bg-[rgb(0,0,0,0.3)] z-10 absolute  right-0" />
+              </div>
             )}
             {user?.pass === "diamond" && (
               <div className="rounded-full h-[60px] gradient-01 shadow-lg flex items-center justify-center absolute top-0 right-0 mr-5 mt-16">
-                <img className="h-full bg-[rgb(0,0,0,0.4)] rounded-full top-0 right-0" src={dia} alt="" />
+                <img
+                  className="h-full bg-[rgb(0,0,0,0.4)] rounded-full top-0 right-0"
+                  src={dia}
+                  alt=""
+                />
               </div>
             )}
           </div>
@@ -529,17 +537,33 @@ const UserProfile = ({ theme, pin }) => {
             </Box>
           </Modal>
         </div>
-        <h1 className="text-xl  ml-5 font-extrabold">
+        <h1 className="text-xl mb-2 flex items-center gap-1  ml-5 font-extrabold">
+          {user?.pass ?
+          <div>
+
           {user?.pass === "gold" && (
             <span className="text">{user.userName}</span>
-          )}
+            )}
           {user?.pass === "diamond" && (
             <span className="diamond-text hero-gradient">{user.userName}</span>
+            )}
+            </div>
+          : <span className="">{user.userName}</span>}
+          
+          
+
+
+
+          {user?.mark == "true" && user?.pass !== "diamond" ? (
+            <AiFillCheckCircle className="text-[#1DA1F2]" fontSize={24} />
+          ) : (
+            ""
           )}
-          {user?.pass === null||undefined && (
-            <span className="">{user.userName}</span>
+          {user?.pass === "diamond" && (
+            <img src={check} className="h-[24px]" alt="" />
           )}
         </h1>
+
         <h1 className="text-sm mb-2 ml-5 font-extrabold text-opacity-80 truncate text-[gray]">
           @{user?.userId ? user?.userId : user?._id}
         </h1>

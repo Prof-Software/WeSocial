@@ -74,13 +74,15 @@ export const categories = [
       update,
       mark,
       about,
-      userId
+      userId,
+      pass
     },
    save[]{
       postedBy->{
         _id,
         userName,
         image,
+        
       },
     },
     comments[]{

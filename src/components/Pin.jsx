@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { MdDownloadForOffline } from "react-icons/md";
-import { AiOutlineFlag, AiOutlineMore, AiTwotoneDelete } from "react-icons/ai";
-import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
+import { AiFillCheckCircle, AiOutlineFlag, AiOutlineMore, AiTwotoneDelete } from "react-icons/ai";
+import { BsFillArrowUpRightCircleFill, BsPatchCheckFill } from "react-icons/bs";
 import moment from "moment";
 import { client, urlFor } from "../client";
 import { FaGlobeAmericas } from "react-icons/fa";
@@ -12,7 +12,7 @@ import icon2 from "../assets/share.png";
 import icon3 from "../assets/like.png";
 import icon4 from "../assets/down.png";
 import { GoVerified } from "react-icons/go";
-import { VerifiedRounded } from "@mui/icons-material";
+import { Verified, VerifiedRounded } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -37,7 +37,7 @@ import { useInView } from "react-intersection-observer";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
-
+import check from '../assets/check.png' 
 import {
   ChartBarIcon,
   ChatIcon,
@@ -140,6 +140,7 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
   const handleClose = () => {
     setOpen(false);
   };
+  
   const navigate = useNavigate();
 
   const {
@@ -240,7 +241,12 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
         }}
       >
         <div className={`flex  "justify-between "`}>
-          <a href={`/user-profile/${postedBy?.userId? postedBy?.userId:postedBy?._id}`} className="flex">
+          <a
+            href={`/user-profile/${
+              postedBy?.userId ? postedBy?.userId : postedBy?._id
+            }`}
+            className="flex"
+          >
             <div className="relative w-[60px]">
               <img
                 src={
@@ -250,7 +256,9 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
                 }
                 referrerPolicy="no-referrer"
                 alt="Profile Pic"
-                className="h-[50px] absolute w-[50px] rounded-full mr-4 object-cover bg-white"
+                className={`${postedBy?.pass === "gold" && "goldp"} ${
+                  postedBy?.pass === "diamond" ? "diamondp" : ""
+                } h-[50px] absolute w-[50px] rounded-full mr-4 object-cover bg-white`}
               />
             </div>
           </a>
@@ -259,35 +267,73 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
               <div className="font-bold text-[14px] mr-2 sm:text-base text-[#d9d9d9] group-hover:underline inline-block">
                 <div className="flex gap-1 items-center justify-center">
                   <a
-                    href={`/user-profile/${postedBy?.userId? postedBy?.userId:postedBy?._id}`}
+                    href={`/user-profile/${
+                      postedBy?.userId ? postedBy?.userId : postedBy?._id
+                    }`}
                     className={`flex ${
                       theme !== "dark" && "text-[#000]"
-                    } truncate`}
+                    } truncate flex items-center justify-center`}
                   >
-                    {postedBy?.userName.length > 12 ? (
-                      <>
-                        <span className="hidden md:inline">
-                          {postedBy?.userName}
-                        </span>
-                        <span className="inline md:hidden">
-                          {postedBy?.userName.substring(0, 3)}...
-                        </span>
-                      </>
-                    ) : (
-                      postedBy?.userName
+                    {postedBy?.pass === "gold" && (
+                      <span className="text">
+                        {postedBy?.userName.length > 12 ? (
+                          <>
+                            <span className="hidden md:inline">
+                              {postedBy?.userName}
+                            </span>
+                            <span className="inline md:hidden">
+                              {postedBy?.userName.substring(0, 3)}...
+                            </span>
+                          </>
+                        ) : (
+                          postedBy?.userName
+                        )}
+                      </span>
+                    )}
+                    {postedBy?.pass === "diamond" && (
+                      <span className="diamond-text hero-gradient">
+                        {postedBy?.userName.length > 12 ? (
+                          <>
+                            <span className="hidden md:inline">
+                              {postedBy?.userName}
+                            </span>
+                            <span className="inline md:hidden">
+                              {postedBy?.userName.substring(0, 3)}...
+                            </span>
+                          </>
+                        ) : (
+                          postedBy?.userName
+                        )}
+                      </span>
+                    )}
+                    {postedBy?.pass === null&&(
+                      <span className="">
+                      {postedBy?.userName.length > 12 ? (
+                        <>
+                          <span className="hidden md:inline">
+                            {postedBy?.userName}
+                          </span>
+                          <span className="inline md:hidden">
+                            {postedBy?.userName.substring(0, 3)}...
+                          </span>
+                        </>
+                      ) : (
+                        postedBy?.userName
+                      )}
+                    </span>
                     )}
                   </a>
-                  {postedBy?.mark == "true" ? (
-                    <VerifiedRounded
-                      sx={{
-                        color: "#1DA1F2",
-                        fontSize: 17,
-                        marginTop: "-5px",
-                      }}
+                  {postedBy?.mark == "true" && postedBy?.pass !== "diamond"  ? (
+                    <AiFillCheckCircle
+                    className="text-[#1DA1F2]"
+                    fontSize={20}
                     />
-                  ) : (
-                    ""
-                  )}
+                    ) : (
+                      ""
+                      )}
+                      {postedBy?.pass === "diamond" &&(
+                        <img src={check} className="h-[20px]" alt="" />
+                      )}
                 </div>
               </div>
 
@@ -295,9 +341,7 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
                 @
                 {postedBy?.userId > 12 ? (
                   <>
-                    <span className="hidden md:inline">
-                      {postedBy?.userId}
-                    </span>
+                    <span className="hidden md:inline">{postedBy?.userId}</span>
                     <span className="inline md:hidden">
                       {postedBy?.userId.substring(0, 0)}...
                     </span>
@@ -437,7 +481,12 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
                 />
                 <div className="font-bold text-[14px] mr-2 sm:text-base  text-[#d9d9d9] group-hover:underline inline-block">
                   <div className="flex gap-1 flex-col">
-                    <Link to={`/user-profile/${postedBy?.userId? postedBy?.userId:postedBy?._id}`} className="flex">
+                    <Link
+                      to={`/user-profile/${
+                        postedBy?.userId ? postedBy?.userId : postedBy?._id
+                      }`}
+                      className="flex"
+                    >
                       {postedBy?.userName}
                       {postedBy?.mark == "true" ? (
                         <p className="font-bold text-[#1d9bf0] text-sm">
@@ -481,7 +530,9 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
                 <div className="font-bold text-[14px] mr-2 sm:text-base  text-[#d9d9d9] group-hover:underline inline-block">
                   <div className="flex gap-1 flex-col">
                     <Link
-                      to={`/user-profile/${userData?.userId? userData?.userId:userData?._id}`}
+                      to={`/user-profile/${
+                        userData?.userId ? userData?.userId : userData?._id
+                      }`}
                       className="flex"
                     >
                       {userData?.userName}
