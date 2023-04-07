@@ -316,17 +316,7 @@ textarea {
   box-shadow: 0 0 30px 4px #ffc700;
 
 }
-.goldp {
-  position: relative;
-  display: inline-block;
-  box-shadow: 0 0 10px 4px #ffc700;
 
-}
-
-/* Set the background color of the container to black */
-.image-container {
-  background-color: black;
-}
 
 .box {
   position: relative;
@@ -429,6 +419,12 @@ textarea {
 }
 .diamondp {
   box-shadow:  0 0 7px 2px rgba(14, 210, 247, 0.5),  0 0 7px 2px rgba(178, 254, 250, 0.5);
+}
+.goldp {
+  position: relative;
+  display: inline-block;
+  box-shadow: 0 0 7px 2px #ffc700;
+
 }
 
 

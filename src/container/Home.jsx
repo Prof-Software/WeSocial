@@ -65,7 +65,7 @@ const Home = ({themeset}) => {
     localStorage.setItem("autoplay", theme);
     
   };
-
+  console.log(user)
   // Get theme from local storage
   const getPlay = () => {
     return localStorage.getItem("autoplay") || "off";

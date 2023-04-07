@@ -274,7 +274,7 @@ const UserProfile = ({ theme, pin }) => {
       navigate(-1);
     }
   }
-  console.log(user)
+  console.log(pins)
 
   if (!user) return <Spinner message="Loading profile" />;
 
@@ -305,7 +305,7 @@ const UserProfile = ({ theme, pin }) => {
               alt="user-pic"
             />
             {user?.pass === "gold" && (
-              <div className="rounded-full h-[60px] w-[60px] gradient-gold shadow-lg flex items-center justify-center absolute top-0 right-0 mr-5 mt-16">
+              <div className="rounded-full h-[60px] w-[60px] shadow-lg flex items-center justify-center absolute top-0 right-0 mr-5 mt-16">
                 <img
                   className="top-0 z-20 h-[50px] absolute  right-0"
                   src={gol}
@@ -315,7 +315,7 @@ const UserProfile = ({ theme, pin }) => {
               </div>
             )}
             {user?.pass === "silver" && (
-              <div className="rounded-full h-[60px] w-[60px] gradient-silv shadow-lg flex items-center justify-center absolute top-0 right-0 mr-5 mt-16">
+              <div className="rounded-full h-[60px] w-[60px] shadow-lg flex items-center justify-center absolute top-0 right-0 mr-5 mt-16">
                 <img
                   className="top-0 z-20 h-[50px] absolute  right-0"
                   src={silv}
@@ -325,7 +325,7 @@ const UserProfile = ({ theme, pin }) => {
               </div>
             )}
             {user?.pass === "diamond" && (
-              <div className="rounded-full h-[60px] gradient-01 shadow-lg flex items-center justify-center absolute top-0 right-0 mr-5 mt-16">
+              <div className="rounded-full h-[60px] shadow-lg flex items-center justify-center absolute top-0 right-0 mr-5 mt-16">
                 <img
                   className="h-full bg-[rgb(0,0,0,0.4)] rounded-full top-0 right-0"
                   src={dia}
@@ -546,6 +546,9 @@ const UserProfile = ({ theme, pin }) => {
             )}
           {user?.pass === "diamond" && (
             <span className="diamond-text hero-gradient">{user.userName}</span>
+            )}
+          {user?.pass === "silver" && (
+            <span className="">{user.userName}</span>
             )}
             </div>
           : <span className="">{user.userName}</span>}

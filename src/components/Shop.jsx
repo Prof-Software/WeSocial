@@ -20,12 +20,19 @@ const Shop = ({ user }) => {
     }
   }
   const buyPass = async (userId, coins, pass) => {
+    const user = await client.fetch(`*[_id == "${userId}"][0]`);
+  
     if (user?.coins >= coins && user?.pass !== pass) {
-      //   // Deduct coins from user account
+      // Deduct coins from user account
       const newCoins = user?.coins - coins;
+  
+      // Set expiration date to one month from current date
+      const expirationDate = new Date();
+      expirationDate.setMonth(expirationDate.getMonth() + 1);
+  
       client
         .patch(userId)
-        .set({ coins: newCoins, pass: pass })
+        .set({ coins: newCoins, pass: pass, passExpiration: expirationDate })
         .commit()
         .then(() => {
           window.location.reload();
@@ -36,6 +43,7 @@ const Shop = ({ user }) => {
       alert("Not enough coins");
     }
   };
+  
 
   async function handleBuy(userId, coins) {
     try {

@@ -290,6 +290,22 @@ const Pin = ({ pin, theme, autoPlay, userData, border }) => {
                         )}
                       </span>
                     )}
+                    {postedBy?.pass === "silver" && (
+                      <span className="">
+                        {postedBy?.userName.length > 12 ? (
+                          <>
+                            <span className="hidden md:inline">
+                              {postedBy?.userName}
+                            </span>
+                            <span className="inline md:hidden">
+                              {postedBy?.userName.substring(0, 3)}...
+                            </span>
+                          </>
+                        ) : (
+                          postedBy?.userName
+                        )}
+                      </span>
+                    )}
                     {postedBy?.pass === "diamond" && (
                       <span className="diamond-text hero-gradient">
                         {postedBy?.userName.length > 12 ? (

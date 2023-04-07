@@ -163,7 +163,9 @@ export const categories = [
       postedBy->{
         _id,
         userName,
-        image
+        image,
+        mark,
+        pass
       },
       save[]{
         _key,
@@ -242,7 +244,10 @@ export const categories = [
       postedBy->{
         _id,
         userName,
-        image
+        image,
+        mark,
+        pass,
+        userId
       },
       save[]{
         postedBy->{
