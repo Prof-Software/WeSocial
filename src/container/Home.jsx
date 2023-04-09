@@ -148,7 +148,7 @@ const Home = ({themeset}) => {
           <Route
             path="/shop"
             element={<Shop user={user&&user} theme={theme} />}
-          />  
+          />   
           <Route
             path="/settings"
             element={<Settings theme={theme} autoPlay={autoPlay} switchPlay={switchPlay} switchtheme={switchtheme} />}
