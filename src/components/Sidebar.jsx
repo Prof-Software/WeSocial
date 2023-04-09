@@ -71,7 +71,7 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
           <SidebarLink
             theme={theme}
             text="Messages"
-            link="/"
+            link="/chat"
             Icon={InboxIcon}
           />
           <SidebarLink

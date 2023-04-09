@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
   AiFillCheckCircle,
-  AiOutlineEdit,
-  AiOutlineLogout,
-  AiOutlineSave,
 } from "react-icons/ai";
 import { useParams, useNavigate } from "react-router-dom";
-import { BiArrowBack, BiCloudUpload } from "react-icons/bi";
+import { BiArrowBack } from "react-icons/bi";
 import { v4 as uuidv4 } from "uuid";
 import {
   userCreatedPinsQuery,
@@ -17,10 +14,8 @@ import {
 import { client, urlFor } from "../client";
 import MasonryLayout from "./MasonryLayout";
 import Spinner from "./Spinner";
-import { AiOutlinePlus } from "react-icons/ai";
 import { GoCalendar } from "react-icons/go";
 import moment from "moment";
-import RightBar from "./RightBar";
 import { Button, IconButton, Modal, TextField } from "@mui/material";
 import { Box } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";

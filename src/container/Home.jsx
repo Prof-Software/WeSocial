@@ -13,6 +13,7 @@ import Settings from "../components/Settings";
 import Notification from "../components/Notification";
 import Splash from "../components/Splash";
 import Shop from "../components/Shop";
+import Chat from "../components/Chat";
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -139,6 +140,10 @@ const Home = ({themeset}) => {
           <Route
             path="/user-profile/:userId"
             element={<UserProfile theme={theme} />}
+          />
+          <Route
+            path="/chat"
+            element={<Chat user={user&&user} theme={theme} />}
           />
           <Route
             path="/shop"
