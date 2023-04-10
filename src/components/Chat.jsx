@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Divider, IconButton } from "@mui/material";
-import { BiArrowBack } from "react-icons/bi";
+import { BiArrowBack, BiMessageRounded } from "react-icons/bi";
 import {
   BsEmojiLaughing,
   BsEmojiSmile,
@@ -33,16 +33,18 @@ const ChatPage = ({ user }) => {
     if (user && chatting) {
       fetchMessages();
     }
-  
-    const subscription = client.listen(`*[_type == "message" && (sender == "${user?._id}" && receiver == "${chatting?._id}" || sender == "${chatting?._id}" && receiver == "${user?._id}")]`).subscribe((result) => {
-      console.log('New message received:', result.result);
-      setMessages(prevMessages => [...prevMessages, result.result]);
-    });
-  
+
+    const subscription = client
+      .listen(
+        `*[_type == "message" && (sender == "${user?._id}" && receiver == "${chatting?._id}" || sender == "${chatting?._id}" && receiver == "${user?._id}")]`
+      )
+      .subscribe((result) => {
+        console.log("New message received:", result.result);
+        setMessages((prevMessages) => [...prevMessages, result.result]);
+      });
+
     return () => subscription.unsubscribe();
   }, [user, chatting]);
-
-  
 
   const handleSendMessage = async () => {
     if (message.trim()) {
@@ -64,7 +66,6 @@ const ChatPage = ({ user }) => {
         console.error("Error sending message:", error);
       }
     }
-  
   };
 
   // useEffect(() => {
@@ -181,74 +182,83 @@ const ChatPage = ({ user }) => {
             ))}
           </div>
         </div>
-        <div className="h-full items-center">
-          <div className="text-2xl h-full border-b bg-[#0a0a0a] fixed w-[56%]">
-            <div className="p-2 w-full flex items-center justify-between border-b border-b-[#151515] ">
-              {chatting?.userName}
-              <div className="text-white gap-3 flex">
-                <div className="rounded-full bg-black">
-                  <IconButton>
-                    <IoMdCall />
-                  </IconButton>
-                </div>
-                <div className="rounded-full bg-black">
-                  <IconButton>
-                    <BsFillCameraVideoFill />
-                  </IconButton>
-                </div>
-                <div className="rounded-full bg-black">
-                  <IconButton>
-                    <IoMdMore />
-                  </IconButton>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col scroll">
-              {messages.map((message, index) => (
-                <div
-                  className={`w-[100%] flex ${
-                    message?.sender === user?._id ? "justify-end" : ""
-                  }`}
-                  key={index}
-                >
-                  <div
-                    className={`text-base mt-4 p-2 w-[50%] rounded-bl-2xl ${
-                      message?.sender === user?._id
-                        ? "rounded-tl-2xl mr-4 rounded-br-2xl bg-[#39749b]"
-                        : "rounded-tr-2xl ml-4 rounded-br-2xl bg-[gray]"
-                    }`}
-                  >
-                    {message?.message}
+        {chatting ? (
+          <div className="h-full items-center">
+            <div className="text-2xl h-full border-b bg-[#0a0a0a] fixed w-[56%]">
+              <div className="p-2 w-full flex items-center justify-between border-b border-b-[#151515] ">
+                {chatting?.userName}
+                <div className="text-white gap-3 flex">
+                  <div className="rounded-full bg-black">
+                    <IconButton>
+                      <IoMdCall />
+                    </IconButton>
+                  </div>
+                  <div className="rounded-full bg-black">
+                    <IconButton>
+                      <BsFillCameraVideoFill />
+                    </IconButton>
+                  </div>
+                  <div className="rounded-full bg-black">
+                    <IconButton>
+                      <IoMdMore />
+                    </IconButton>
                   </div>
                 </div>
-              ))}
-            </div>
-            <div className="bg-[#010101] border-t flex justify-around border-t-[#151515] fixed bottom-0 w-[56%] items-center p-2 right-0">
-              <BsEmojiSmile className="ml-4 text-[#1d9bf0]" fontSize={30} />
-              <div className="bg-[#3f3e3e] rounded-2xl flex w-[70%] h-[45px]">
-                <input
-                  type="text"
-                  placeholder="Message.."
-                  value={message}
-                  onChange={(e) => {
-                    setMessage(e.target.value);
-                  }}
-                  className="w-[85%] text-base border border-black focus:border-[#1d9bf0] px-2 bg-[#101010] outline-none  rounded-l-2xl"
-                />
-                <div className="w-[15%] flex items-center justify-center text-white">
-                  <IconButton onClick={handleSendMessage}>
-                    <AiOutlineSend className="text-white" />
+              </div>
+              <div className="flex flex-col scroll overflow-scroll">
+                {messages.map((message, index) => (
+                  <div
+                    className={`w-[100%] flex ${
+                      message?.sender === user?._id ? "justify-end" : ""
+                    }`}
+                    key={index}
+                  >
+                    <div
+                      className={`text-base mt-4 flex p-2 px-4 max-w-[50%] rounded-bl-2xl ${
+                        message?.sender === user?._id
+                          ? "rounded-tl-2xl  mr-4 rounded-br-2xl bg-[#50a6de]"
+                          : "rounded-tr-2xl ml-4 rounded-br-2xl bg-[gray]"
+                      }`}
+                    >
+                      {message?.message}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-[#010101] border-t flex justify-around border-t-[#151515] fixed bottom-0 w-[56%] items-center p-2 right-0">
+                <BsEmojiSmile className="ml-4 text-[#1d9bf0]" fontSize={30} />
+                <div className="bg-[#3f3e3e] rounded-2xl flex w-[70%] h-[45px]">
+                  <input
+                    type="text"
+                    placeholder="Message.."
+                    value={message}
+                    onChange={(e) => {
+                      setMessage(e.target.value);
+                    }}
+                    className="w-[85%] text-base border border-black focus:border-[#1d9bf0] px-2 bg-[#101010] outline-none  rounded-l-2xl"
+                  />
+                  <div className="w-[15%] flex items-center justify-center text-white">
+                    <IconButton onClick={handleSendMessage}>
+                      <AiOutlineSend className="text-white" />
+                    </IconButton>
+                  </div>
+                </div>
+                <div className="p-1 mr-4 rounded-full bg-[#1d9bf0]">
+                  <IconButton>
+                    <MdKeyboardVoice fontSize={30} />
                   </IconButton>
                 </div>
-              </div>
-              <div className="p-1 mr-4 rounded-full bg-[#1d9bf0]">
-                <IconButton>
-                  <MdKeyboardVoice fontSize={30} />
-                </IconButton>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="bg-[#0a0a0a]  h-full border-b right-0 flex items-center justify-center fixed w-[56%]">
+            <div className="flex items-center font-black text-white text-3xl flex-col">
+              <BiMessageRounded fontSize={50}/>
+              Select A User To start Chatting
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
