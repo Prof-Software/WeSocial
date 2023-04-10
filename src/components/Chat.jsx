@@ -33,7 +33,17 @@ const ChatPage = ({ user }) => {
     if (user && chatting) {
       fetchMessages();
     }
+  
+    const subscription = client.listen(`*[_type == "message" && (sender == "${user?._id}" && receiver == "${chatting?._id}" || sender == "${chatting?._id}" && receiver == "${user?._id}")]`).subscribe((result) => {
+      console.log('New message received:', result.result);
+      setMessages(prevMessages => [...prevMessages, result.result]);
+    });
+  
+    return () => subscription.unsubscribe();
   }, [user, chatting]);
+
+  
+
   const handleSendMessage = async () => {
     if (message.trim()) {
       const newMessage = {
@@ -54,7 +64,32 @@ const ChatPage = ({ user }) => {
         console.error("Error sending message:", error);
       }
     }
+  
   };
+
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   let pollId;
+
+  //   const pollMessages = async () => {
+  //     const query = `*[_type == "message" && (sender == "${user?._id}" && receiver == "${chatting?._id}" || sender == "${chatting?._id}" && receiver == "${user?._id}")] | order(timestamp asc)`;
+  //     const result = await client.fetch(query);
+
+  //     if (isMounted) {
+  //       setMessages(result);
+  //       pollId = setTimeout(pollMessages, 1000); // poll every second
+  //     }
+  //   };
+
+  //   if (user && chatting) {
+  //     pollMessages();
+  //   }
+
+  //   return () => {
+  //     isMounted = false;
+  //     clearTimeout(pollId);
+  //   };
+  // }, [user, chatting]);
 
   useEffect(() => {
     client
@@ -70,7 +105,6 @@ const ChatPage = ({ user }) => {
   const clearAutocomplete = () => {
     setInputValue("");
   };
-
   function handleClick() {
     if (document.referrer === "") {
       navigate("/");
@@ -79,9 +113,11 @@ const ChatPage = ({ user }) => {
     }
   }
 
-  const filteredUsers = users.filter((e) =>
-  user.userName.toLowerCase().includes(inputValue.toLowerCase()) && e._id !== user._id
-);
+  const filteredUsers = users.filter(
+    (e) =>
+      user?.userName.toLowerCase().includes(inputValue.toLowerCase()) &&
+      e._id !== user?._id
+  );
 
   return (
     <div className="h-screen ml-3 w-screen flex flex-col">
@@ -167,22 +203,22 @@ const ChatPage = ({ user }) => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col scroll">
               {messages.map((message, index) => (
                 <div
                   className={`w-[100%] flex ${
-                    message.sender === user?._id ? "justify-end" : ""
+                    message?.sender === user?._id ? "justify-end" : ""
                   }`}
                   key={index}
                 >
                   <div
                     className={`text-base mt-4 p-2 w-[50%] rounded-bl-2xl ${
-                      message.sender === user?._id
+                      message?.sender === user?._id
                         ? "rounded-tl-2xl mr-4 rounded-br-2xl bg-[#39749b]"
                         : "rounded-tr-2xl ml-4 rounded-br-2xl bg-[gray]"
                     }`}
                   >
-                    {message.message}
+                    {message?.message}
                   </div>
                 </div>
               ))}
