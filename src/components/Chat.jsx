@@ -233,7 +233,7 @@ const ChatPage = ({ user, theme }) => {
                       className={`text-base mt-4 flex flex-col p-2 px-4 max-w-[50%] rounded-bl-2xl ${
                         message?.sender === user?._id
                           ? "rounded-tl-2xl  mr-4 rounded-br-2xl bg-[#50a6de]"
-                          : "rounded-tr-2xl ml-4 rounded-br-2xl bg-[gray]"
+                          : "rounded-tr-2xl ml-4 rounded-br-2xl bg-[#2a2929]"
                       }`}
                     >
                       {message?.message}
