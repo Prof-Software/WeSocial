@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink, Link, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { RiHomeFill } from "react-icons/ri";
 import {
   IoIosArrowForward,
@@ -9,7 +9,12 @@ import {
 import logo from "../assets/we.png";
 import { categories } from "../utils/data";
 import { HiHome } from "react-icons/hi";
-import { AiOutlineHome, AiOutlineSetting, AiOutlineShop } from "react-icons/ai";
+import {
+  AiOutlineHome,
+  AiOutlineLogout,
+  AiOutlineSetting,
+  AiOutlineShop,
+} from "react-icons/ai";
 import { AiFillHome } from "react-icons/ai";
 import { urlFor } from "../client";
 import { HomeIcon } from "@heroicons/react/solid";
@@ -32,6 +37,11 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
     "flex items-center font-bold text-2xl     border-r-4 border-blue-400  transition-all duration-200 ease-in-out capitalize";
   const handleCloseSidebar = () => {
     if (closeToggle) closeToggle(false);
+  };
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -104,34 +114,15 @@ const Sidebar = ({ closeToggle, user, theme, autoPlay, to }) => {
         </button>
       </div>
       {user && (
-        <Link
-          to={`user-profile/${user?.userId ? user?.userId : user?._id}`}
+        <button
           className={`flex my-5 mb-3 gap-2 p-2 items-center transition-all ${
             theme == "dark" ? "hover:bg-[#121212]" : "bg-white"
           } rounded-lg shadow-lg md:mx-3 `}
-          onClick={handleCloseSidebar}
+          onClick={handleLogout}
         >
-          <img
-            src={
-              user?.update === "true"
-                ? urlFor(user.image).height(80).width(80)
-                : user?.image
-            }
-            // src={
-            //   user.update === "true"
-            //     ? urlFor(user.image).height(80).width(80)
-            //     : user.image
-            // }
-            className="md:w-10 md:h-10 h-[40px] md:relative absolute rounded-full"
-            alt="user-profile"
-          />
-          <p className="md:block hidden">
-            {user.userName.length > 10
-              ? user.userName.substring(0, 10) + "..."
-              : user.userName}
-          </p>
-          <IoIosArrowForward className="hidden md:block" />
-        </Link>
+          <AiOutlineLogout fontSize={30} />
+          <p className="md:block hidden">LOGOUT</p>
+        </button>
       )}
     </div>
   );
