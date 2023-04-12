@@ -407,6 +407,9 @@ textarea {
   
   transform: rotate(-53.13deg);
 }
+html {
+  scroll-behavior: smooth;
+}
 .gradient-05 {
   background: linear-gradient(
     180deg,

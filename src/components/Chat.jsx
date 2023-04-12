@@ -26,7 +26,8 @@ const ChatPage = ({ user, theme }) => {
   const [imageAsset, setImageAsset] = useState();
   const [loading, setLoading] = useState(false);
   const pickerContainerRef = useRef(null);
-
+  const [isVoiceTyping, setIsVoiceTyping] = useState(false);
+  const messageContainerRef = useRef(null);
   useEffect(() => {
     const fetchMessages = async () => {
       const query = `*[_type == "message" && (sender == "${user?._id}" && receiver == "${chatting?._id}" || sender == "${chatting?._id}" && receiver == "${user?._id}")] | order(timestamp asc)`;
@@ -58,7 +59,7 @@ const ChatPage = ({ user, theme }) => {
     if (message.trim()) {
       const newMessage = {
         message: message,
-        image: imageAsset&&imageAsset,
+        image: imageAsset && imageAsset,
         sender: user?._id,
         receiver: chatting?._id,
         timestamp: new Date().toISOString(),
@@ -71,7 +72,8 @@ const ChatPage = ({ user, theme }) => {
         });
         setMessages([...messages, { ...newMessage, isSentByMe: true }]);
         setMessage("");
-        setImageAsset(null)
+        messageContainerRef.current.scrollIntoView({behavior:'smooth'})
+        setImageAsset(null);
       } catch (error) {
         console.error("Error sending message:", error);
       }
@@ -106,6 +108,17 @@ const ChatPage = ({ user, theme }) => {
       setWrongImageType(true);
     }
   };
+  const startVoiceTyping = () => {
+    setIsVoiceTyping(true);
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.onresult = (event) => {
+      setMessage(event.results[0][0].transcript);
+    };
+    recognition.start();
+    setIsVoiceTyping(false);
+
+  };
 
   useEffect(() => {
     client
@@ -121,7 +134,7 @@ const ChatPage = ({ user, theme }) => {
   const clearAutocomplete = () => {
     setInputValue("");
   };
-  console.log(messages)
+  console.log(messages);
   function handleClick() {
     if (document.referrer === "") {
       navigate("/");
@@ -237,33 +250,39 @@ const ChatPage = ({ user, theme }) => {
                       }`}
                     >
                       {message?.message}
-                      {message?.image?.url && 
-                      <div>
-                        <img src={message?.image?.url} className="h-[300px] w-[300px]" alt="" />
-                      </div>
-                      }
+                      {message?.image?.url && (
+                        <div>
+                          <img
+                            src={message?.image?.url}
+                            className="h-[300px] w-[300px]"
+                            alt=""
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
+                <div  ref={messageContainerRef}/>
               </div>
+              {loading&&<div>loading</div>}
               {imageAsset ? (
-                    <div className="ml-2 rounded absolute top-[40%]  h-[300px] w-[300px]">
-                      <img
-                        src={imageAsset?.url}
-                        alt="uploaded-pic"
-                        className="h-[300px] rounded w-[300px] object-cover"
-                      />
-                      <button
-                        type="button"
-                        className="absolute bottom-3 right-3 p-3 rounded-full bg-black text-xl cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out"
-                        onClick={() => setImageAsset(null)}
-                      >
-                        <MdDelete />
-                      </button>
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                <div className="ml-2 rounded absolute top-[40%]  h-[300px] w-[300px]">
+                  <img
+                    src={imageAsset?.url}
+                    alt="uploaded-pic"
+                    className="h-[300px] bg-black rounded w-[300px] object-cover"
+                  />
+                  <button
+                    type="button"
+                    className="absolute bottom-3 right-3 p-3 rounded-full bg-black text-xl cursor-pointer outline-none hover:shadow-md transition-all duration-500 ease-in-out"
+                    onClick={() => setImageAsset(null)}
+                  >
+                    <MdDelete />
+                  </button>
+                </div>
+              ) : (
+                ""
+              )}
               {showPicker && (
                 <div
                   className="absolute text-sm top-[18%] z-50"
@@ -299,7 +318,7 @@ const ChatPage = ({ user, theme }) => {
                     </label>
                   </IconButton>
                 </div>
-                
+
                 <div className="bg-[#3f3e3e] rounded-2xl flex w-[70%] h-[45px]">
                   <input
                     type="text"
@@ -316,8 +335,10 @@ const ChatPage = ({ user, theme }) => {
                     </IconButton>
                   </div>
                 </div>
-                <div className="p-1 mr-4 rounded-full bg-[#1d9bf0]">
-                  <IconButton>
+                <div className={`p-1 mr-4 rounded-full ${isVoiceTyping ? 'bg-[red]' : 'bg-[#1d9bf0]'}`}>
+                  <IconButton
+                    onClick={startVoiceTyping}
+                  >
                     <MdKeyboardVoice fontSize={30} />
                   </IconButton>
                 </div>

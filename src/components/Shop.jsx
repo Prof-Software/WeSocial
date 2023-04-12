@@ -94,7 +94,7 @@ const Shop = ({ user }) => {
           <h1 className="text-[#b1aeae]">Checkmarks</h1>
           <div className="bg-[rgb(255,255,255,0.1)] p-2 gap-3 flex items-center justify-center rounded-lg">
             <BsCoin className="text-yellow-300" fontSize={25} />
-            <p className="text-lg">{user?.coins} coins</p>
+            <p className="text-lg">{user?.coins?user?.coins:0} coins</p>
           </div>
         </div>
         <div className="flex flex-row flex-wrap mt-4 gap-6">
