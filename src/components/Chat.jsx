@@ -14,6 +14,9 @@ import { IoMdCall, IoMdMore } from "react-icons/io";
 import { MdDelete, MdKeyboardVoice } from "react-icons/md";
 import { AiOutlineLink, AiOutlineSend } from "react-icons/ai";
 import EmojiPicker from "emoji-picker-react";
+import moment from "moment";
+import { format, isToday, isYesterday } from "date-fns";
+
 const ChatPage = ({ user, theme }) => {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
@@ -28,6 +31,16 @@ const ChatPage = ({ user, theme }) => {
   const pickerContainerRef = useRef(null);
   const [isVoiceTyping, setIsVoiceTyping] = useState(false);
   const messageContainerRef = useRef(null);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   useEffect(() => {
     const fetchMessages = async () => {
       const query = `*[_type == "message" && (sender == "${user?._id}" && receiver == "${chatting?._id}" || sender == "${chatting?._id}" && receiver == "${user?._id}")] | order(timestamp asc)`;
@@ -51,6 +64,36 @@ const ChatPage = ({ user, theme }) => {
 
     return () => subscription.unsubscribe();
   }, [user, chatting]);
+  const groupedMessages = {};
+
+  messages.forEach((message) => {
+    const date = new Date(message._createdAt);
+    const dateStr = isToday(date)
+      ? "Today"
+      : isYesterday(date)
+      ? "Yesterday"
+      : format(date, "MMM dd");
+    if (!groupedMessages[dateStr]) {
+      groupedMessages[dateStr] = [];
+    }
+    groupedMessages[dateStr].push(message);
+  });
+
+  const sortedKeys = Object.keys(groupedMessages)
+    .sort((a, b) => {
+      // if a or b is "Today", set it to the current date
+      if (a === "Today") a = moment().format("MMM DD");
+      if (b === "Today") b = moment().format("MMM DD");
+
+      // if a or b is "Yesterday", set it to yesterday's date
+      if (a === "Yesterday") a = moment().subtract(1, "days").format("MMM DD");
+      if (b === "Yesterday") b = moment().subtract(1, "days").format("MMM DD");
+
+      // compare the dates in descending order
+      return moment(b, "MMM DD").diff(moment(a, "MMM DD"));
+    })
+    .reverse();
+
   const handleEmojiClick = (emoji) => {
     setMessage(message + emoji.emoji);
     setShowPicker(false);
@@ -62,7 +105,7 @@ const ChatPage = ({ user, theme }) => {
         image: imageAsset && imageAsset,
         sender: user?._id,
         receiver: chatting?._id,
-        timestamp: new Date().toISOString(),
+        timestamp: moment().toISOString(),
       };
 
       try {
@@ -70,9 +113,20 @@ const ChatPage = ({ user, theme }) => {
           _type: "message",
           ...newMessage,
         });
-        setMessages([...messages, { ...newMessage, isSentByMe: true }]);
         setMessage("");
-        messageContainerRef.current.scrollIntoView({behavior:'smooth'})
+
+        const date = new Date(message._createdAt);
+        const dateStr = isToday(date)
+          ? "Today"
+          : isYesterday(date)
+          ? "Yesterday"
+          : format(date, "MMM dd");
+        if (!groupedMessages[dateStr]) {
+          groupedMessages[dateStr] = [];
+        }
+        groupedMessages[dateStr].push(message);
+        messageContainerRef.current.scrollIntoView({ behavior: "smooth" });
+        setMessages([...messages, { ...newMessage, isSentByMe: true }]);
         setImageAsset(null);
       } catch (error) {
         console.error("Error sending message:", error);
@@ -117,7 +171,6 @@ const ChatPage = ({ user, theme }) => {
     };
     recognition.start();
     setIsVoiceTyping(false);
-
   };
 
   useEffect(() => {
@@ -215,7 +268,19 @@ const ChatPage = ({ user, theme }) => {
           <div className="h-full items-center">
             <div className="text-2xl h-full border-b bg-[#0a0a0a] fixed w-[56%]">
               <div className="p-2 w-full flex items-center justify-between border-b border-b-[#151515] ">
-                {chatting?.userName}
+                <div className="flex gap-2 items-center justify-center">
+                  <img
+                    src={
+                      chatting?.update === "true"
+                        ? urlFor(chatting.image).height(80).width(80)
+                        : chatting?.image
+                    }
+                    className="h-[50px] border border-black rounded-full bg-white"
+                    referrerPolicy="no-referrer"
+                    alt=""
+                  />
+                  {chatting?.userName}
+                </div>
                 <div className="text-white gap-3 flex">
                   <div className="rounded-full bg-black">
                     <IconButton>
@@ -235,36 +300,55 @@ const ChatPage = ({ user, theme }) => {
                 </div>
               </div>
               <div className="flex flex-col scroll overflow-scroll">
-                {messages.map((message, index) => (
-                  <div
-                    className={`w-[100%] flex ${
-                      message?.sender === user?._id ? "justify-end" : ""
-                    }`}
-                    key={index}
-                  >
-                    <div
-                      className={`text-base mt-4 flex flex-col p-2 px-4 max-w-[50%] rounded-bl-2xl ${
-                        message?.sender === user?._id
-                          ? "rounded-tl-2xl  mr-4 rounded-br-2xl bg-[#50a6de]"
-                          : "rounded-tr-2xl ml-4 rounded-br-2xl bg-[#2a2929]"
-                      }`}
-                    >
-                      {message?.message}
-                      {message?.image?.url && (
-                        <div>
-                          <img
-                            src={message?.image?.url}
-                            className="h-[300px] w-[300px]"
-                            alt=""
-                          />
-                        </div>
-                      )}
+                {sortedKeys.map((dateStr) => (
+                  <div key={dateStr} className="gap-4">
+                    <div className="my-4 text-[white] flex items-center justify-center w-full font-bold text-center">
+                      <p className="bg-[#373737] text-base p-2 rounded-lg">
+                        {dateStr}
+                      </p>
                     </div>
+                    {groupedMessages[dateStr].map((message, index) => (
+                      <div
+                        className={`w-[100%] my-5 flex  ${
+                          message?.sender === user?._id ? "justify-end" : ""
+                        }`}
+                        key={index}
+                      >
+                        <div
+                          className={`text-base relative mt-4 flex min-w-[90px] flex-col p-2 px-4 max-w-[50%] rounded-md  ${
+                            message?.sender === user?._id
+                              ? "  mr-4  bg-[#0297fa]"
+                              : " ml-4  bg-[#2a2929]"
+                          }`}
+                        >
+                          {message?.message}
+                          {message?.image?.url && (
+                            <div className="mt-3">
+                              <img
+                                src={message?.image?.url}
+                                className="h-[300px] object-cover  w-[300px]"
+                                alt=""
+                              />
+                            </div>
+                          )}
+                          <p
+                            className={`absolute text-[gray] bottom-[-20px] text-sm ${
+                              message?.sender === user?._id
+                                ? "right-0"
+                                : "left-0"
+                            }`}
+                          >
+                            {moment(message._createdAt).format("hh:mm a")}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 ))}
-                <div  ref={messageContainerRef}/>
+
+                <div ref={messagesEndRef} />
               </div>
-              {loading&&<div>loading</div>}
+              {loading && <div>loading</div>}
               {imageAsset ? (
                 <div className="ml-2 rounded absolute top-[40%]  h-[300px] w-[300px]">
                   <img
@@ -335,10 +419,12 @@ const ChatPage = ({ user, theme }) => {
                     </IconButton>
                   </div>
                 </div>
-                <div className={`p-1 mr-4 rounded-full ${isVoiceTyping ? 'bg-[red]' : 'bg-[#1d9bf0]'}`}>
-                  <IconButton
-                    onClick={startVoiceTyping}
-                  >
+                <div
+                  className={`p-1 mr-4 rounded-full ${
+                    isVoiceTyping ? "bg-[red]" : "bg-[#1d9bf0]"
+                  }`}
+                >
+                  <IconButton onClick={startVoiceTyping}>
                     <MdKeyboardVoice fontSize={30} />
                   </IconButton>
                 </div>
