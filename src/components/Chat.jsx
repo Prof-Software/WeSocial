@@ -41,6 +41,18 @@ const ChatPage = ({ user, theme }) => {
     scrollToBottom();
   }, [messages]);
 
+  const sortedMessages = messages.sort((a, b) =>
+    b._createdAt.localeCompare(a._createdAt)
+  );
+
+  // find the last message where the current user is either the sender or the receiver
+  const lastMessage = sortedMessages.find(
+    (message) => message?.sender === user?._id || message?.receiver === user?._id
+  );
+
+  // display the last message text or a default message if no message was found
+  const lastMessageText = lastMessage ? lastMessage.message : "No messages yet";
+
   useEffect(() => {
     const fetchMessages = async () => {
       const query = `*[_type == "message" && (sender == "${user?._id}" && receiver == "${chatting?._id}" || sender == "${chatting?._id}" && receiver == "${user?._id}")] | order(timestamp asc)`;
@@ -251,7 +263,12 @@ const ChatPage = ({ user, theme }) => {
                     referrerPolicy="no-referrer"
                     alt=""
                   />
-                  <h1 className="text-lg font-bold">{user.userName}</h1>
+                  <div className="flex flex-col">
+                    <h1 className="text-lg font-bold clamped">
+                      {user.userName}
+                    </h1>
+                    <p className="text-[gray] clamped">last message</p>
+                  </div>
                 </div>
                 <IconButton
                   onClick={() => {
@@ -332,7 +349,7 @@ const ChatPage = ({ user, theme }) => {
                             </div>
                           )}
                           <p
-                            className={`absolute text-[gray] bottom-[-20px] text-sm ${
+                            className={`absolute text-[gray] mt-2 bottom-[-22px] text-sm ${
                               message?.sender === user?._id
                                 ? "right-0"
                                 : "left-0"
