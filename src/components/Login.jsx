@@ -5,7 +5,7 @@ import {
   useGoogleLogin,
 } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
-import shareVideo from "../assets/share.mp4";
+import img from "../assets/login.jpg";
 import logo from "../assets/logowhite.png";
 import { client } from "../client";
 import jwt_decode from "jwt-decode";
@@ -20,9 +20,10 @@ import { useEffect } from "react";
 const Login = () => {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
+  const [showIn, setShowIn] = useState(false);
   const [newId, setNewId] = useState("");
   const [user, setUser] = useState();
-
+  const [log, setLog] = useState(false);
   const responseGoogle = (response) => {
     const userResponse = jwt_decode(response.credential);
 
@@ -41,10 +42,8 @@ const Login = () => {
       client.fetch(query).then((data) => {
         setUser(data[0]);
       });
-      setShow(true);
     });
   };
-
   const handleClick = () => {
     if (newId) {
       const query = `*[userId == "${newId}"]`;
@@ -53,7 +52,7 @@ const Login = () => {
         .then((result) => {
           // If a user with the new ID already exists, just show the user's profile
           if (result.length > 0) {
-            alert('ID is taken')
+            alert("ID is taken");
           } else {
             // If the new ID is available, make the patch request to update the user's ID
             client
@@ -76,76 +75,88 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    if (user?.userId) {
+      setShow(true);
+    }
+  }, [user]);
+  useEffect(() => {
+    if (user && user?.userId === undefined) {
+      setShowIn(true);
+    }
+  }, [user]);
   return (
-    <div className="flex justify-start items-center flex-col h-screen">
-      <div className=" relative w-full h-full">
-        <video
-          src={shareVideo}
-          type="video/mp4"
-          loop
-          controls={false}
-          muted
-          autoPlay
-          className="w-full h-full object-cover"
-        />
-
-        <div className="absolute  flex flex-col justify-center items-center top-0 right-0 left-0 bottom-0     bg-blackOverlay">
-          <div className="bg-[rgb(0,0,0,0.7)] rounded-lg border-slate-700 border p-10 flex items-center flex-col">
-            <div className="p-5 flex items-center justify-center flex-col text-3xl text-white font-bold">
-              WeSocial
-              <p className="font-extralight text-sm">
-                Login to know What the world is doing!
-              </p>
-            </div>
-
-            <div className="shadow-2xl">
+    <div className="flex w-full h-[100vh]">
+      <div className=" md:w-[30%] w-full bg-[black] flex items-center justify-center">
+        <div
+          className="shadow-2xl w-[340px]  bg-[#010101] rounded-lg border-b-2 text-white flex items-center flex-col border-b-[white] p-5 py-6"
+          style={{ boxShadow: "0px 0px 2px white" }}
+        >
+          <h1 className="font-black text-xl mb-4">LOGIN</h1>
+          {showIn === false && (
+            <div>
               {show === false ? (
-                <GoogleLogin
-                  onSuccess={responseGoogle}
-                  onFailure={responseGoogle}
-                  cookiePolicy="single_host_origin"
-                />
+                <div className="w-[270px]">
+                  <GoogleLogin
+                    className="w-0 hidden absolute"
+                    onSuccess={responseGoogle}
+                    onFailure={responseGoogle}
+                    useOneTap
+                    cookiePolicy="single_host_origin"
+                  />
+                </div>
               ) : (
-                <div className="bg-white text-black w-full p-3 flex flex-col items-center justify-center">
-                  {user && user.userId ? (
-                    <>
-                      <p>Welcome back, {user.userName}!</p>
+                <div className="bg-[#1d1d1d]  text-white w-full p-3 flex flex-col rounded-lg items-center justify-center">
+                  {user?.userId && (
+                    <div className="flex items-center flex-col h-[70px] w-[200px] rounded-lg justify-center">
+                      <p className="mb-3">Welcome back</p>
                       <Button
                         className="w-full text-black mt-5"
+                        variant="outlined"
+                        color="secondary"
                         onClick={() => navigate(`/user-profile/${user.userId}`)}
-                        variant="contained"
                         label="User Id"
                       >
                         Go to your profile
-                      </Button>
-                    </>
-                  ) : (
-                    <div>
-                      <p>Please enter a user ID to continue:</p>
-                      <Input
-                        value={newId}
-                        onChange={(e) => {
-                          setNewId(e.target.value);
-                        }}
-                        className="w-full text-black mb-3"
-                        variant="outlined"
-                        label="User Id"
-                      />
-                      <Button
-                        className="w-full text-black mt-5"
-                        onClick={handleClick}
-                        variant="contained"
-                        label="User Id"
-                      >
-                        Submit
                       </Button>
                     </div>
                   )}
                 </div>
               )}
             </div>
-          </div>
+          )}
+
+          {showIn === true && (
+            <div className="bg-[#1d1d1d] text-white p-2 rounded">
+              <p>Please enter a user ID to continue:</p>
+              <input
+              type="text"
+
+                value={newId}
+                onChange={(e) => {
+                  setNewId(e.target.value);
+                }}
+                color="secondary"
+                className="w-full bg-[#1d1d1d] outline-none p-3 mt-3 focus:border-[#1da1f2] border-[#333333] border rounded-lg text-white mb-3"
+                variant="outlined" 
+                label="User Id"
+              />
+              <Button
+                className="w-full text-black mt-5"
+                variant="outlined"
+                color="secondary"
+                onClick={handleClick}
+                label="User Id"
+              >
+                Submit
+              </Button>
+            </div>
+          )}
         </div>
+      </div>
+
+      <div className="md:w-[70%] w-[10%] bg-white">
+        <img className="w-full h-full object-cover" src={img} alt="" />
       </div>
     </div>
   );

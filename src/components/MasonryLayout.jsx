@@ -19,14 +19,12 @@ const MasonryLayout = ({
   useEffect(() => {
     if (inView && !isLoading && !profile) {
       setIsLoading(true);
-      setTimeout(() => {
         setCurrentPage((prevPage) => prevPage + 1);
         const start = currentPage * 2;
         const end = start + 2;
         const newPins = pins?.slice(start, end);
         setVisiblePins((prevPins) => [...prevPins, ...newPins]);
         setIsLoading(false);
-      }, 1000);
     }
   }, [inView, isLoading, currentPage, pins]);
 
